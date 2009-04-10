@@ -3,6 +3,7 @@ package tetris.core;
 import java.awt.*;
 
 import javax.swing.*;
+
 import static tetris.core.ProjectConstants.*;
 
 /**<p>TetrisPanel is the panel that contains the (main)
@@ -75,10 +76,12 @@ public class TetrisPanel extends JPanel
 					//left corner. blocks[5][3] would be the block
 					//5 left of (0,0) and 3 down.
 	
-	int score = 240;//Score.
-	int level = 0;//Level.
-	int lines = 0;//Lines cleared.
-	String mode = "CLASSIC";
+	public int score = 0;//Score.
+	public int level = 0;//Level.
+	public int lines = 0;//Lines cleared.
+	public String mode = "CLASSIC";
+	
+	private TetrisEngine gameengine;
 	
 	/**<p>Public TetrisPanel constructor.*/
 	public TetrisPanel()
@@ -164,48 +167,5 @@ public class TetrisPanel extends JPanel
 			}
 		}
 		}
-		
-		g.setColor(Color.BLACK);
-		
-		int c1x = cornerx-300;
-		int c1y = cornery;
-		int c1w = 268;
-		int c1h = bounds.height-3*squaredim;
-		
-		//body of options pane
-		g.drawRect(c1x,c1y,c1w,c1h);
-		
-		int c1sixthY = c1h / 6;
-		
-		//block 1
-		g.drawRect(c1x, c1y, c1w/2, 2*c1sixthY);
-		
-		//block 2
-		g.drawRect(c1x+c1w/2,
-				c1y, c1w/2, 2*c1sixthY);
-		
-		String score = "SCORE: " + this.score,
-		level = "LEVEL: " + this.level,
-		lines = "LINES: " + this.lines,
-		mode = "MODE: " + this.mode;
-		
-		g.setFont(new Font(Font.SANS_SERIF,Font.BOLD,18));
-		
-		//score
-		g.drawString(score,c1x+30, c1y+c1sixthY*2 + c1sixthY/2);
-		
-		//level
-		g.drawString(level,c1x+30, c1y+c1sixthY*3 + c1sixthY/2);
-		
-		//lines
-		g.drawString(lines,c1x+30, c1y+c1sixthY*4 + c1sixthY/2);
-		
-		//mode
-		g.drawString(mode,c1x+30, c1y+c1sixthY*5 + c1sixthY/2);
-		
-		
-		int c2x = c1x + 20;
-		int c2y = c1y + c1h + 30;
-		g.drawString("<BUTTON HERE>", c2x, c2y);
 	}
 }

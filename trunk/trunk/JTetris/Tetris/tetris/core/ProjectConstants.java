@@ -5,5 +5,5 @@ public class ProjectConstants
 {
 	/**True if project is still being debugged,
 	 * false otherwise.*/
-	public static final boolean DEBUG = true;
+	public static final boolean DEBUG = false;
 }
