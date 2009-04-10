@@ -68,10 +68,17 @@ public class TetrisPanel extends JPanel
 	
 	public Color blockfullcolor;//Color of a block that's filled.
 	
+	public Color theme1;//background for now.
+	
 	public boolean[][] blocks;//Boolean representation of the blocks,
 					//counted X first and starting from the top
 					//left corner. blocks[5][3] would be the block
 					//5 left of (0,0) and 3 down.
+	
+	int score = 240;//Score.
+	int level = 0;//Level.
+	int lines = 0;//Lines cleared.
+	String mode = "CLASSIC";
 	
 	/**<p>Public TetrisPanel constructor.*/
 	public TetrisPanel()
@@ -82,8 +89,10 @@ public class TetrisPanel extends JPanel
 		
 		blocks = new boolean[10][16];
 		
-		blockemptycolor = Color.LIGHT_GRAY;
-		blockfullcolor = Color.DARK_GRAY;
+		//(not so) awesome color choices.
+		blockemptycolor = new Color(255,204,153);
+		blockfullcolor = new Color(143,31,255);
+		theme1 = new Color(153,153,255);
 		
 		//empty squares.
 		for(boolean[] row : blocks)
@@ -108,11 +117,18 @@ public class TetrisPanel extends JPanel
 	/**<p>Paints this component, called with repaint().*/
 	public void paintComponent(Graphics g)
 	{
-		int cornerx = (getWidth() - bounds.width) / 2;
+		g.setColor(theme1);
+		g.fillRect(0, 0, getWidth(), getHeight());
+		
+		int cornerx = (getWidth() - bounds.width) / 2 + 120;
 		int cornery = (getHeight() - bounds.height) / 2;
 		
+		if(DEBUG)
 		//Create a border;
-		g.drawRect(cornerx-1,cornery-1,bounds.width+1,bounds.height+1);
+		g.drawRect(cornerx,cornery,bounds.width,bounds.height);
+		else
+			g.drawRect(cornerx-1,cornery-1,
+				bounds.width+1,bounds.height+1);
 		
 		//Loop and draw all the blocks.
 		for(int c1 = 0;c1 < blocks.length;c1++)
@@ -148,5 +164,48 @@ public class TetrisPanel extends JPanel
 			}
 		}
 		}
+		
+		g.setColor(Color.BLACK);
+		
+		int c1x = cornerx-300;
+		int c1y = cornery;
+		int c1w = 268;
+		int c1h = bounds.height-3*squaredim;
+		
+		//body of options pane
+		g.drawRect(c1x,c1y,c1w,c1h);
+		
+		int c1sixthY = c1h / 6;
+		
+		//block 1
+		g.drawRect(c1x, c1y, c1w/2, 2*c1sixthY);
+		
+		//block 2
+		g.drawRect(c1x+c1w/2,
+				c1y, c1w/2, 2*c1sixthY);
+		
+		String score = "SCORE: " + this.score,
+		level = "LEVEL: " + this.level,
+		lines = "LINES: " + this.lines,
+		mode = "MODE: " + this.mode;
+		
+		g.setFont(new Font(Font.SANS_SERIF,Font.BOLD,18));
+		
+		//score
+		g.drawString(score,c1x+30, c1y+c1sixthY*2 + c1sixthY/2);
+		
+		//level
+		g.drawString(level,c1x+30, c1y+c1sixthY*3 + c1sixthY/2);
+		
+		//lines
+		g.drawString(lines,c1x+30, c1y+c1sixthY*4 + c1sixthY/2);
+		
+		//mode
+		g.drawString(mode,c1x+30, c1y+c1sixthY*5 + c1sixthY/2);
+		
+		
+		int c2x = c1x + 20;
+		int c2y = c1y + c1h + 30;
+		g.drawString("<BUTTON HERE>", c2x, c2y);
 	}
 }
