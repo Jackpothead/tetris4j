@@ -79,9 +79,11 @@ public class TetrisPanel extends JPanel
 	public int score = 0;//Score.
 	public int level = 0;//Level.
 	public int lines = 0;//Lines cleared.
+	public int steptime = 1000;//Max milliseconds per step.
 	public String mode = "CLASSIC";
 	
-	private TetrisEngine gameengine;
+	public TetrisEngine gameengine;
+	public GameState state;
 	
 	/**<p>Public TetrisPanel constructor.*/
 	public TetrisPanel()
@@ -101,6 +103,22 @@ public class TetrisPanel extends JPanel
 		for(boolean[] row : blocks)
 			for(boolean cell : row)
 				cell = false;
+		
+		state = GameState.PLAYING;
+		
+		gameengine = new TetrisEngine(this);
+		
+		//Animation loop.
+		new Thread(){
+			public void run()
+			{
+				while(state == GameState.PLAYING)
+				{
+					try{Thread.sleep(20);}catch(Throwable t){}
+					repaint();
+				}
+			}
+		}.start();
 		
 		//used for a screenshot.
 		blocks[9][15] = true;

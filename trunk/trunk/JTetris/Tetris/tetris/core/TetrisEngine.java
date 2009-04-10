@@ -1,5 +1,7 @@
 package tetris.core;
 
+import java.util.*;
+
 /**Class that works with the TetrisPanel to
  * <br>calculate the blocks, etc.*/
 public class TetrisEngine
@@ -145,9 +147,101 @@ public class TetrisEngine
         }
     };
 	
+	TetrisPanel tetris;
+	Random rdm;
 	
-	public TetrisEngine()
+	int[][] activeBlock;//Block currently being controlled.
+	
+	long laststep = System.currentTimeMillis();//Time of previous step.
+	
+	
+	/**Public constructor.
+	 * @param p TetrisPanel.*/
+	public TetrisEngine(TetrisPanel p)
 	{
+		tetris = p;
+		rdm = new Random();
+		
+		new Thread(){
+			public void run()
+			{
+				while(tetris.state == GameState.PLAYING)
+				{
+					long timeelapsedsincelaststep = 
+						System.currentTimeMillis() - laststep;
+					
+					if(timeelapsedsincelaststep > tetris.steptime)
+						step();
+					
+					try{
+						Thread.sleep(50);//Safer than sleeping for less.
+					}catch(Exception e){}
+				}
+			}
+		}.start();
+	}
+	
+	public void actionright()
+	{
+		
+	}
+	
+	public void actionleft()
+	{
+		
+	}
+	
+	public void actiondown()
+	{
+		step();
+	}
+	
+	public void actionrotate()
+	{
+		
+	}
+	
+	/**Steps into the next phase if possible.*/
+	public void step()
+	{
+		laststep = System.currentTimeMillis();
+	}
+	
+	//Testing purposes.
+	public static void main(String... args)
+	{
+		
+	}
+	
+	/**Rotates the specified block clockwise, by array lookup.
+	 * @param blocktype Which block rotated
+	 * @param rotation Current rotation
+	 * @throws IllegalArgumentException blocktype or<br>
+	 * rotation out of bounds.*/
+	public static byte[][] rotate(int blocktype, int rotation)
+	{
+		if(blocktype >= blocks.length)
+			throw new IllegalArgumentException();
+		
+		int numrotations = blocks[blocktype].length;
+		if(rotation >= numrotations)
+			throw new IllegalArgumentException();
+		
+		if(rotation == numrotations - 1)
+			return blocks[blocktype][0];
+		
+		else return blocks[blocktype][rotation+1];
+	}
+	
+	public byte[][] randomBlock()
+	{
+		int x = blocks.length;
+		int retx = rdm.nextInt(x);
+		
+		int y = blocks[retx].length;
+		int rety = rdm.nextInt(y);
+		
+		return blocks[retx][rety];
 		
 	}
 }
