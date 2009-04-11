@@ -181,22 +181,22 @@ public class TetrisEngine
 		}.start();
 	}
 	
-	public void actionright()
+	public synchronized void actionright()
 	{
 		
 	}
 	
-	public void actionleft()
+	public synchronized void actionleft()
 	{
 		
 	}
 	
-	public void actiondown()
+	public synchronized void actiondown()
 	{
 		step();
 	}
 	
-	public void actionrotate()
+	public synchronized void actionrotate()
 	{
 		
 	}
@@ -205,6 +205,7 @@ public class TetrisEngine
 	public void step()
 	{
 		laststep = System.currentTimeMillis();
+		tetris.blocks[rdm.nextInt(10)][rdm.nextInt(16)]=true;
 	}
 	
 	//Testing purposes.
@@ -233,6 +234,7 @@ public class TetrisEngine
 		else return blocks[blocktype][rotation+1];
 	}
 	
+	/**Generates a random block , in a random rotation.*/
 	public byte[][] randomBlock()
 	{
 		int x = blocks.length;

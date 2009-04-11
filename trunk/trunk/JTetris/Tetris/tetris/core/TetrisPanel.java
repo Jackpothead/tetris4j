@@ -1,6 +1,7 @@
 package tetris.core;
 
 import java.awt.*;
+import java.awt.event.*;
 
 import javax.swing.*;
 
@@ -119,6 +120,33 @@ public class TetrisPanel extends JPanel
 				}
 			}
 		}.start();
+		
+		
+		addKeyListener(new KeyAdapter(){
+			public void keyPressed(KeyEvent ke)
+			{
+				if(ke.getKeyCode() == KeyEvent.VK_LEFT)
+					TetrisPanel.this.gameengine.actionleft();
+				if(ke.getKeyCode() == KeyEvent.VK_RIGHT)
+					TetrisPanel.this.gameengine.actionright();
+				if(ke.getKeyCode() == KeyEvent.VK_DOWN)
+					TetrisPanel.this.gameengine.actiondown();
+				if(ke.getKeyCode() == KeyEvent.VK_UP
+					||ke.getKeyCode() == KeyEvent.VK_Z)
+					TetrisPanel.this.gameengine.actionrotate();
+			}
+		});
+		
+		//Whatever it takes to get mouse focus in a JPanel -.-
+		addMouseListener(new MouseAdapter(){
+			public void mousePressed(MouseEvent me)
+			{
+				TetrisPanel.this.requestFocusInWindow();
+			}
+		});
+		
+		setFocusable(true);
+		requestFocusInWindow();
 		
 		//used for a screenshot.
 		blocks[9][15] = true;
