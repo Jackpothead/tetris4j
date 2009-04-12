@@ -1,6 +1,7 @@
 package tetris.core;
 
 import java.util.*;
+import static tetris.core.ProjectConstants.*;
 
 /**Class that works with the TetrisPanel to
  * <br>calculate the blocks, etc.*/
@@ -150,7 +151,9 @@ public class TetrisEngine
 	TetrisPanel tetris;
 	Random rdm;
 	
-	int[][] activeBlock;//Block currently being controlled.
+	byte[][] activeBlockType;
+	int activeBlockX;
+	int activeBlockY;
 	
 	long laststep = System.currentTimeMillis();//Time of previous step.
 	
@@ -202,15 +205,16 @@ public class TetrisEngine
 	}
 	
 	/**Steps into the next phase if possible.*/
-	public void step()
+	private void step()
 	{
+		if(DEBUG)
+			System.out.println("STEP");
 		laststep = System.currentTimeMillis();
-		tetris.blocks[rdm.nextInt(10)][rdm.nextInt(16)]=true;
-	}
-	
-	//Testing purposes.
-	public static void main(String... args)
-	{
+		
+		//move 1 down.
+		activeBlockY++;
+		
+		copy();
 		
 	}
 	
@@ -234,6 +238,22 @@ public class TetrisEngine
 		else return blocks[blocktype][rotation+1];
 	}
 	
+	/**Copies the position of the active block into
+	 * the abstract block grid.*/
+	public void copy()
+	{
+		int x = activeBlockX;
+		int y = activeBlockY;
+		byte[][] t = activeBlockType;
+		
+		//LOL i'm not even sure how this works. Guess and check ftw.
+		for(int i = 0;i < 4;i++)
+		{
+			for(int r = 0;r < 4;r++)
+				tetris.blocks[x+i][y+r] = toBool(t[r][i]);
+		}
+	}
+	
 	/**Generates a random block , in a random rotation.*/
 	public byte[][] randomBlock()
 	{
@@ -245,5 +265,17 @@ public class TetrisEngine
 		
 		return blocks[retx][rety];
 		
+	}
+	
+	/**True if b==1, false otherwise.*/
+	private static boolean toBool(byte b)
+	{
+		switch(b)
+		{
+		case 1:
+			return true;
+		default:
+			return false;
+		}
 	}
 }

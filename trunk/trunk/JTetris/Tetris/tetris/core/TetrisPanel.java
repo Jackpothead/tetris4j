@@ -9,7 +9,7 @@ import static tetris.core.ProjectConstants.*;
 
 /**<p>TetrisPanel is the panel that contains the (main)
  * <br>panels AKA. core.*/
-public class TetrisPanel extends JPanel
+public class TetrisPanel extends JDesktopPane
 {
 	//Main, for testing purposes.
 	public static void main(String... args)
@@ -25,22 +25,25 @@ public class TetrisPanel extends JPanel
 		
 		
 		
-		JFrame frame = new JFrame();
+		JFrame window = new JFrame();
 		
 		if(fullscreen)
 		{
-			frame.setUndecorated(true);
+			window.setUndecorated(true);
 		}
 		
-		frame.setTitle("JTetris");
-		frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(800, 600);
-		frame.setLocationRelativeTo(null);
+		window.setTitle("JTetris");
+		window.setVisible(true);
+		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		window.setSize(800, 600);
+		window.setLocationRelativeTo(null);
+		window.setResizable(false);
 		
 		
-		TetrisPanel tetris = new TetrisPanel();
-		frame.add(tetris);
+		TetrisPanel tframe = new TetrisPanel();
+		
+		tframe.setPreferredSize(new Dimension(800,600));
+		window.setContentPane(tframe);
 		
 		if(fullscreen)
 		{
@@ -48,7 +51,7 @@ public class TetrisPanel extends JPanel
 			try{
 			dev =  GraphicsEnvironment
 				.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-			dev.setFullScreenWindow(frame);
+			dev.setFullScreenWindow(window);
 			
 			//800x600 fullscreen?
 			dev.setDisplayMode(new DisplayMode
@@ -57,6 +60,13 @@ public class TetrisPanel extends JPanel
 				//Exit fullscreen?
 				dev.setFullScreenWindow(null);
 				t.printStackTrace();
+			}
+			try{Thread.sleep(5000);}catch(Exception e){}
+			
+			if(DEBUG)
+			{
+    			dev.setFullScreenWindow(null);
+    			System.exit(0);
 			}
 		}
 	}
@@ -148,28 +158,20 @@ public class TetrisPanel extends JPanel
 		setFocusable(true);
 		requestFocusInWindow();
 		
-		//used for a screenshot.
-		blocks[9][15] = true;
-		blocks[9][14] = true;
-		blocks[8][15] = true;
-		blocks[7][15] = true;
-		blocks[4][14] = true;
-		blocks[3][15] = true;
-		blocks[4][15] = true;
-		blocks[5][15] = true;
-		blocks[3][8] = true;
-		blocks[3][9] = true;
-		blocks[2][9] = true;
-		blocks[2][10] = true;
+		gameengine.activeBlockType = TetrisEngine.blocks[6][1];
+		gameengine.activeBlockX=1;
+		gameengine.activeBlockY=0;
 	}
 	
 	/**<p>Paints this component, called with repaint().*/
 	public void paintComponent(Graphics g)
 	{
+		super.paintComponent(g);
+		
 		g.setColor(theme1);
 		g.fillRect(0, 0, getWidth(), getHeight());
 		
-		int cornerx = (getWidth() - bounds.width) / 2 + 120;
+		int cornerx = (getWidth() - bounds.width) / 2;
 		int cornery = (getHeight() - bounds.height) / 2;
 		
 		if(DEBUG)
