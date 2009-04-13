@@ -2,6 +2,7 @@ package tetris.core;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Arrays;
 
 import javax.swing.*;
 
@@ -80,9 +81,11 @@ public class TetrisPanel extends JDesktopPane
 	
 	public Color blockfullcolor;//Color of a block that's filled.
 	
+	public Color blockactivecolor;
+	
 	public Color theme1;//background for now.
 	
-	public boolean[][] blocks;//Boolean representation of the blocks,
+	public DBlock[][] blocks;//Boolean representation of the blocks,
 					//counted X first and starting from the top
 					//left corner. blocks[5][3] would be the block
 					//5 left of (0,0) and 3 down.
@@ -103,17 +106,22 @@ public class TetrisPanel extends JDesktopPane
 		//Defaulted to be 10x16. May be changed.
 		bounds = new Dimension(squaredim*10,squaredim*16);
 		
-		blocks = new boolean[10][16];
+		blocks = new DBlock[10][16];
 		
 		//(not so) awesome color choices.
 		blockemptycolor = new Color(255,204,153);
 		blockfullcolor = new Color(143,31,255);
+		blockactivecolor = new Color(31,143,255);
 		theme1 = new Color(153,153,255);
 		
 		//empty squares.
-		for(boolean[] row : blocks)
-			for(boolean cell : row)
-				cell = false;
+		for(int t1 = 0;t1 < blocks.length;t1++)
+		{
+			for(int t2 = 0;t2 < blocks[t1].length;t2++)
+			{
+				blocks[t1][t2] = DBlock.EMPTY;
+			}
+		}
 		
 		state = GameState.PLAYING;
 		
@@ -158,9 +166,16 @@ public class TetrisPanel extends JDesktopPane
 		setFocusable(true);
 		requestFocusInWindow();
 		
+		blocks[1][7] = DBlock.FILLED;
+		blocks[2][7] = DBlock.FILLED;
+		blocks[3][6] = DBlock.FILLED;
+		blocks[3][7] = DBlock.FILLED;
+		blocks[4][7] = DBlock.FILLED;
+		
 		gameengine.activeBlockType = TetrisEngine.blocks[6][1];
 		gameengine.activeBlockX=1;
-		gameengine.activeBlockY=0;
+		gameengine.activeBlockY=1;
+		gameengine.copy();
 	}
 	
 	/**<p>Paints this component, called with repaint().*/
@@ -186,11 +201,15 @@ public class TetrisPanel extends JDesktopPane
 		{
 		for(int c2 = 0;c2 < blocks[c1].length;c2++)
 		{
-			if(blocks[c1][c2]==true)
+			if(blocks[c1][c2]==DBlock.FILLED)
 			{
 				g.setColor(blockfullcolor);
 			}
-			if(blocks[c1][c2]==false)
+			if(blocks[c1][c2]==DBlock.ACTIVE)
+			{
+				g.setColor(blockactivecolor);
+			}
+			if(blocks[c1][c2]==DBlock.EMPTY)
 			{
 				g.setColor(blockemptycolor);
 			}

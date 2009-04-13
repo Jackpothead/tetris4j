@@ -151,9 +151,11 @@ public class TetrisEngine
 	TetrisPanel tetris;
 	Random rdm;
 	
+	//Primitive representation of active block.
 	byte[][] activeBlockType;
 	int activeBlockX;
 	int activeBlockY;
+	int activeBlockRot;
 	
 	long laststep = System.currentTimeMillis();//Time of previous step.
 	
@@ -173,12 +175,12 @@ public class TetrisEngine
 					long timeelapsedsincelaststep = 
 						System.currentTimeMillis() - laststep;
 					
-					if(timeelapsedsincelaststep > tetris.steptime)
-						step();
-					
 					try{
 						Thread.sleep(50);//Safer than sleeping for less.
 					}catch(Exception e){}
+					
+					if(timeelapsedsincelaststep > tetris.steptime)
+						step();
 				}
 			}
 		}.start();
@@ -186,12 +188,14 @@ public class TetrisEngine
 	
 	public synchronized void actionright()
 	{
-		
+		activeBlockX ++;
+		copy();
 	}
 	
 	public synchronized void actionleft()
 	{
-		
+		activeBlockX --;
+		copy();
 	}
 	
 	public synchronized void actiondown()
@@ -204,11 +208,13 @@ public class TetrisEngine
 		
 	}
 	
+	private int stepcount = 0;//Hey best to have this aswell..
+	
 	/**Steps into the next phase if possible.*/
 	private void step()
 	{
 		if(DEBUG)
-			System.out.println("STEP");
+			System.out.println("STEP: " + ++stepcount);
 		laststep = System.currentTimeMillis();
 		
 		//move 1 down.
@@ -240,17 +246,31 @@ public class TetrisEngine
 	
 	/**Copies the position of the active block into
 	 * the abstract block grid.*/
-	public void copy()
+	public synchronized void copy()
 	{
 		int x = activeBlockX;
 		int y = activeBlockY;
 		byte[][] t = activeBlockType;
 		
 		//LOL i'm not even sure how this works. Guess and check ftw.
+		
+		//first remove all active blocks?
+		for(int i = 0;i < tetris.blocks.length;i++)
+		{
+			for(int r = 0;r < tetris.blocks[i].length;r++)
+			{
+				if(tetris.blocks[i][r] == DBlock.ACTIVE)
+					tetris.blocks[i][r] = DBlock.EMPTY;
+			}
+		}
+		
 		for(int i = 0;i < 4;i++)
 		{
 			for(int r = 0;r < 4;r++)
-				tetris.blocks[x+i][y+r] = toBool(t[r][i]);
+			{
+				if(toBlock(t[r][i])==DBlock.ACTIVE)
+				tetris.blocks[x+i][y+r] = toBlock(t[r][i]);
+			}
 		}
 	}
 	
@@ -268,14 +288,14 @@ public class TetrisEngine
 	}
 	
 	/**True if b==1, false otherwise.*/
-	private static boolean toBool(byte b)
+	private static DBlock toBlock(byte b)
 	{
 		switch(b)
 		{
 		case 1:
-			return true;
+			return DBlock.ACTIVE;
 		default:
-			return false;
+			return DBlock.EMPTY;
 		}
 	}
 }
