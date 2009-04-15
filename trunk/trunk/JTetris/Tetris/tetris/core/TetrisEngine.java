@@ -105,9 +105,9 @@ public class TetrisEngine
         	},
         	{
         		{0,0,0,0},
+        		{0,0,0,0},
         		{1,1,1,0},
-        		{0,1,0,0},
-        		{0,0,0,0}
+        		{0,1,0,0}
         	},
         	{
         		{0,0,0,0},
@@ -152,7 +152,8 @@ public class TetrisEngine
 	Random rdm;
 	
 	//Primitive representation of active block.
-	byte[][] activeBlockType;
+	byte[][] activeBlock;
+	int activeBlockType;
 	int activeBlockX;
 	int activeBlockY;
 	int activeBlockRot;
@@ -179,8 +180,8 @@ public class TetrisEngine
 						Thread.sleep(50);//Safer than sleeping for less.
 					}catch(Exception e){}
 					
-					if(timeelapsedsincelaststep > tetris.steptime)
-						step();
+//					if(timeelapsedsincelaststep > tetris.steptime)
+//						step();
 				}
 			}
 		}.start();
@@ -188,24 +189,36 @@ public class TetrisEngine
 	
 	public synchronized void actionright()
 	{
+		if(DEBUG)System.out.println("RIGHT.");
 		activeBlockX ++;
 		copy();
 	}
 	
 	public synchronized void actionleft()
 	{
+		if(DEBUG)System.out.println("LEFT.");
 		activeBlockX --;
 		copy();
 	}
 	
 	public synchronized void actiondown()
 	{
+		if(DEBUG)System.out.println("DOWN.");
 		step();
 	}
 	
 	public synchronized void actionrotate()
 	{
+		if(DEBUG)System.out.println("ROTATED.");
 		
+		if(activeBlockRot == blocks[activeBlockType].length-1)
+		{
+			activeBlockRot = 0;
+		}
+		else activeBlockRot++;
+		
+		activeBlock = blocks[activeBlockType][activeBlockRot];
+		copy();
 	}
 	
 	private int stepcount = 0;//Hey best to have this aswell..
@@ -218,43 +231,51 @@ public class TetrisEngine
 		laststep = System.currentTimeMillis();
 		
 		//move 1 down.
-		activeBlockY++;
+			activeBlockY++;
 		
-		copy();
+		if(!copy())
+			donecurrent();
 		
 	}
 	
-	/**Rotates the specified block clockwise, by array lookup.
-	 * @param blocktype Which block rotated
-	 * @param rotation Current rotation
-	 * @throws IllegalArgumentException blocktype or<br>
-	 * rotation out of bounds.*/
-	public static byte[][] rotate(int blocktype, int rotation)
+	public synchronized void donecurrent()
 	{
-		if(blocktype >= blocks.length)
-			throw new IllegalArgumentException();
+		for(int i = 0;i < tetris.blocks.length;i++)
+		{
+			for(int r = 0;r < tetris.blocks[i].length;r++)
+			{
+				if(tetris.blocks[i][r] == DBlock.ACTIVE)
+					tetris.blocks[i][r] = DBlock.FILLED;
+			}
+		}
 		
-		int numrotations = blocks[blocktype].length;
-		if(rotation >= numrotations)
-			throw new IllegalArgumentException();
-		
-		if(rotation == numrotations - 1)
-			return blocks[blocktype][0];
-		
-		else return blocks[blocktype][rotation+1];
+		activeBlock = null;
 	}
-	
-	/**Copies the position of the active block into
-	 * the abstract block grid.*/
-	public synchronized void copy()
+
+	/**Copies the position of the active block into<br>
+	 * the abstract block grid. Returns false if a block<br>
+	 * already exists under it, true otherwise.<br>*/
+	public synchronized boolean copy()
 	{
 		int x = activeBlockX;
 		int y = activeBlockY;
-		byte[][] t = activeBlockType;
+		byte[][] t = activeBlock;
 		
-		//LOL i'm not even sure how this works. Guess and check ftw.
+		//Check if any blocks already have a block under them.
+		for(int i = 0;i < 4;i++)
+		{
+			for(int r = 0;r < 4;r++)
+			{
+					if(activeBlock[r][i] == 1
+						&&tetris.blocks[x+i][y+r]==DBlock.FILLED)
+					{
+						return false;
+					}
+			}
+		}
 		
-		//first remove all active blocks?
+		
+		//First remove all active blocks.
 		for(int i = 0;i < tetris.blocks.length;i++)
 		{
 			for(int r = 0;r < tetris.blocks[i].length;r++)
@@ -264,6 +285,7 @@ public class TetrisEngine
 			}
 		}
 		
+		//Then fill in with the new position.
 		for(int i = 0;i < 4;i++)
 		{
 			for(int r = 0;r < 4;r++)
@@ -272,6 +294,8 @@ public class TetrisEngine
 				tetris.blocks[x+i][y+r] = toBlock(t[r][i]);
 			}
 		}
+		
+		return true;
 	}
 	
 	/**Generates a random block , in a random rotation.*/
@@ -287,7 +311,7 @@ public class TetrisEngine
 		
 	}
 	
-	/**True if b==1, false otherwise.*/
+	/**DBlock.ACTIVE if b==1, DBlock.EMPTY otherwise.*/
 	private static DBlock toBlock(byte b)
 	{
 		switch(b)

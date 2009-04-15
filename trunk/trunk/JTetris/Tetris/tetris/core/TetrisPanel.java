@@ -166,16 +166,14 @@ public class TetrisPanel extends JDesktopPane
 		setFocusable(true);
 		requestFocusInWindow();
 		
-		blocks[1][7] = DBlock.FILLED;
-		blocks[2][7] = DBlock.FILLED;
-		blocks[3][6] = DBlock.FILLED;
-		blocks[3][7] = DBlock.FILLED;
-		blocks[4][7] = DBlock.FILLED;
-		
-		gameengine.activeBlockType = TetrisEngine.blocks[6][1];
-		gameengine.activeBlockX=1;
+		gameengine.activeBlockX=4;
 		gameengine.activeBlockY=1;
+		gameengine.activeBlockType=4;
+		gameengine.activeBlockRot=1;
+		gameengine.activeBlock = TetrisEngine.blocks[4][1];
 		gameengine.copy();
+		
+		blocks[5][10] = DBlock.FILLED;
 	}
 	
 	/**<p>Paints this component, called with repaint().*/
