@@ -12,65 +12,6 @@ import static tetris.core.ProjectConstants.*;
  * <br>panels AKA. core.*/
 public class TetrisPanel extends JDesktopPane
 {
-	//Main, for testing purposes.
-	public static void main(String... args)
-	{
-		try{
-			UIManager.setLookAndFeel(
-					UIManager.getSystemLookAndFeelClassName());
-		}catch(Throwable t){}
-		
-		
-		//Guess what this does!
-		boolean fullscreen = false;
-		
-		
-		
-		JFrame window = new JFrame();
-		
-		if(fullscreen)
-		{
-			window.setUndecorated(true);
-		}
-		
-		window.setTitle("JTetris");
-		window.setVisible(true);
-		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.setSize(800, 600);
-		window.setLocationRelativeTo(null);
-		window.setResizable(false);
-		
-		
-		TetrisPanel tframe = new TetrisPanel();
-		
-		tframe.setPreferredSize(new Dimension(800,600));
-		window.setContentPane(tframe);
-		
-		if(fullscreen)
-		{
-			GraphicsDevice dev = null;
-			try{
-			dev =  GraphicsEnvironment
-				.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-			dev.setFullScreenWindow(window);
-			
-			//800x600 fullscreen?
-			dev.setDisplayMode(new DisplayMode
-					(800,600,32,DisplayMode.REFRESH_RATE_UNKNOWN));
-			}catch(Throwable t){
-				//Exit fullscreen?
-				dev.setFullScreenWindow(null);
-				t.printStackTrace();
-			}
-			try{Thread.sleep(5000);}catch(Exception e){}
-			
-			if(DEBUG)
-			{
-    			dev.setFullScreenWindow(null);
-    			System.exit(0);
-			}
-		}
-	}
 	
 	public Dimension bounds;//Size of Tetris window.
 	
@@ -111,7 +52,8 @@ public class TetrisPanel extends JDesktopPane
 		//(not so) awesome color choices.
 		blockemptycolor = new Color(255,204,153);
 		blockfullcolor = new Color(143,31,255);
-		blockactivecolor = new Color(31,143,255);
+		//blockactivecolor = new Color(31,143,255);
+		blockactivecolor = blockfullcolor;//for now
 		theme1 = new Color(153,153,255);
 		
 		//empty squares.
@@ -168,9 +110,9 @@ public class TetrisPanel extends JDesktopPane
 		
 		gameengine.activeBlockX=4;
 		gameengine.activeBlockY=1;
-		gameengine.activeBlockType=4;
+		gameengine.activeBlockType=3;
 		gameengine.activeBlockRot=1;
-		gameengine.activeBlock = TetrisEngine.blocks[4][1];
+		gameengine.activeBlock = TetrisEngine.blocks[3][1];
 		gameengine.copy();
 		
 		blocks[5][10] = DBlock.FILLED;
