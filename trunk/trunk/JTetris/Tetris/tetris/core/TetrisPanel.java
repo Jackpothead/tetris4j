@@ -34,7 +34,7 @@ public class TetrisPanel extends JDesktopPane
 	public int score = 0;//Score.
 	public int level = 0;//Level.
 	public int lines = 0;//Lines cleared.
-	public int steptime = 1000;//Max milliseconds per step.
+	public int steptime = 550;//Max milliseconds per step.
 	public String mode = "CLASSIC";
 	
 	public TetrisEngine gameengine;
@@ -86,14 +86,14 @@ public class TetrisPanel extends JDesktopPane
 			public void keyPressed(KeyEvent ke)
 			{
 				if(ke.getKeyCode() == KeyEvent.VK_LEFT)
-					TetrisPanel.this.gameengine.actionleft();
+					TetrisPanel.this.gameengine.keyleft();
 				if(ke.getKeyCode() == KeyEvent.VK_RIGHT)
-					TetrisPanel.this.gameengine.actionright();
+					TetrisPanel.this.gameengine.keyright();
 				if(ke.getKeyCode() == KeyEvent.VK_DOWN)
-					TetrisPanel.this.gameengine.actiondown();
+					TetrisPanel.this.gameengine.keydown();
 				if(ke.getKeyCode() == KeyEvent.VK_UP
 					||ke.getKeyCode() == KeyEvent.VK_Z)
-					TetrisPanel.this.gameengine.actionrotate();
+					TetrisPanel.this.gameengine.keyrotate();
 			}
 		});
 		
@@ -108,14 +108,13 @@ public class TetrisPanel extends JDesktopPane
 		setFocusable(true);
 		requestFocusInWindow();
 		
-		gameengine.activeBlockX=4;
-		gameengine.activeBlockY=1;
-		gameengine.activeBlockType=3;
-		gameengine.activeBlockRot=1;
-		gameengine.activeBlock = TetrisEngine.blocks[3][1];
-		gameengine.copy();
+//		gameengine.activeBlockX=4;
+//		gameengine.activeBlockY=1;
+//		gameengine.activeBlockType=4;
+//		gameengine.activeBlockRot=0;
+//		gameengine.activeBlock = TetrisEngine.blockdef[4][0];
+//		gameengine.copy();
 		
-		blocks[5][10] = DBlock.FILLED;
 	}
 	
 	/**<p>Paints this component, called with repaint().*/

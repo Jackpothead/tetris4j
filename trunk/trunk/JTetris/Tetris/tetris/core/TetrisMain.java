@@ -20,7 +20,7 @@ public class TetrisMain
 		
 		
 		//Guess what this does!
-		boolean fullscreen = false;
+		boolean fullscreen = true;
 		
 		
 		
@@ -61,13 +61,8 @@ public class TetrisMain
 				t.printStackTrace();
 			}
 			try{Thread.sleep(5000);}catch(Exception e){}
-			
-			if(DEBUG)
-			{
-    			dev.setFullScreenWindow(null);
-    			System.exit(0);
-			}
 		}
+		SwingUtilities.updateComponentTreeUI(window);
 		
 		Sequence sq;
 		

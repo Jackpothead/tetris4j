@@ -3,13 +3,15 @@ package tetris.core;
 import java.util.*;
 import static tetris.core.ProjectConstants.*;
 
-/**Class that works with the TetrisPanel to
- * <br>calculate the blocks, etc.*/
+/**This class calculates most of the block positions,<br>
+ * rotations, etc, although the TetrisPanel object<br>
+ * still keeps track of the concrete block coordinates.<br><br>
+ * This class will change variables in the TetrisPanel class.*/
 public class TetrisEngine
 {
 	
 	/**Bunch of hardcoded blocks and their rotations.*/
-	static final byte[][][][] blocks =
+	static final byte[][][][] blockdef =
 	{
     	{
     		//0 = I block.
@@ -38,26 +40,26 @@ public class TetrisEngine
         {
         	//2 = L block
         	{
-        		{0,1,0,0},
+        		{0,0,0,0},
         		{0,1,0,0},
     			{0,1,0,0},
     			{0,1,1,0}
         	},
         	{
         		{0,0,0,0},
-        		{0,0,0,1},
-    			{1,1,1,1},
-    			{0,0,0,0}
-        	},
-        	{
-        		{0,1,1,0},
-        		{0,0,1,0},
+        		{0,0,0,0},
     			{0,0,1,0},
-    			{0,0,1,0}
+    			{1,1,1,0}
         	},
         	{
         		{0,0,0,0},
-        		{1,1,1,1},
+        		{1,1,0,0},
+    			{0,1,0,0},
+    			{0,1,0,0}
+        	},
+        	{
+        		{0,0,0,0},
+        		{1,1,1,0},
     			{1,0,0,0},
     			{0,0,0,0}
         	}
@@ -65,27 +67,27 @@ public class TetrisEngine
         {
         	//3 = J block
         	{
-        		{0,0,1,0},
+        		{0,0,0,0},
         		{0,0,1,0},
     			{0,0,1,0},
     			{0,1,1,0}
         	},
         	{
         		{0,0,0,0},
-        		{1,1,1,1},
-    			{0,0,0,1},
-    			{0,0,0,0}
+        		{0,0,0,0},
+    			{1,1,1,0},
+    			{0,0,1,0}
         	},
         	{
+        		{0,0,0,0},
         		{0,1,1,0},
-        		{0,1,0,0},
     			{0,1,0,0},
     			{0,1,0,0}
         	},
         	{
         		{0,0,0,0},
-        		{0,0,0,1},
-    			{1,1,1,1},
+        		{0,0,1,0},
+    			{1,1,1,0},
     			{0,0,0,0}
         	}
         },
@@ -180,44 +182,57 @@ public class TetrisEngine
 						Thread.sleep(50);//Safer than sleeping for less.
 					}catch(Exception e){}
 					
-//					if(timeelapsedsincelaststep > tetris.steptime)
-//						step();
+					if(activeBlock == null)
+					{
+						randomBlock();
+					}
+					
+					if(timeelapsedsincelaststep > tetris.steptime)
+						step();
 				}
 			}
 		}.start();
+		
+		randomBlock();
 	}
 	
-	public synchronized void actionright()
+	public synchronized void keyright()
 	{
 		if(DEBUG)System.out.println("RIGHT.");
+		System.out.println(activeBlockX);
+		
 		activeBlockX ++;
-		copy();
+		
+		if(!copy())activeBlockX --;
+		
 	}
 	
-	public synchronized void actionleft()
+	public synchronized void keyleft()
 	{
 		if(DEBUG)System.out.println("LEFT.");
+		
 		activeBlockX --;
-		copy();
+
+		if(!copy())activeBlockX ++;
 	}
 	
-	public synchronized void actiondown()
+	public synchronized void keydown()
 	{
 		if(DEBUG)System.out.println("DOWN.");
 		step();
 	}
 	
-	public synchronized void actionrotate()
+	public synchronized void keyrotate()
 	{
 		if(DEBUG)System.out.println("ROTATED.");
 		
-		if(activeBlockRot == blocks[activeBlockType].length-1)
+		if(activeBlockRot == blockdef[activeBlockType].length-1)
 		{
 			activeBlockRot = 0;
 		}
 		else activeBlockRot++;
 		
-		activeBlock = blocks[activeBlockType][activeBlockRot];
+		activeBlock = blockdef[activeBlockType][activeBlockRot];
 		copy();
 	}
 	
@@ -230,6 +245,8 @@ public class TetrisEngine
 			System.out.println("STEP: " + ++stepcount);
 		laststep = System.currentTimeMillis();
 		
+		checkforclears(0,null);
+		
 		//move 1 down.
 			activeBlockY++;
 		
@@ -237,6 +254,46 @@ public class TetrisEngine
 			donecurrent();
 		
 	}
+	
+	
+	private void checkforclears(int alreadycleared, DBlock[][] b)
+	{
+		if(b==null)
+			b = tetris.blocks;
+		int whichline = -1;
+		int old = alreadycleared;
+		
+		ML:
+		for(int i = b[0].length-1;i>=0;i--)
+		{
+			for(int y = 0;y < b.length;y++)
+			{
+				if(b[y][i]!=DBlock.FILLED)continue ML;
+			}
+			
+			alreadycleared++;
+			whichline = i;
+			break ML;
+		}
+		
+		if(alreadycleared>old)
+		{
+			for(int i = whichline;i>0;i--)
+			{
+				for(int y = 0;y < b.length;y++)
+				{
+					b[y][i] = b[y][i-1];
+				}
+			}
+			
+			checkforclears(alreadycleared,b);
+		}
+		else if(alreadycleared>0)
+			pImportant("Cleared: " + alreadycleared + " line(s).");
+		
+		tetris.blocks = b;
+	}
+	
 	
 	public synchronized void donecurrent()
 	{
@@ -257,17 +314,22 @@ public class TetrisEngine
 	 * already exists under it, true otherwise.<br>*/
 	public synchronized boolean copy()
 	{
+		try{
 		int x = activeBlockX;
 		int y = activeBlockY;
 		byte[][] t = activeBlock;
+		DBlock[][] buffer = tetris.blocks;
+		
+		if(t==null)return false;//Early NullPointerException failsafe
 		
 		//Check if any blocks already have a block under them.
+		//If yes, immediately return.
 		for(int i = 0;i < 4;i++)
 		{
 			for(int r = 0;r < 4;r++)
 			{
 					if(activeBlock[r][i] == 1
-						&&tetris.blocks[x+i][y+r]==DBlock.FILLED)
+						&&buffer[x+i][y+r]==DBlock.FILLED)
 					{
 						return false;
 					}
@@ -276,12 +338,12 @@ public class TetrisEngine
 		
 		
 		//First remove all active blocks.
-		for(int i = 0;i < tetris.blocks.length;i++)
+		for(int i = 0;i < buffer.length;i++)
 		{
-			for(int r = 0;r < tetris.blocks[i].length;r++)
+			for(int r = 0;r < buffer[i].length;r++)
 			{
-				if(tetris.blocks[i][r] == DBlock.ACTIVE)
-					tetris.blocks[i][r] = DBlock.EMPTY;
+				if(buffer[i][r] == DBlock.ACTIVE)
+					buffer[i][r] = DBlock.EMPTY;
 			}
 		}
 		
@@ -290,25 +352,40 @@ public class TetrisEngine
 		{
 			for(int r = 0;r < 4;r++)
 			{
-				if(toBlock(t[r][i])==DBlock.ACTIVE)
-				tetris.blocks[x+i][y+r] = toBlock(t[r][i]);
+				if(t[r][i]==1)
+					buffer[x+i][y+r] = toBlock(t[r][i]);
 			}
 		}
+		
+		tetris.blocks = buffer;
+		
+		}catch(ArrayIndexOutOfBoundsException e)
+		{return false;}//Noob bounds detection.
+					//Exceptions are supposedly slow but
+					//performance isn't really an issue
+					//here.
 		
 		return true;
 	}
 	
 	/**Generates a random block , in a random rotation.*/
-	public byte[][] randomBlock()
+	public void randomBlock()
 	{
-		int x = blocks.length;
+		int x = blockdef.length;
 		int retx = rdm.nextInt(x);
 		
-		int y = blocks[retx].length;
+		int y = blockdef[retx].length;
 		int rety = rdm.nextInt(y);
 		
-		return blocks[retx][rety];
+		activeBlockType=retx;
+		activeBlockRot=rety;
 		
+		activeBlock = blockdef[retx][rety];
+		
+		activeBlockX = 3;
+		activeBlockY = 0;
+		
+		if(!copy())pImportant("Game Over");
 	}
 	
 	/**DBlock.ACTIVE if b==1, DBlock.EMPTY otherwise.*/
