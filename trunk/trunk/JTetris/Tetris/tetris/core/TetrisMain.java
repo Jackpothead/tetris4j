@@ -20,7 +20,7 @@ public class TetrisMain
 		
 		
 		//Guess what this does!
-		boolean fullscreen = true;
+		boolean fullscreen = false;
 		
 		
 		

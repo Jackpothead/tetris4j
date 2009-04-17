@@ -226,6 +226,9 @@ public class TetrisEngine
 	{
 		if(DEBUG)System.out.println("ROTATED.");
 		
+		byte[][] lastblock = activeBlock;
+		int lastrot = activeBlockRot;
+		
 		if(activeBlockRot == blockdef[activeBlockType].length-1)
 		{
 			activeBlockRot = 0;
@@ -233,7 +236,11 @@ public class TetrisEngine
 		else activeBlockRot++;
 		
 		activeBlock = blockdef[activeBlockType][activeBlockRot];
-		copy();
+		
+		if(!copy()){
+			activeBlock = lastblock;
+			activeBlockRot = lastrot;
+		}
 	}
 	
 	private int stepcount = 0;//Hey best to have this aswell..
@@ -245,13 +252,13 @@ public class TetrisEngine
 			System.out.println("STEP: " + ++stepcount);
 		laststep = System.currentTimeMillis();
 		
-		checkforclears(0,null);
-		
 		//move 1 down.
 			activeBlockY++;
 		
 		if(!copy())
 			donecurrent();
+		
+		checkforclears(0,null);
 		
 	}
 	
