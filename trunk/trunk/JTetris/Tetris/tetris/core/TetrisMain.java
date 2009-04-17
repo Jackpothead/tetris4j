@@ -64,41 +64,7 @@ public class TetrisMain
 		}
 		SwingUtilities.updateComponentTreeUI(window);
 		
-		new Thread(){
-		public void run(){
-		
-		Sequence sq;
-		
-		try
-		{
-			sq = MidiSystem.getSequence(
-					getResStream("/sound/tetris.midi"));
-			
-			Sequencer sqncr = null;
-			
-			try{
-			sqncr = MidiSystem.getSequencer();
-			}
-			catch(Exception e){
-			System.out.println("Cannot initiate MIDI device..");
-			sqncr = MidiSystem.getSequencer(false);}
-			
-			while(true)
-			{
-			System.out.println(sqncr.isRunning());
-				if(!sqncr.isRunning())
-				{
-					sqncr.open();
-					sqncr.setSequence(sq);
-					sqncr.start();
-				}
-				Thread.sleep(1000);
-			}
-		}catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		
-		}}.start();
+		SoundManager sm = new SoundManager();
+		sm.music(SoundManager.Sounds.TETRIS_THEME);
 	}
 }

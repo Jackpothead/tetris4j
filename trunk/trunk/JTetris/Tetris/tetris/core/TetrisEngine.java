@@ -173,14 +173,18 @@ public class TetrisEngine
 		new Thread(){
 			public void run()
 			{
-				while(tetris.state == GameState.PLAYING)
+				while(true)
 				{
+					
 					long timeelapsedsincelaststep = 
 						System.currentTimeMillis() - laststep;
 					
 					try{
 						Thread.sleep(50);//Safer than sleeping for less.
 					}catch(Exception e){}
+					
+					if(!(tetris.state == GameState.PLAYING))
+						continue;
 					
 					if(activeBlock == null)
 					{
@@ -199,7 +203,6 @@ public class TetrisEngine
 	public synchronized void keyright()
 	{
 		if(DEBUG)System.out.println("RIGHT.");
-		System.out.println(activeBlockX);
 		
 		activeBlockX ++;
 		
@@ -315,6 +318,12 @@ public class TetrisEngine
 		
 		activeBlock = null;
 	}
+	
+	public synchronized void gameover()
+	{
+		pImportant("Game Over");
+		tetris.state = GameState.STARTSCREEN;
+	}
 
 	/**Copies the position of the active block into<br>
 	 * the abstract block grid. Returns false if a block<br>
@@ -376,7 +385,7 @@ public class TetrisEngine
 	}
 	
 	/**Generates a random block , in a random rotation.*/
-	public void randomBlock()
+	private void randomBlock()
 	{
 		int x = blockdef.length;
 		int retx = rdm.nextInt(x);
@@ -390,9 +399,17 @@ public class TetrisEngine
 		activeBlock = blockdef[retx][rety];
 		
 		activeBlockX = 3;
-		activeBlockY = 0;
+		activeBlockY = -3;
 		
-		if(!copy())pImportant("Game Over");
+		do{
+			activeBlockY++;
+			
+			if(activeBlockY > 0)
+			{
+				gameover();
+				break;
+			}
+		}while(!copy());
 	}
 	
 	/**DBlock.ACTIVE if b==1, DBlock.EMPTY otherwise.*/

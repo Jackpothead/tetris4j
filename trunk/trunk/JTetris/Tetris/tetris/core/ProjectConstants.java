@@ -17,8 +17,13 @@ public class ProjectConstants
 	public static InputStream getResStream(String path)
 	throws IOException
 	{
-		File f = new File(".."+path);
-		return new FileInputStream(f.getCanonicalFile());
+		try{
+			File f = new File(".."+path);
+			return new FileInputStream(f.getCanonicalFile());
+		}catch(Exception e)
+		{
+			return ProjectConstants.class.getResourceAsStream(path);
+		}
 		
 	}
 }

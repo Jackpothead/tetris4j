@@ -85,15 +85,18 @@ public class TetrisPanel extends JDesktopPane
 		addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent ke)
 			{
-				if(ke.getKeyCode() == KeyEvent.VK_LEFT)
-					TetrisPanel.this.gameengine.keyleft();
-				if(ke.getKeyCode() == KeyEvent.VK_RIGHT)
-					TetrisPanel.this.gameengine.keyright();
-				if(ke.getKeyCode() == KeyEvent.VK_DOWN)
-					TetrisPanel.this.gameengine.keydown();
-				if(ke.getKeyCode() == KeyEvent.VK_UP
-					||ke.getKeyCode() == KeyEvent.VK_Z)
-					TetrisPanel.this.gameengine.keyrotate();
+				if(state == GameState.PLAYING)
+				{
+    				if(ke.getKeyCode() == KeyEvent.VK_LEFT)
+    					TetrisPanel.this.gameengine.keyleft();
+    				if(ke.getKeyCode() == KeyEvent.VK_RIGHT)
+    					TetrisPanel.this.gameengine.keyright();
+    				if(ke.getKeyCode() == KeyEvent.VK_DOWN)
+    					TetrisPanel.this.gameengine.keydown();
+    				if(ke.getKeyCode() == KeyEvent.VK_UP
+    					||ke.getKeyCode() == KeyEvent.VK_Z)
+    					TetrisPanel.this.gameengine.keyrotate();
+				}
 			}
 		});
 		
@@ -107,13 +110,6 @@ public class TetrisPanel extends JDesktopPane
 		
 		setFocusable(true);
 		requestFocusInWindow();
-		
-//		gameengine.activeBlockX=4;
-//		gameengine.activeBlockY=1;
-//		gameengine.activeBlockType=4;
-//		gameengine.activeBlockRot=0;
-//		gameengine.activeBlock = TetrisEngine.blockdef[4][0];
-//		gameengine.copy();
 		
 	}
 	
