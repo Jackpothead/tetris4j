@@ -1,0 +1,12 @@
+== How to use tetris4j SVN ==
+
+To really work on this project you need TortoiseSVN. Download and install tortoise any way you like, and checkout this project. You can also commit if you have Subversion access.
+
+
+=== Downloading ===
+
+Or you can just download the game in the Downloads tab.
+
+== Compiling and running tetris4j ==
+
+You'll find a compile.bat file, which will compile and run the program when executed.
