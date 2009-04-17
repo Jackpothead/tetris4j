@@ -2,6 +2,8 @@
 
 To really work on this project you need TortoiseSVN. Download and install tortoise any way you like, and checkout this project. You can also commit if you have Subversion access.
 
+If you don't have Subversion access, you can still checkout but you can't commit (sorry). If you want SVN access you can still message me.
+
 
 === Downloading ===
 
