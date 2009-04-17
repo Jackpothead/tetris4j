@@ -5,8 +5,8 @@ To really work on this project you need TortoiseSVN. Download and install tortoi
 
 === Downloading ===
 
-Or you can just download the game in the Downloads tab.
+Or you can just download the game in the Downloads tab. New versions will be released once in a while.
 
 == Compiling and running tetris4j ==
 
-You'll find a compile.bat file, which will compile and run the program when executed.
+You'll find a compile.bat file, which will compile and run the program when executed. Please try not to break the build ;)
