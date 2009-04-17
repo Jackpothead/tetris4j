@@ -1,5 +1,7 @@
 package tetris.core;
 
+import java.io.*;
+
 /**Contains a group of project constants.*/
 public class ProjectConstants
 {
@@ -10,5 +12,13 @@ public class ProjectConstants
 	public static void pImportant(Object o)
 	{
 		System.out.printf("\n\t%s\n\n",o);
+	}
+	
+	public static InputStream getResStream(String path)
+	throws IOException
+	{
+		File f = new File(".."+path);
+		return new FileInputStream(f.getCanonicalFile());
+		
 	}
 }

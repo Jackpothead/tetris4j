@@ -1,6 +1,6 @@
 package tetris.core;
 
-import static tetris.core.ProjectConstants.DEBUG;
+import static tetris.core.ProjectConstants.*;
 
 import java.awt.*;
 import java.io.IOException;
@@ -64,22 +64,41 @@ public class TetrisMain
 		}
 		SwingUtilities.updateComponentTreeUI(window);
 		
+		new Thread(){
+		public void run(){
+		
 		Sequence sq;
 		
 		try
 		{
 			sq = MidiSystem.getSequence(
-					TetrisMain.class.getClass()
-					.getResourceAsStream("/sound/tetris.midi"));
+					getResStream("/sound/tetris.midi"));
 			
-			Sequencer sqncr = MidiSystem.getSequencer();
-			sqncr.setSequence(sq);
-			sqncr.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);
-			sqncr.open();
-			sqncr.start();
+			Sequencer sqncr = null;
+			
+			try{
+			sqncr = MidiSystem.getSequencer();
+			}
+			catch(Exception e){
+			System.out.println("Cannot initiate MIDI device..");
+			sqncr = MidiSystem.getSequencer(false);}
+			
+			while(true)
+			{
+			System.out.println(sqncr.isRunning());
+				if(!sqncr.isRunning())
+				{
+					sqncr.open();
+					sqncr.setSequence(sq);
+					sqncr.start();
+				}
+				Thread.sleep(1000);
+			}
 		}catch (Exception e)
 		{
 			e.printStackTrace();
 		}
+		
+		}}.start();
 	}
 }
