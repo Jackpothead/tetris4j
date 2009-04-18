@@ -1,4 +1,4 @@
-#Basic guide to using tetris4j
+#summary Basic guide to using tetris4j
 
 == How to use tetris4j SVN ==
 
