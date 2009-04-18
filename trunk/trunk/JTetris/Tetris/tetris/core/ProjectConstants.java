@@ -1,6 +1,7 @@
 package tetris.core;
 
 import java.io.*;
+import java.net.URL;
 
 /**Contains a group of project constants.*/
 public class ProjectConstants
@@ -23,6 +24,20 @@ public class ProjectConstants
 		}catch(Exception e)
 		{
 			return ProjectConstants.class.getResourceAsStream(path);
+		}
+		
+	}
+	
+	public static URL getResURL(String path)
+	throws IOException
+	{
+		try{
+			File f = new File(".."+path);
+			if(!f.exists())throw new Exception();
+			return f.getCanonicalFile().toURI().toURL();
+		}catch(Exception e)
+		{
+			return ProjectConstants.class.getResource(path);
 		}
 		
 	}

@@ -1,6 +1,8 @@
 package tetris.core;
 
 import java.util.*;
+
+import tetris.core.SoundManager.Sounds;
 import static tetris.core.ProjectConstants.*;
 
 /**This class calculates most of the block positions,<br>
@@ -239,6 +241,7 @@ public class TetrisEngine
 		else activeBlockRot++;
 		
 		activeBlock = blockdef[activeBlockType][activeBlockRot];
+		tetris.sfx.sfx(Sounds.ROTATE);
 		
 		if(!copy()){
 			activeBlock = lastblock;
@@ -299,14 +302,19 @@ public class TetrisEngine
 			checkforclears(alreadycleared,b);
 		}
 		else if(alreadycleared>0)
+		{
 			pImportant("Cleared: " + alreadycleared + " line(s).");
+			if(alreadycleared==4)tetris.sfx.sfx(Sounds.TETRIS);
+			else tetris.sfx.sfx(Sounds.CLEAR);
+		}
 		
 		tetris.blocks = b;
 	}
 	
 	
 	public synchronized void donecurrent()
-	{
+	{	
+		tetris.sfx.sfx(Sounds.FALL);
 		for(int i = 0;i < tetris.blocks.length;i++)
 		{
 			for(int r = 0;r < tetris.blocks[i].length;r++)
@@ -322,6 +330,7 @@ public class TetrisEngine
 	public synchronized void gameover()
 	{
 		pImportant("Game Over");
+		tetris.sfx.sfx(Sounds.DIE);
 		tetris.state = GameState.STARTSCREEN;
 	}
 
@@ -385,7 +394,7 @@ public class TetrisEngine
 	}
 	
 	/**Generates a random block , in a random rotation.*/
-	private void randomBlock()
+	private synchronized void randomBlock()
 	{
 		int x = blockdef.length;
 		int retx = rdm.nextInt(x);
@@ -402,13 +411,12 @@ public class TetrisEngine
 		activeBlockY = -3;
 		
 		do{
-			activeBlockY++;
-			
 			if(activeBlockY > 0)
 			{
 				gameover();
 				break;
 			}
+			activeBlockY++;
 		}while(!copy());
 	}
 	

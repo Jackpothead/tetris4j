@@ -8,6 +8,8 @@ import java.io.IOException;
 import javax.sound.midi.*;
 import javax.swing.*;
 
+import tetris.core.SoundManager.Sounds;
+
 public class TetrisMain
 {
 	//Main, for testing purposes.
@@ -63,8 +65,5 @@ public class TetrisMain
 			try{Thread.sleep(5000);}catch(Exception e){}
 		}
 		SwingUtilities.updateComponentTreeUI(window);
-		
-		SoundManager sm = new SoundManager();
-		sm.music(SoundManager.Sounds.TETRIS_THEME);
 	}
 }
