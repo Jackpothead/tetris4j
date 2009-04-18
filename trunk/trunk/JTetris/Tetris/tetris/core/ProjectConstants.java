@@ -19,7 +19,7 @@ public class ProjectConstants
 	{
 		try{
 			File f = new File(".."+path);
-			return new FileInputStream(f.getCanonicalFile());
+			return new BufferedInputStream(new FileInputStream(f.getCanonicalFile()));
 		}catch(Exception e)
 		{
 			return ProjectConstants.class.getResourceAsStream(path);

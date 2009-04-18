@@ -15,6 +15,7 @@ public class SoundManager
 		try
 		{
 			sound1 = getResStream("/sound/tetris.midi");
+			
 			sound1.mark(0);
 		} catch (Exception e)
 		{
@@ -32,53 +33,33 @@ public class SoundManager
 		
 		else if(s == Sounds.TETRIS_THEME)
 		{
-			new Thread(){
-				public void run(){
-    		
-    		while(true)
+			
+			try
 			{
-				if(midiseq==null || !midiseq.isRunning())
-				{
-					try
-					{
-						if(midiseq!=null)
-							midiseq.close();
-						midiseq = MidiSystem.getSequencer();
-						
-						sound1.reset();//Oooops.
-						
-						midiseq.setSequence(sound1);
-						midiseq.open();
-						midiseq.start();
-					}
-					catch (MidiUnavailableException e)
-		    		{
-		    			System.out.println("Cannot initiate MIDI device..");
-		    			try
-		    			{
-		    				midiseq = MidiSystem.getSequencer(false);
-		    			} catch (Exception e1)
-		    			{
-		    				//Really screwed up now!
-		    				e1.printStackTrace();
-		    			}
-		    		}
-					
-					catch (/*AnyOther*/Exception e)
-					{
-						e.printStackTrace();
-					}
-				}
-				
+				midiseq = MidiSystem.getSequencer();
+			}
+			catch (MidiUnavailableException e)
+			{
+				e.printStackTrace();
+				System.out.println("Cannot initiate MIDI device..");
 				try
 				{
-					Thread.sleep(1000);
-				} catch (Exception e)
+					midiseq = MidiSystem.getSequencer(false);
+				} catch (Exception e1)
 				{
+					//Really screwed up now!
+					e1.printStackTrace();
 				}
 			}
-    		
-			}}.start();
+			catch(Exception e){e.printStackTrace();}
+			
+			try{
+				midiseq.open();
+				midiseq.setSequence(MidiSystem.getSequence(sound1));
+				midiseq.setLoopCount(Integer.MAX_VALUE);
+				midiseq.start();
+			}catch(Exception e){e.printStackTrace();}
+					
 		}
 	}
 	
