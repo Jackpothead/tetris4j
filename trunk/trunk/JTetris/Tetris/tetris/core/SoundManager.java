@@ -38,6 +38,7 @@ public class SoundManager
 			{
 				midiseq = MidiSystem.getSequencer();
 			}
+			/*
 			catch (MidiUnavailableException e)
 			{
 				e.printStackTrace();
@@ -50,13 +51,14 @@ public class SoundManager
 					//Really screwed up now!
 					e1.printStackTrace();
 				}
-			}
+			}*/
 			catch(Exception e){e.printStackTrace();}
 			
 			try{
+				midiseq = MidiSystem.getSequencer();
 				midiseq.open();
 				midiseq.setSequence(MidiSystem.getSequence(sound1));
-				midiseq.setLoopCount(Integer.MAX_VALUE);
+				midiseq.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);
 				midiseq.start();
 			}catch(Exception e){e.printStackTrace();}
 					
