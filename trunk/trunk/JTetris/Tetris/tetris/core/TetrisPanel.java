@@ -39,7 +39,7 @@ public class TetrisPanel extends JDesktopPane
 	
 	public TetrisEngine gameengine;
 	public GameState state;
-	public SoundManager sfx;
+	public SoundManager sound;
 	
 	/**<p>Public TetrisPanel constructor.*/
 	public TetrisPanel()
@@ -70,8 +70,8 @@ public class TetrisPanel extends JDesktopPane
 		
 		gameengine = new TetrisEngine(this);
 		
-		sfx = new SoundManager();
-		sfx.music(SoundManager.Sounds.TETRIS_THEME);
+		sound = new SoundManager();
+		sound.music(SoundManager.Sounds.TETRIS_THEME);
 		
 		//Animation loop.
 		new Thread(){

@@ -241,7 +241,7 @@ public class TetrisEngine
 		else activeBlockRot++;
 		
 		activeBlock = blockdef[activeBlockType][activeBlockRot];
-		tetris.sfx.sfx(Sounds.ROTATE);
+		tetris.sound.sfx(Sounds.ROTATE);
 		
 		if(!copy()){
 			activeBlock = lastblock;
@@ -304,8 +304,8 @@ public class TetrisEngine
 		else if(alreadycleared>0)
 		{
 			pImportant("Cleared: " + alreadycleared + " line(s).");
-			if(alreadycleared==4)tetris.sfx.sfx(Sounds.TETRIS);
-			else tetris.sfx.sfx(Sounds.CLEAR);
+			if(alreadycleared==4)tetris.sound.sfx(Sounds.TETRIS);
+			else tetris.sound.sfx(Sounds.CLEAR);
 		}
 		
 		tetris.blocks = b;
@@ -314,7 +314,7 @@ public class TetrisEngine
 	
 	public synchronized void donecurrent()
 	{	
-		tetris.sfx.sfx(Sounds.FALL);
+		tetris.sound.sfx(Sounds.FALL);
 		for(int i = 0;i < tetris.blocks.length;i++)
 		{
 			for(int r = 0;r < tetris.blocks[i].length;r++)
@@ -330,7 +330,7 @@ public class TetrisEngine
 	public synchronized void gameover()
 	{
 		pImportant("Game Over");
-		tetris.sfx.sfx(Sounds.DIE);
+		tetris.sound.sfx(Sounds.DIE);
 		tetris.state = GameState.STARTSCREEN;
 	}
 
