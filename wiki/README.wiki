@@ -1,3 +1,5 @@
+#Basic guide to using tetris4j
+
 == How to use tetris4j SVN ==
 
 To really work on this project you need TortoiseSVN. Download and install tortoise any way you like, and checkout this project. You can also commit if you have Subversion access.
