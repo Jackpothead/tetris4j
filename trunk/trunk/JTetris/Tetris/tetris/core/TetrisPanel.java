@@ -70,7 +70,7 @@ public class TetrisPanel extends JDesktopPane
 		
 		gameengine = new TetrisEngine(this);
 		
-		sound = new SoundManager();
+		sound = SoundManager.getSoundManager();
 		sound.music(SoundManager.Sounds.TETRIS_THEME);
 		
 		//Animation loop.
