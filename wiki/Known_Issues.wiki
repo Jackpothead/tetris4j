@@ -1,0 +1,6 @@
+#summary Bugs that are already known and may or may not be fixed.
+
+=== javax.sound.midi.MidiUnavailableException: MIDI OUT transmitter not available..===
+
+Fix: Unknown.
+
