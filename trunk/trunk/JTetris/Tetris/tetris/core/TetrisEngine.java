@@ -407,7 +407,7 @@ public class TetrisEngine
 		
 		activeBlock = blockdef[retx][rety];
 		
-		activeBlockX = 3;
+		activeBlockX = tetris.width/2 -2;
 		activeBlockY = -3;
 		
 		do{

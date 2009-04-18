@@ -2,6 +2,7 @@ package tetris.core;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.Arrays;
 
 import javax.swing.*;
@@ -15,7 +16,10 @@ public class TetrisPanel extends JDesktopPane
 	
 	public Dimension bounds;//Size of Tetris window.
 	
-	public int squaredim;//Dimensions of individual square
+	public int width=12, height=20;//Height of the grid, in number
+									//of blocks.
+	
+	public int squaredim=25;//Dimensions of individual square
 						//(must be same width and height).
 	
 	public Color blockemptycolor;//Color of a block that's empty.
@@ -40,22 +44,22 @@ public class TetrisPanel extends JDesktopPane
 	public TetrisEngine gameengine;
 	public GameState state;
 	public SoundManager sound;
+	public Image bg = null;
 	
 	/**<p>Public TetrisPanel constructor.*/
 	public TetrisPanel()
 	{
-		squaredim = 30;
 		//Defaulted to be 10x16. May be changed.
-		bounds = new Dimension(squaredim*10,squaredim*16);
+		bounds = new Dimension(squaredim*width,squaredim*height);
 		
-		blocks = new DBlock[10][16];
+		blocks = new DBlock[width][height];
 		
 		//(not so) awesome color choices.
-		blockemptycolor = new Color(255,204,153);
-		blockfullcolor = new Color(143,31,255);
+		blockemptycolor = new Color(228,202,149);
+		blockfullcolor = new Color(202,51,51);
 		//blockactivecolor = new Color(31,143,255);
 		blockactivecolor = blockfullcolor;//for now
-		theme1 = new Color(153,153,255);
+		theme1 = new Color(0,20,20);
 		
 		//empty squares.
 		for(int t1 = 0;t1 < blocks.length;t1++)
@@ -72,6 +76,15 @@ public class TetrisPanel extends JDesktopPane
 		
 		sound = SoundManager.getSoundManager();
 		sound.music(SoundManager.Sounds.TETRIS_THEME);
+		
+		try
+		{
+			bg = Toolkit.getDefaultToolkit()
+			.createImage(getResURL("/image/backlayer.jpg"));
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 		
 		//Animation loop.
 		new Thread(){
@@ -122,8 +135,9 @@ public class TetrisPanel extends JDesktopPane
 	{
 		super.paintComponent(g);
 		
-		g.setColor(theme1);
-		g.fillRect(0, 0, getWidth(), getHeight());
+//		g.setColor(theme1);
+//		g.fillRect(0, 0, getWidth(), getHeight());
+		g.drawImage(bg, 0, 0, this);
 		
 		int cornerx = (getWidth() - bounds.width) / 2;
 		int cornery = (getHeight() - bounds.height) / 2;
@@ -155,22 +169,10 @@ public class TetrisPanel extends JDesktopPane
 			g.fillRect(cornerx+c1*squaredim,
 					cornery+c2*squaredim, squaredim, squaredim);
 			
-			if(DEBUG)
-			{
-				//Show square info.
-				g.setColor(Color.BLACK);
-				g.drawString(c1 + ":" + c2,
-						cornerx+c1*squaredim+2,
-						cornery+c2*squaredim+10);
-			}
-			
-			if(DEBUG)
-			{
-				//explicitly draw squares.
-				g.setColor(Color.BLACK);
-				g.drawRect(cornerx+c1*squaredim,
-					cornery+c2*squaredim, squaredim, squaredim);
-			}
+			//explicitly draw squares.
+			g.setColor(Color.DARK_GRAY);
+			g.drawRect(cornerx+c1*squaredim,
+				cornery+c2*squaredim, squaredim, squaredim);
 		}
 		}
 	}
