@@ -4,6 +4,7 @@ import java.applet.*;
 import java.io.*;
 
 import javax.sound.midi.*;
+import javax.swing.JOptionPane;
 
 import static tetris.core.ProjectConstants.*;
 

@@ -31,7 +31,7 @@ public class ProjectConstants
 			//This is actually helpful for those downloading it
 			//with something other than Eclipse (Tortoise for example).
 			//However this screws up with Eclipse.
-			File f = new File(".."+path);
+			File f = new File("."+path);
 			return new BufferedInputStream(
 					new FileInputStream(f.getCanonicalFile()));
 		}catch(Exception e)
@@ -48,7 +48,7 @@ public class ProjectConstants
 	throws IOException
 	{
 		try{
-			File f = new File(".."+path);
+			File f = new File("."+path);
 			if(!f.exists())throw new Exception();
 			return f.getCanonicalFile().toURI().toURL();
 		}catch(Exception e)

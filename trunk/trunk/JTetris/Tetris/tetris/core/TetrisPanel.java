@@ -126,7 +126,6 @@ public class TetrisPanel extends JDesktopPane
 		});
 		
 		setFocusable(true);
-		requestFocusInWindow();
 		
 	}
 	
