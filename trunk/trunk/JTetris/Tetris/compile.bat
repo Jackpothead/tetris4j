@@ -1,4 +1,5 @@
 @ECHO off
+set COPYCMD=/Y
 md build
 md build\sound
 md build\image
