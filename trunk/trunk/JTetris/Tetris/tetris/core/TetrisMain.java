@@ -22,7 +22,7 @@ public class TetrisMain
 		
 		
 		//Guess what this does!
-		boolean fullscreen = false;
+		boolean fullscreen = true;
 		
 		
 		JFrame window = new JFrame();
