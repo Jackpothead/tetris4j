@@ -12,6 +12,9 @@ import static tetris.core.ProjectConstants.*;
 public class TetrisEngine
 {
 	
+	
+	
+	
 	//---------------VARIABLES--------------//
 	
 	/**Bunch of hardcoded blocks and their rotations.*/
@@ -157,18 +160,23 @@ public class TetrisEngine
 	/**Reference to the TetrisPanel containing this object;*/
 	TetrisPanel tetris;
 	
+	
 	/**Random object used to generate new blocks.*/
 	Random rdm;
 	
+	
 	/**Primitive representation of active block.*/
 	byte[][] activeBlock;
+	
 	
 	/**Variables with infomation about the active block.*/
 	int activeBlockType, activeBlockX,
 	    activeBlockY, activeBlockRot;
 	
+	
 	/**Time of previous step.*/
 	long laststep = System.currentTimeMillis();
+	
 	
 	/**Not really needed, just a counter for steps.*/
 	int stepcount = 0;
@@ -215,6 +223,11 @@ public class TetrisEngine
 		
 		randomBlock();
 	}
+	
+	
+	
+	
+	//---------------FUNCTIONS---------------//
 	
 	/**Called when the RIGHT key is pressed.*/
 	public synchronized void keyright()
@@ -270,6 +283,18 @@ public class TetrisEngine
 			activeBlockRot = lastrot;
 		}
 	}
+	
+	//I'm bored so here's an ASCII rendering of TETRIS..
+	///////////////////////////////////////////////////////////////////
+	//                                                               //
+	//  ///////////   ////////  //////////  /////     //   ///////   //
+	//      //       //            //      //   //   //   //         //
+	//     //       ////////      //      ///////   //   ////////    //
+	//    //       //            //      //  //    //         //     //
+	//   //       ////////      //      ///  //   //   ////////      //
+	//                                                               //
+	///////////////////////////////////////////////////////////////////
+	
 	
 	/**Done the current block; plays the FALL sound and changes
 	 * <br>all active blocks to filled.*/
