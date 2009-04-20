@@ -170,7 +170,8 @@ public class TetrisEngine
 	/**Time of previous step.*/
 	long laststep = System.currentTimeMillis();
 	
-	int stepcount = 0;//Hey best to have this aswell..
+	/**Not really needed, just a counter for steps.*/
+	int stepcount = 0;
 	
 	
 	/**Public constructor.
@@ -200,6 +201,7 @@ public class TetrisEngine
 					if(!(tetris.state == GameState.PLAYING))
 						continue;
 					
+					//Seems the best place to put this.
 					if(activeBlock == null)
 					{
 						randomBlock();
@@ -269,6 +271,8 @@ public class TetrisEngine
 		}
 	}
 	
+	/**Done the current block; plays the FALL sound and changes
+	 * <br>all active blocks to filled.*/
 	public synchronized void donecurrent()
 	{	
 		tetris.sound.sfx(Sounds.FALL);
@@ -281,9 +285,12 @@ public class TetrisEngine
 			}
 		}
 		
+		checkforclears(0,null);//Moving this here.
+		
 		activeBlock = null;
 	}
 
+	/**Called when Game Over (Blocks stacked so high that copy() fails)*/
 	public synchronized void gameover()
 	{
 		pImportant("Game Over");
@@ -293,7 +300,9 @@ public class TetrisEngine
 
 	/**Copies the position of the active block into<br>
 	 * the abstract block grid. Returns false if a block<br>
-	 * already exists under it, true otherwise.<br>*/
+	 * already exists under it, true otherwise.<br>
+	 * 
+	 * <br>This method isn't very efficient.*/
 	public synchronized boolean copy()
 	{
 		try{
@@ -329,7 +338,7 @@ public class TetrisEngine
 			}
 		}
 		
-		//Then fill in with the new position.
+		//Then fill in blocks from the new position.
 		for(int i = 0;i < 4;i++)
 		{
 			for(int r = 0;r < 4;r++)
@@ -340,6 +349,8 @@ public class TetrisEngine
 			}
 		}
 		
+		
+		//Nothing threw an exception; now copy the buffer.
 		tetris.blocks = buffer;
 		
 		}catch(ArrayIndexOutOfBoundsException e)
@@ -364,11 +375,11 @@ public class TetrisEngine
 		if(!copy())
 			donecurrent();
 		
-		checkforclears(0,null);
-		
 	}
 	
 	
+	/**As expected this function checks whether there are any clears.
+	 * <br>Uses recursion if more than one line can be cleared.*/
 	private synchronized void
 		checkforclears(int alreadycleared, DBlock[][] b)
 	{
@@ -377,6 +388,8 @@ public class TetrisEngine
 		int whichline = -1;
 		int old = alreadycleared;
 		
+		//Loops to find any row that has every block filled.
+		// If one block is not filled, the loop breaks.
 		ML:
 		for(int i = b[0].length-1;i>=0;i--)
 		{
@@ -390,23 +403,30 @@ public class TetrisEngine
 			break ML;
 		}
 		
+		//If this recursive step produced more clears:
 		if(alreadycleared>old)
 		{
 			for(int i = whichline;i>0;i--)
-			{
+			{//Iterate and copy the state of the block on top of itself
+				//to its location.
 				for(int y = 0;y < b.length;y++)
 				{
 					b[y][i] = b[y][i-1];
 				}
 			}
 			
+			//Recursion step! Necessary if you want to clear more than
+			//1 line at a time!
 			checkforclears(alreadycleared,b);
 		}
 		else if(alreadycleared>0)
 		{
+			//No new lines were cleared.
 			pImportant("Cleared: " + alreadycleared + " line(s).");
 			if(alreadycleared==4)tetris.sound.sfx(Sounds.TETRIS);
-			else tetris.sound.sfx(Sounds.TETRIS);
+			else tetris.sound.sfx(Sounds.CLEAR);
+			
+			tetris.lines += alreadycleared;
 		}
 		
 		tetris.blocks = b;
@@ -416,8 +436,10 @@ public class TetrisEngine
 	/**Generates a random block , in a random rotation.*/
 	private synchronized void randomBlock()
 	{
+		//Generate random block.
 		int x = blockdef.length;
 		int retx = rdm.nextInt(x);
+		retx=0;
 		
 		int y = blockdef[retx].length;
 		int rety = rdm.nextInt(y);
@@ -430,6 +452,14 @@ public class TetrisEngine
 		activeBlockX = tetris.width/2 -2;
 		activeBlockY = -3;
 		
+		//Don't even try if there's any blocks in the first row.
+		for(int i = 0;i < tetris.blocks.length;i++)
+		{
+			if(tetris.blocks[i][0]==DBlock.FILLED)
+				gameover();
+		}
+		
+		//Attempts to generate the block as high up as possible.
 		do{
 			if(activeBlockY > 0)
 			{
