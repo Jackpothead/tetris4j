@@ -21,13 +21,9 @@ public class TetrisMain
 		}catch(Throwable t){}
 		
 		
-		//Guess what this does!
-		boolean fullscreen = true;
-		
-		
 		JFrame window = new JFrame();
 		
-		if(fullscreen)
+		if(STARTFS)
 		{
 			window.setUndecorated(true);
 		}
@@ -45,7 +41,7 @@ public class TetrisMain
 		tframe.setPreferredSize(new Dimension(800,600));
 		window.setContentPane(tframe);
 		
-		if(fullscreen)
+		if(STARTFS)
 		{
 			GraphicsDevice dev = null;
 			try{

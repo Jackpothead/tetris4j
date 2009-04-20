@@ -109,7 +109,7 @@ public class TetrisPanel extends JDesktopPane
 			e.printStackTrace();
 		}
 		
-		//Animation loop.
+		//Animation loop. Updates every 20 milliseconds (50 fps).
 		new Thread(){
 			public void run()
 			{
@@ -121,7 +121,7 @@ public class TetrisPanel extends JDesktopPane
 			}
 		}.start();
 		
-		
+		//I should add a KeyManager for this.
 		addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent ke)
 			{
@@ -147,7 +147,7 @@ public class TetrisPanel extends JDesktopPane
 				TetrisPanel.this.requestFocusInWindow();
 			}});
 		
-		//Whatever it takes to get mouse focus in a JPanel -.-
+		//Whatever it takes to get mouse focus in a JFrame -.-
 		new Thread(){
 			
     		public void run(){
@@ -169,43 +169,47 @@ public class TetrisPanel extends JDesktopPane
 	/**<p>Paints this component, called with repaint().*/
 	public void paintComponent(Graphics g)
 	{
+		//Necessary mostly because this is a JDesktopPane and
+		//not a JPanel.
 		super.paintComponent(g);
 		
-//		g.setColor(theme1);
-//		g.fillRect(0, 0, getWidth(), getHeight());
+		//Background.
 		g.drawImage(bg, 0, 0, this);
 		
+		//The coordinates of the top left corner of the game board.
 		int cornerx = (getWidth() - bounds.width) / 2;
 		int cornery = (getHeight() - bounds.height) / 2;
 		
-		if(DEBUG)
 		//Create a border;
-		g.drawRect(cornerx,cornery,bounds.width,bounds.height);
-		else
-			g.drawRect(cornerx-1,cornery-1,
-				bounds.width+1,bounds.height+1);
+		g.setColor(Color.BLACK);
+		g.drawRect(cornerx-1,cornery-1,
+				bounds.width+2,bounds.height+2);
 		
 		//Loop and draw all the blocks.
 		for(int c1 = 0;c1 < blocks.length;c1++)
 		{
 		for(int c2 = 0;c2 < blocks[c1].length;c2++)
 		{
-			if(blocks[c1][c2]==DBlock.FILLED)
+			//Reset the color for each block:
+			switch(blocks[c1][c2])
 			{
+			case FILLED:
 				g.setColor(blockfullcolor);
-			}
-			if(blocks[c1][c2]==DBlock.ACTIVE)
-			{
-				g.setColor(blockactivecolor);
-			}
-			if(blocks[c1][c2]==DBlock.EMPTY)
-			{
+				break;
+			case EMPTY:
 				g.setColor(blockemptycolor);
+				break;
+			case ACTIVE:
+				g.setColor(blockactivecolor);
+				break;
+			default:
+				break;
 			}
+			
 			g.fillRect(cornerx+c1*squaredim,
 					cornery+c2*squaredim, squaredim, squaredim);
 			
-			//explicitly draw squares.
+			//Draw square borders.
 			g.setColor(Color.DARK_GRAY);
 			g.drawRect(cornerx+c1*squaredim,
 				cornery+c2*squaredim, squaredim, squaredim);

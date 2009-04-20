@@ -9,7 +9,10 @@ public class ProjectConstants
 {
 	/**True if project is still being debugged,
 	 * false otherwise.*/
-	public static final boolean DEBUG = true;
+	public static final boolean DEBUG = false;
+	
+	/**Should the application start fullscreened?*/
+	public static final boolean STARTFS = false;
 	
 	
 	/**Prints something to the console, with a tab
@@ -36,6 +39,7 @@ public class ProjectConstants
 					new FileInputStream(f.getCanonicalFile()));
 		}catch(Exception e)
 		{
+			//eclipse workaround.
 			return ProjectConstants.class.getResourceAsStream(path);
 		}
 		
@@ -43,7 +47,8 @@ public class ProjectConstants
 	
 	/**Returns a resource as a URL object, for certain file
 	 * <br>parsing. Should accomodate Eclipse and other clients/IDEs
-	 * <br>as well.*/
+	 * <br>as well. Currently it loads resources from Eclipse, the
+	 * <br>jar file, and from Tortoise.*/
 	public static URL getResURL(String path)
 	throws IOException
 	{
@@ -53,6 +58,7 @@ public class ProjectConstants
 			return f.getCanonicalFile().toURI().toURL();
 		}catch(Exception e)
 		{
+			//eclipse workaround.
 			return ProjectConstants.class.getResource(path);
 		}
 		
