@@ -182,6 +182,10 @@ public class TetrisEngine
 	int stepcount = 0;
 	
 	
+	/**Thread to run for the game.*/
+	Thread gamethread;
+	
+	
 	/**Public constructor.
 	 * @param p TetrisPanel.*/
 	public TetrisEngine(TetrisPanel p)
@@ -190,10 +194,11 @@ public class TetrisEngine
 		tetris = p;
 		rdm = new Random();
 		
-		//Start game thread.
-		new Thread(){
+		//Initialize game thread.
+		gamethread = new Thread(){
 			public void run()
 			{
+				//randomBlock();
 				while(true)
 				{
 					
@@ -219,9 +224,7 @@ public class TetrisEngine
 						step();
 				}
 			}
-		}.start();
-		
-		randomBlock();
+		};
 	}
 	
 	
@@ -294,6 +297,14 @@ public class TetrisEngine
 	//   //       ////////      //      ///  //   //   ////////      //
 	//                                                               //
 	///////////////////////////////////////////////////////////////////
+	
+	
+	/**Should be called AFTER swing initialization. This is so
+	 * <br>the first block doesn't appear halfway down the screen.*/
+	public void startengine()
+	{
+		if(!gamethread.isAlive())gamethread.start();
+	}
 	
 	
 	/**Done the current block; plays the FALL sound and changes

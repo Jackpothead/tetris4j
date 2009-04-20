@@ -59,6 +59,8 @@ public class TetrisMain
 			}
 			try{Thread.sleep(5000);}catch(Exception e){}
 		}
+		
+		tframe.gameengine.startengine();
 		SwingUtilities.updateComponentTreeUI(window);
 	}
 }
