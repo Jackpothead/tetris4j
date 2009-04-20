@@ -93,9 +93,9 @@ public class TetrisEngine
         	},
         	{
         		{0,0,0,0},
-        		{0,0,1,0},
-    			{1,1,1,0},
-    			{0,0,0,0}
+        		{0,0,0,0},
+    			{1,0,0,0},
+    			{1,1,1,0}
         	}
         },
         {
@@ -186,7 +186,8 @@ public class TetrisEngine
 	Thread gamethread;
 	
 	
-	/**Public constructor.
+	/**Public constructor. Remember to call startengine()
+	 * <br>or else this won't do anything!
 	 * @param p TetrisPanel.*/
 	public TetrisEngine(TetrisPanel p)
 	{
@@ -198,27 +199,22 @@ public class TetrisEngine
 		gamethread = new Thread(){
 			public void run()
 			{
-				//randomBlock();
+				//this fixes a bug.
+				randomblock();
+				
 				while(true)
 				{
-					
 					long timeelapsedsincelaststep = 
 						System.currentTimeMillis() - laststep;
-					
-					try{
-						//Safer than sleeping for more.
-						Thread.sleep(20);
-					}catch(Exception e){}
 					
 					//Break loop if game isn't even playing.
 					if(!(tetris.state == GameState.PLAYING))
 						continue;
 					
-					//Seems the best place to put this.
-					if(activeBlock == null)
-					{
-						randomBlock();
-					}
+					try{
+						//Safer than sleeping for more.
+						Thread.sleep(20);
+					}catch(Exception e){}
 					
 					if(timeelapsedsincelaststep > tetris.steptime)
 						step();
@@ -401,6 +397,13 @@ public class TetrisEngine
 	/**Steps into the next phase if possible.*/
 	private synchronized void step()
 	{
+		if(activeBlock == null)
+		{//step() gives you a random block if none is available.
+			randomblock();
+			copy();
+			return;
+		}
+		
 		if(DEBUG)
 			System.out.println("STEP: " + ++stepcount);
 		laststep = System.currentTimeMillis();
@@ -470,7 +473,7 @@ public class TetrisEngine
 	
 	
 	/**Generates a random block , in a random rotation.*/
-	private synchronized void randomBlock()
+	private synchronized void randomblock()
 	{
 		//Generate random block.
 		int x = blockdef.length;
