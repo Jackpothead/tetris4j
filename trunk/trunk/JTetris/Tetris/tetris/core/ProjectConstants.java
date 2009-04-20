@@ -12,7 +12,7 @@ public class ProjectConstants
 	public static final boolean DEBUG = false;
 	
 	/**Should the application start fullscreened?*/
-	public static final boolean STARTFS = true;
+	public static final boolean STARTFS = false;
 	
 	
 	/**Prints something to the console, with a tab

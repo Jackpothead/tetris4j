@@ -406,7 +406,7 @@ public class TetrisEngine
 		{
 			pImportant("Cleared: " + alreadycleared + " line(s).");
 			if(alreadycleared==4)tetris.sound.sfx(Sounds.TETRIS);
-			else tetris.sound.sfx(Sounds.CLEAR);
+			else tetris.sound.sfx(Sounds.TETRIS);
 		}
 		
 		tetris.blocks = b;
