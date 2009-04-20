@@ -202,7 +202,7 @@ public class TetrisPanel extends JDesktopPane
 			case ACTIVE:
 				g.setColor(blockactivecolor);
 				break;
-			default:
+			default://Whaaht?
 				break;
 			}
 			

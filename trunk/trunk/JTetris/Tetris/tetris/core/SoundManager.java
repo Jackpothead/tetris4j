@@ -29,10 +29,10 @@ public class SoundManager
 		CLEAR, 
 		
 		// sound/soundtetris.wav
-		TETRIS, //Need to replace this with a real sound.
+		TETRIS,
 		
 		// sound/sounddie.wav
-		DIE;	//Need to replace this with a real sound.
+		DIE;
 	}
 	
 	
@@ -40,8 +40,9 @@ public class SoundManager
 	
 	private InputStream tetheme; //Tetris theme (midi-inputstream).
 	
-	private AudioClip sx1, sx2, sx3, sx4, sx5; //The collection of
-									//sound effects used.
+				//The collection of
+				//sound effects used.
+	private AudioClip sx1, sx2, sx3, sx4, sx5; 
 	
 	private static SoundManager soundmanager = null;
 									//Reference of the SoundManager.

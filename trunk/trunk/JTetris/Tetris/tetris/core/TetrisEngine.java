@@ -12,8 +12,10 @@ import static tetris.core.ProjectConstants.*;
 public class TetrisEngine
 {
 	
+	//---------------VARIABLES--------------//
+	
 	/**Bunch of hardcoded blocks and their rotations.*/
-	static final byte[][][][] blockdef =
+	public static final byte[][][][] blockdef =
 	{
     	{
     		//0 = I block.
@@ -152,26 +154,34 @@ public class TetrisEngine
         }
     };
 	
+	/**Reference to the TetrisPanel containing this object;*/
 	TetrisPanel tetris;
+	
+	/**Random object used to generate new blocks.*/
 	Random rdm;
 	
-	//Primitive representation of active block.
+	/**Primitive representation of active block.*/
 	byte[][] activeBlock;
-	int activeBlockType;
-	int activeBlockX;
-	int activeBlockY;
-	int activeBlockRot;
 	
-	long laststep = System.currentTimeMillis();//Time of previous step.
+	/**Variables with infomation about the active block.*/
+	int activeBlockType, activeBlockX,
+	    activeBlockY, activeBlockRot;
+	
+	/**Time of previous step.*/
+	long laststep = System.currentTimeMillis();
+	
+	int stepcount = 0;//Hey best to have this aswell..
 	
 	
 	/**Public constructor.
 	 * @param p TetrisPanel.*/
 	public TetrisEngine(TetrisPanel p)
 	{
+		//Initialize objects.
 		tetris = p;
 		rdm = new Random();
 		
+		//Start game thread.
 		new Thread(){
 			public void run()
 			{
@@ -182,9 +192,11 @@ public class TetrisEngine
 						System.currentTimeMillis() - laststep;
 					
 					try{
-						Thread.sleep(50);//Safer than sleeping for less.
+						//Safer than sleeping for more.
+						Thread.sleep(20);
 					}catch(Exception e){}
 					
+					//Break loop if game isn't even playing.
 					if(!(tetris.state == GameState.PLAYING))
 						continue;
 					
@@ -202,31 +214,37 @@ public class TetrisEngine
 		randomBlock();
 	}
 	
+	/**Called when the RIGHT key is pressed.*/
 	public synchronized void keyright()
 	{
 		if(DEBUG)System.out.println("RIGHT.");
 		
 		activeBlockX ++;
 		
+		//Failsafe: Revert XPosition.
 		if(!copy())activeBlockX --;
 		
 	}
 	
+	/**Called when the LEFT key is pressed.*/
 	public synchronized void keyleft()
 	{
 		if(DEBUG)System.out.println("LEFT.");
 		
 		activeBlockX --;
-
+		
+		//Failsafe: Revert XPosition.
 		if(!copy())activeBlockX ++;
 	}
 	
+	/**Called when the DOWN key is pressed.*/
 	public synchronized void keydown()
 	{
 		if(DEBUG)System.out.println("DOWN.");
 		step();
 	}
 	
+	/**Called when rotate key is called (Z or UP)*/
 	public synchronized void keyrotate()
 	{
 		if(DEBUG)System.out.println("ROTATED.");
@@ -234,6 +252,7 @@ public class TetrisEngine
 		byte[][] lastblock = activeBlock;
 		int lastrot = activeBlockRot;
 		
+		//Next rotation in array.
 		if(activeBlockRot == blockdef[activeBlockType].length-1)
 		{
 			activeBlockRot = 0;
@@ -243,74 +262,12 @@ public class TetrisEngine
 		activeBlock = blockdef[activeBlockType][activeBlockRot];
 		tetris.sound.sfx(Sounds.ROTATE);
 		
+		//Failsafe revert.
 		if(!copy()){
 			activeBlock = lastblock;
 			activeBlockRot = lastrot;
 		}
 	}
-	
-	private int stepcount = 0;//Hey best to have this aswell..
-	
-	/**Steps into the next phase if possible.*/
-	private void step()
-	{
-		if(DEBUG)
-			System.out.println("STEP: " + ++stepcount);
-		laststep = System.currentTimeMillis();
-		
-		//move 1 down.
-			activeBlockY++;
-		
-		if(!copy())
-			donecurrent();
-		
-		checkforclears(0,null);
-		
-	}
-	
-	
-	private void checkforclears(int alreadycleared, DBlock[][] b)
-	{
-		if(b==null)
-			b = tetris.blocks;
-		int whichline = -1;
-		int old = alreadycleared;
-		
-		ML:
-		for(int i = b[0].length-1;i>=0;i--)
-		{
-			for(int y = 0;y < b.length;y++)
-			{
-				if(b[y][i]!=DBlock.FILLED)continue ML;
-			}
-			
-			alreadycleared++;
-			whichline = i;
-			break ML;
-		}
-		
-		if(alreadycleared>old)
-		{
-			for(int i = whichline;i>0;i--)
-			{
-				for(int y = 0;y < b.length;y++)
-				{
-					b[y][i] = b[y][i-1];
-				}
-			}
-			
-			checkforclears(alreadycleared,b);
-		}
-		else if(alreadycleared>0)
-		{
-			pImportant("Cleared: " + alreadycleared + " line(s).");
-			if(alreadycleared==4)tetris.sound.sfx(Sounds.TETRIS);
-			else tetris.sound.sfx(Sounds.CLEAR);
-		}
-		
-		tetris.blocks = b;
-	}
-	
 	
 	public synchronized void donecurrent()
 	{	
@@ -326,7 +283,7 @@ public class TetrisEngine
 		
 		activeBlock = null;
 	}
-	
+
 	public synchronized void gameover()
 	{
 		pImportant("Game Over");
@@ -378,7 +335,8 @@ public class TetrisEngine
 			for(int r = 0;r < 4;r++)
 			{
 				if(t[r][i]==1)
-					buffer[x+i][y+r] = toBlock(t[r][i]);
+					buffer[x+i][y+r] = t[r][i]==1?
+							DBlock.ACTIVE:DBlock.EMPTY;
 			}
 		}
 		
@@ -392,6 +350,68 @@ public class TetrisEngine
 		
 		return true;
 	}
+
+	/**Steps into the next phase if possible.*/
+	private synchronized void step()
+	{
+		if(DEBUG)
+			System.out.println("STEP: " + ++stepcount);
+		laststep = System.currentTimeMillis();
+		
+		//move 1 down.
+		activeBlockY++;
+		
+		if(!copy())
+			donecurrent();
+		
+		checkforclears(0,null);
+		
+	}
+	
+	
+	private synchronized void
+		checkforclears(int alreadycleared, DBlock[][] b)
+	{
+		if(b==null)
+			b = tetris.blocks;
+		int whichline = -1;
+		int old = alreadycleared;
+		
+		ML:
+		for(int i = b[0].length-1;i>=0;i--)
+		{
+			for(int y = 0;y < b.length;y++)
+			{
+				if(b[y][i]!=DBlock.FILLED)continue ML;
+			}
+			
+			alreadycleared++;
+			whichline = i;
+			break ML;
+		}
+		
+		if(alreadycleared>old)
+		{
+			for(int i = whichline;i>0;i--)
+			{
+				for(int y = 0;y < b.length;y++)
+				{
+					b[y][i] = b[y][i-1];
+				}
+			}
+			
+			checkforclears(alreadycleared,b);
+		}
+		else if(alreadycleared>0)
+		{
+			pImportant("Cleared: " + alreadycleared + " line(s).");
+			if(alreadycleared==4)tetris.sound.sfx(Sounds.TETRIS);
+			else tetris.sound.sfx(Sounds.CLEAR);
+		}
+		
+		tetris.blocks = b;
+	}
+	
 	
 	/**Generates a random block , in a random rotation.*/
 	private synchronized void randomBlock()
@@ -418,17 +438,5 @@ public class TetrisEngine
 			}
 			activeBlockY++;
 		}while(!copy());
-	}
-	
-	/**DBlock.ACTIVE if b==1, DBlock.EMPTY otherwise.*/
-	private static DBlock toBlock(byte b)
-	{
-		switch(b)
-		{
-		case 1:
-			return DBlock.ACTIVE;
-		default:
-			return DBlock.EMPTY;
-		}
 	}
 }
