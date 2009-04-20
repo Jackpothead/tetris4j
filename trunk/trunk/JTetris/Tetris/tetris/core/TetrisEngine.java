@@ -464,7 +464,6 @@ public class TetrisEngine
 		//Generate random block.
 		int x = blockdef.length;
 		int retx = rdm.nextInt(x);
-		retx=0;
 		
 		int y = blockdef[retx].length;
 		int rety = rdm.nextInt(y);
