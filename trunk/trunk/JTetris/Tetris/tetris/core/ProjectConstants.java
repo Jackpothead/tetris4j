@@ -43,7 +43,7 @@ public class ProjectConstants
 			return ProjectConstants.class.getResourceAsStream(path);
 			}catch(Exception ex){ex.printStackTrace();}
 		}
-		throw new RuntimeException("File: " + path + " not found.");
+		throw new RuntimeException("Filestream: " + path + " not found.");
 		
 	}
 	
@@ -51,7 +51,6 @@ public class ProjectConstants
 	 * <br>parsing. Should accomodate Eclipse and other clients/IDEs
 	 * <br>as well. Currently it loads resources from Eclipse, the
 	 * <br>jar file, and from Tortoise.*/
-	@SuppressWarnings("deprecation")
 	public static URL getResURL(String path)
 	throws IOException
 	{
@@ -59,7 +58,7 @@ public class ProjectConstants
 			File f = new File("."+path);
 			if(!f.exists())throw new Exception();
 			
-			return new URL(f.getCanonicalFile().toString());
+			return f.getCanonicalFile().toURL();
 		}catch(Exception e)
 		{
 			//eclipse workaround.
