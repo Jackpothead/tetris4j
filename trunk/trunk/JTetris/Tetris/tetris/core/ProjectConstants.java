@@ -57,7 +57,7 @@ public class ProjectConstants
 	throws IOException
 	{
 		try{
-			File f = new File("./s p a c e d/"+path);
+			File f = new File("."+path);
 			if(!f.exists())throw new Exception();
 			
 			//Deprecated method but gives me the URL without escaping it.
