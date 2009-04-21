@@ -51,13 +51,16 @@ public class ProjectConstants
 	 * <br>parsing. Should accomodate Eclipse and other clients/IDEs
 	 * <br>as well. Currently it loads resources from Eclipse, the
 	 * <br>jar file, and from Tortoise.*/
+	
+	@SuppressWarnings("deprecation")
 	public static URL getResURL(String path)
 	throws IOException
 	{
 		try{
-			File f = new File("."+path);
+			File f = new File("./s p a c e d/"+path);
 			if(!f.exists())throw new Exception();
 			
+			//Deprecated method but gives me the URL without escaping it.
 			return f.getCanonicalFile().toURL();
 		}catch(Exception e)
 		{
