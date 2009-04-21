@@ -29,7 +29,6 @@ public class TetrisMain
 		}
 		
 		window.setTitle("JTetris");
-		window.setVisible(true);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setSize(800, 600);
 		window.setLocationRelativeTo(null);
@@ -61,6 +60,7 @@ public class TetrisMain
 		}
 		
 		tframe.gameengine.startengine();
+		window.setVisible(true);
 		SwingUtilities.updateComponentTreeUI(window);
 	}
 }
