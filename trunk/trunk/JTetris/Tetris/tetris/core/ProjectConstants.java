@@ -35,13 +35,15 @@ public class ProjectConstants
 			//with something other than Eclipse (Tortoise for example).
 			//However this screws up with Eclipse.
 			File f = new File("."+path);
-			return new BufferedInputStream(
-					new FileInputStream(f.getCanonicalFile()));
-		}catch(Exception e)
+			return new FileInputStream(f.getCanonicalFile());
+		}catch(Exception ea)
 		{
 			//eclipse workaround.
+			try{
 			return ProjectConstants.class.getResourceAsStream(path);
+			}catch(Exception ex){ex.printStackTrace();}
 		}
+		throw new RuntimeException("File: " + path + " not found.");
 		
 	}
 	
@@ -55,12 +57,15 @@ public class ProjectConstants
 		try{
 			File f = new File("."+path);
 			if(!f.exists())throw new Exception();
-			return f.getCanonicalFile().toURI().toURL();
+			return f.getCanonicalFile().toURL();
 		}catch(Exception e)
 		{
 			//eclipse workaround.
+			try{
 			return ProjectConstants.class.getResource(path);
+			}catch(Exception ex){ex.printStackTrace();}
 		}
+		throw new RuntimeException("File: " + path + " not found.");
 		
 	}
 }

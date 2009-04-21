@@ -129,16 +129,10 @@ public class SoundManager
 	
 	//returns an AudioClip from a String filename.
 	private static AudioClip loadsound(String name)
+	throws IOException
 	{
-		try
-		{
-			if(new File(getResURL(name).getFile()).exists())
-				return Applet.newAudioClip(getResURL(name));
-			else return null;
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-		return null;
+		if(new File(getResURL(name).getFile()).exists())
+			return Applet.newAudioClip(getResURL(name));
+		else throw new IOException("NOT FOUND: " + getResURL(name));
 	}
 }
