@@ -42,7 +42,7 @@ public class TetrisPanel extends JDesktopPane
 	/**DBlock array representation of the gamefield. Blocks are<br>
 	 * counted X first starting from the top left: blocks[5][3]<br>
 	 * would be a block 5 left and 3 down from (0,0).*/
-	public DBlock[][] blocks;
+	public Block[][] blocks;
 	
 	/**Score (UNUSED)*/
 	public int score = 0;
@@ -78,18 +78,18 @@ public class TetrisPanel extends JDesktopPane
 		bounds = new Dimension(squaredim*width,squaredim*height);
 		
 		//(not so) awesome color choices.
-		blockemptycolor = new Color(228,202,149);
+		blockemptycolor = new Color(134,227,227,204);
 		blockfullcolor = new Color(202,51,51);
 		blockactivecolor = blockfullcolor;//for now
 		
 		//Initialize a DBlock array and set all its contents
 		// to DBlock.EMPTY.
-		blocks = new DBlock[width][height];
+		blocks = new Block[width][height];
 		for(int t1 = 0;t1 < blocks.length;t1++)
 		{
 			for(int t2 = 0;t2 < blocks[t1].length;t2++)
 			{
-				blocks[t1][t2] = DBlock.EMPTY;
+				blocks[t1][t2] = Block.EMPTY;
 			}
 		}
 		
@@ -104,7 +104,7 @@ public class TetrisPanel extends JDesktopPane
 		{
 			bg = Toolkit.getDefaultToolkit()
 			.createImage(getResURL("/image/backlayer.jpg"));
-		} catch (IOException e)
+		} catch (Exception e)
 		{
 			e.printStackTrace();
 		}

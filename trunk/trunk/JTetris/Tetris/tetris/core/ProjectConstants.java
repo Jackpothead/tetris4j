@@ -3,6 +3,8 @@ package tetris.core;
 import java.io.*;
 import java.net.URL;
 
+import javax.swing.JOptionPane;
+
 /**This class contains a group of project constants.<br>
  * Use <pre>import static tetris.code.ProjectConstants</pre>.*/
 public class ProjectConstants
@@ -51,7 +53,6 @@ public class ProjectConstants
 	 * <br>parsing. Should accomodate Eclipse and other clients/IDEs
 	 * <br>as well. Currently it loads resources from Eclipse, the
 	 * <br>jar file, and from Tortoise.*/
-	
 	@SuppressWarnings("deprecation")
 	public static URL getResURL(String path)
 	throws IOException
@@ -60,7 +61,6 @@ public class ProjectConstants
 			File f = new File("."+path);
 			if(!f.exists())throw new Exception();
 			
-			//Deprecated method but gives me the URL without escaping it.
 			return f.getCanonicalFile().toURL();
 		}catch(Exception e)
 		{

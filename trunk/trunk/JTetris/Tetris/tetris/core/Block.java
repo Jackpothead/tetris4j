@@ -5,7 +5,7 @@ package tetris.core;
  * <br>logically distinguishes active
  * <br>from nonactive blocks. DBlocks can
  * <br>either be empty, filled, or active.*/
-public enum DBlock
+public enum Block
 {
 	EMPTY, FILLED, ACTIVE;
 }

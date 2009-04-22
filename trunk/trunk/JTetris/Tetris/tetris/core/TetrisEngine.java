@@ -312,8 +312,8 @@ public class TetrisEngine
 		{
 			for(int r = 0;r < tetris.blocks[i].length;r++)
 			{
-				if(tetris.blocks[i][r] == DBlock.ACTIVE)
-					tetris.blocks[i][r] = DBlock.FILLED;
+				if(tetris.blocks[i][r] == Block.ACTIVE)
+					tetris.blocks[i][r] = Block.FILLED;
 			}
 		}
 		
@@ -341,7 +341,7 @@ public class TetrisEngine
 		int x = activeBlockX;
 		int y = activeBlockY;
 		byte[][] t = activeBlock;
-		DBlock[][] buffer = tetris.blocks;
+		Block[][] buffer = tetris.blocks;
 		
 		if(t==null)return false;//Early NullPointerException failsafe
 		
@@ -352,7 +352,7 @@ public class TetrisEngine
 			for(int r = 0;r < 4;r++)
 			{
 					if(activeBlock[r][i] == 1
-						&&buffer[x+i][y+r]==DBlock.FILLED)
+						&&buffer[x+i][y+r]==Block.FILLED)
 					{
 						return false;
 					}
@@ -365,8 +365,8 @@ public class TetrisEngine
 		{
 			for(int r = 0;r < buffer[i].length;r++)
 			{
-				if(buffer[i][r] == DBlock.ACTIVE)
-					buffer[i][r] = DBlock.EMPTY;
+				if(buffer[i][r] == Block.ACTIVE)
+					buffer[i][r] = Block.EMPTY;
 			}
 		}
 		
@@ -377,7 +377,7 @@ public class TetrisEngine
 			{
 				if(t[r][i]==1)
 					buffer[x+i][y+r] = t[r][i]==1?
-							DBlock.ACTIVE:DBlock.EMPTY;
+							Block.ACTIVE:Block.EMPTY;
 			}
 		}
 		
@@ -420,7 +420,7 @@ public class TetrisEngine
 	/**As expected this function checks whether there are any clears.
 	 * <br>Uses recursion if more than one line can be cleared.*/
 	private synchronized void
-		checkforclears(int alreadycleared, DBlock[][] b)
+		checkforclears(int alreadycleared, Block[][] b)
 	{
 		if(b==null)
 			b = tetris.blocks;
@@ -434,7 +434,7 @@ public class TetrisEngine
 		{
 			for(int y = 0;y < b.length;y++)
 			{
-				if(b[y][i]!=DBlock.FILLED)continue ML;
+				if(b[y][i]!=Block.FILLED)continue ML;
 			}
 			
 			alreadycleared++;
@@ -493,7 +493,7 @@ public class TetrisEngine
 		//Don't even try if there's any blocks in the first row.
 		for(int i = 0;i < tetris.blocks.length;i++)
 		{
-			if(tetris.blocks[i][0]==DBlock.FILLED)
+			if(tetris.blocks[i][0]==Block.FILLED)
 				gameover();
 		}
 		
