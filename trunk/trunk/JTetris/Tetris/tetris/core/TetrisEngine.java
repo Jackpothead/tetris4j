@@ -312,8 +312,8 @@ public class TetrisEngine
 		{
 			for(int r = 0;r < tetris.blocks[i].length;r++)
 			{
-				if(tetris.blocks[i][r] == Block.ACTIVE)
-					tetris.blocks[i][r] = Block.FILLED;
+				if(tetris.blocks[i][r].state == BlockState.ACTIVE)
+					tetris.blocks[i][r].state = BlockState.FILLED;
 			}
 		}
 		
@@ -352,7 +352,7 @@ public class TetrisEngine
 			for(int r = 0;r < 4;r++)
 			{
 					if(activeBlock[r][i] == 1
-						&&buffer[x+i][y+r]==Block.FILLED)
+						&&buffer[x+i][y+r].state==BlockState.FILLED)
 					{
 						return false;
 					}
@@ -365,8 +365,8 @@ public class TetrisEngine
 		{
 			for(int r = 0;r < buffer[i].length;r++)
 			{
-				if(buffer[i][r] == Block.ACTIVE)
-					buffer[i][r] = Block.EMPTY;
+				if(buffer[i][r].state == BlockState.ACTIVE)
+					buffer[i][r].state = BlockState.EMPTY;
 			}
 		}
 		
@@ -376,8 +376,8 @@ public class TetrisEngine
 			for(int r = 0;r < 4;r++)
 			{
 				if(t[r][i]==1)
-					buffer[x+i][y+r] = t[r][i]==1?
-							Block.ACTIVE:Block.EMPTY;
+					buffer[x+i][y+r].state = t[r][i]==1?
+							BlockState.ACTIVE:BlockState.EMPTY;
 			}
 		}
 		
@@ -434,7 +434,7 @@ public class TetrisEngine
 		{
 			for(int y = 0;y < b.length;y++)
 			{
-				if(b[y][i]!=Block.FILLED)continue ML;
+				if(b[y][i].state!=BlockState.FILLED)continue ML;
 			}
 			
 			alreadycleared++;
@@ -493,7 +493,7 @@ public class TetrisEngine
 		//Don't even try if there's any blocks in the first row.
 		for(int i = 0;i < tetris.blocks.length;i++)
 		{
-			if(tetris.blocks[i][0]==Block.FILLED)
+			if(tetris.blocks[i][0].state==BlockState.FILLED)
 				gameover();
 		}
 		

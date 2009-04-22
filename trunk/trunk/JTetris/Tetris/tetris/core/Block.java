@@ -1,11 +1,19 @@
 package tetris.core;
 
-/**Represents a block that can be
- * <br>drawed on the screen. It also
- * <br>logically distinguishes active
- * <br>from nonactive blocks. DBlocks can
- * <br>either be empty, filled, or active.*/
-public enum Block
+import java.awt.Color;
+
+/**More concrete representation of a block.*/
+public class Block
 {
-	EMPTY, FILLED, ACTIVE;
+	/**State of the block.*/
+	public BlockState state = null;
+	
+	/**Color of the block.*/
+	public Color color = null;
+	
+	/**Null constructor.*/
+	public Block(){}
+	
+	/**Initializing constructor.*/
+	public Block(BlockState s){state=s;}
 }

@@ -21,6 +21,7 @@ public class ProjectConstants
 	 * <br>and leading/trailing newlines.*/
 	public static void pImportant(Object o)
 	{
+		if(DEBUG)
 		System.out.printf("\n\t%s\n\n",o);
 	}
 	

@@ -78,7 +78,7 @@ public class TetrisPanel extends JDesktopPane
 		bounds = new Dimension(squaredim*width,squaredim*height);
 		
 		//(not so) awesome color choices.
-		blockemptycolor = new Color(134,227,227,204);
+		blockemptycolor = new Color(184,245,184,204);
 		blockfullcolor = new Color(202,51,51);
 		blockactivecolor = blockfullcolor;//for now
 		
@@ -89,7 +89,7 @@ public class TetrisPanel extends JDesktopPane
 		{
 			for(int t2 = 0;t2 < blocks[t1].length;t2++)
 			{
-				blocks[t1][t2] = Block.EMPTY;
+				blocks[t1][t2] = new Block(BlockState.EMPTY);
 			}
 		}
 		
@@ -191,7 +191,7 @@ public class TetrisPanel extends JDesktopPane
 		for(int c2 = 0;c2 < blocks[c1].length;c2++)
 		{
 			//Reset the color for each block:
-			switch(blocks[c1][c2])
+			switch(blocks[c1][c2].state)
 			{
 			case FILLED:
 				g.setColor(blockfullcolor);
