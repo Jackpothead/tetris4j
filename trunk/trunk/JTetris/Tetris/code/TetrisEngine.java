@@ -1,5 +1,6 @@
 package code;
 
+import java.awt.Color;
 import java.util.*;
 
 import code.SoundManager.Sounds;
@@ -167,12 +168,15 @@ public class TetrisEngine
 	
 	
 	/**Primitive representation of active block.*/
-	byte[][] activeBlock;
+	Block[][] activeBlock;
 	
 	
 	/**Variables with infomation about the active block.*/
 	int activeBlockType, activeBlockX,
 	    activeBlockY, activeBlockRot;
+	
+	
+	Color activeBlockColor = null;
 	
 	
 	/**Time of previous step.*/
@@ -201,7 +205,7 @@ public class TetrisEngine
 			public void run()
 			{
 				//this fixes a bug.
-				randomblock();
+				newblock();
 				
 				while(true)
 				{
@@ -264,7 +268,7 @@ public class TetrisEngine
 	{
 		if(DEBUG)System.out.println("ROTATED.");
 		
-		byte[][] lastblock = activeBlock;
+		Block[][] lastblock = copy2D(activeBlock);
 		int lastrot = activeBlockRot;
 		
 		//Next rotation in array.
@@ -274,7 +278,8 @@ public class TetrisEngine
 		}
 		else activeBlockRot++;
 		
-		activeBlock = blockdef[activeBlockType][activeBlockRot];
+		activeBlock = toBlock2D(
+				blockdef[activeBlockType][activeBlockRot]);
 		tetris.sound.sfx(Sounds.ROTATE);
 		
 		//Failsafe revert.
@@ -313,7 +318,7 @@ public class TetrisEngine
 		{
 			for(int r = 0;r < tetris.blocks[i].length;r++)
 			{
-				if(tetris.blocks[i][r].getState().equals(BlockState.ACTIVE))
+				if(tetris.blocks[i][r].getState() == BlockState.ACTIVE)
 					tetris.blocks[i][r].setState(BlockState.FILLED);
 			}
 		}
@@ -341,10 +346,10 @@ public class TetrisEngine
 		try{
 		int x = activeBlockX;
 		int y = activeBlockY;
-		byte[][] t = activeBlock;
 		Block[][] buffer = copy2D(tetris.blocks);
 		
-		if(t==null)return false;//Early NullPointerException failsafe
+		if(activeBlock==null)
+			return false;//Early NullPointerException failsafe
 		
 		//Check if any blocks already have a block under them.
 		//If yes, immediately return.
@@ -352,8 +357,8 @@ public class TetrisEngine
 		{
 			for(int r = 0;r < 4;r++)
 			{
-				if(activeBlock[r][i] == 1
-					&&buffer[x+i][y+r].getState().equals(BlockState.FILLED))
+				if(activeBlock[r][i].getState() == BlockState.ACTIVE
+					&&buffer[x+i][y+r].getState() == BlockState.FILLED)
 				{
 					return false;
 				}
@@ -365,8 +370,11 @@ public class TetrisEngine
 		{
 			for(int r = 0;r < buffer[i].length;r++)
 			{
-				if(buffer[i][r].getState().equals(BlockState.ACTIVE))
+				if(buffer[i][r].getState() == BlockState.ACTIVE)
+				{
 					buffer[i][r].setState(BlockState.EMPTY);
+					buffer[i][r].setColor(Block.emptycolor);
+				}
 			}
 		}
 		
@@ -375,9 +383,12 @@ public class TetrisEngine
 		{
 			for(int r = 0;r < 4;r++)
 			{
-				if(activeBlock[i][r] == 1)
+				if(activeBlock[i][r].getState() == BlockState.ACTIVE)
 				{
 					buffer[x+r][y+i].setState(BlockState.ACTIVE);
+					
+					//facepalm.
+					buffer[x+r][y+i].setColor(activeBlockColor);
 				}
 			}
 		}
@@ -399,7 +410,7 @@ public class TetrisEngine
 	{
 		if(activeBlock == null)
 		{//step() gives you a random block if none is available.
-			randomblock();
+			newblock();
 			copy();
 			return;
 		}
@@ -474,7 +485,7 @@ public class TetrisEngine
 	
 	
 	/**Generates a random block , in a random rotation.*/
-	private synchronized void randomblock()
+	private synchronized void newblock()
 	{
 		//Generate random block.
 		int x = blockdef.length;
@@ -486,10 +497,14 @@ public class TetrisEngine
 		activeBlockType=retx;
 		activeBlockRot=rety;
 		
-		activeBlock = blockdef[retx][rety];
+		activeBlock = toBlock2D(blockdef[retx][rety]);
 		
 		activeBlockX = tetris.width/2 -2;
 		activeBlockY = -3;
+		
+		Color bcolor = Block.colors
+		[rdm.nextInt(Block.colors.length)];
+		activeBlockColor = bcolor;
 		
 		//Don't even try if there's any blocks in the first row.
 		for(int i = 0;i < tetris.blocks.length;i++)
@@ -497,6 +512,18 @@ public class TetrisEngine
 			if(tetris.blocks[i][0].getState().equals(BlockState.FILLED))
 				gameover();
 		}
+		
+		
+		//Fill the block with their colors first.
+		for(int i = 0;i < activeBlock.length;i++)
+		{
+			for(int k = 0;k < activeBlock[i].length;k++)
+			{
+				if(activeBlock[i][k].getState()==BlockState.ACTIVE)
+					activeBlock[i][k].setColor(activeBlockColor);
+			}
+		}
+		
 		
 		//Attempts to generate the block as high up as possible.
 		do{
@@ -520,6 +547,49 @@ public class TetrisEngine
 				ret[i][j] = in[i][j].clone();
 			}
 		}
+		return ret;
+	}
+	
+	/**Function to convert byte[][] to Block[][]*/
+	private static Block[][] toBlock2D(byte[][] b)
+	{
+		if(b == null)return null;
+		
+		Block[][] ret = new Block[b.length][b[0].length];
+		
+		for(int i = 0;i < b.length;i++)
+		{
+			for(int j = 0;j < b[0].length;j++)
+			{
+				switch(b[i][j])
+				{
+				case 1:
+					ret[i][j] = new Block(BlockState.ACTIVE);
+					break;
+				default:
+					ret[i][j] = new Block(BlockState.EMPTY);
+				}
+			}
+		}
+		return ret;
+	}
+	
+	
+	/**Function to convert Block[][] to byte[][]*/
+	private static byte[][] toByte2D(Block[][] b)
+	{
+		if(b == null)return null;
+		
+		byte[][] ret = new byte[b.length][b[0].length];
+		
+		for(int i = 0;i < b.length;i++)
+		{
+			for(int j = 0;j < b[0].length;j++)
+			{
+				ret[i][j] = b[i][j].toByte();
+			}
+		}
+		
 		return ret;
 	}
 }

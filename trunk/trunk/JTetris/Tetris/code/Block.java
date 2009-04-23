@@ -5,11 +5,19 @@ import java.awt.Color;
 /**More concrete representation of a block.*/
 public class Block implements Cloneable
 {
+	public static final Color[] colors = {
+		new Color(202,51,51,241)
+	};
+	
+	/**Color of an empty block.*/
+	public static final Color emptycolor =
+		new Color(184,245,184,204);;
+	
 	/**State of the block.*/
 	private BlockState state = BlockState.EMPTY;
 	
 	/**Color of the block.*/
-	private Color color = null;
+	private Color color = emptycolor;
 	
 	/**Null constructor.*/
 	public Block(){}
@@ -19,17 +27,18 @@ public class Block implements Cloneable
 	
 	/**String representation of this object.*/
 	public String toString(){
-		switch(state)
-		{
-		case EMPTY:
-			return "0";
-		case FILLED:
-			return "1";
-		case ACTIVE:
-			return "2";
-		default:
-			return "-1";
-		}
+		return color.toString();
+//		switch(state)
+//		{
+//		case EMPTY:
+//			return "0";
+//		case FILLED:
+//			return "2";
+//		case ACTIVE:
+//			return "1";
+//		default:
+//			return "-1";
+//		}
 	}
 	
 	/**Compares the state for equality.*/
@@ -40,11 +49,27 @@ public class Block implements Cloneable
 		return b.state==state;
 	}
 	
+	/**Implements the Clonable interface.*/
 	public Block clone()
 	{
 		Block ret = new Block(state);
-		ret.color = color;
+		ret.setColor(color);
 		return ret;
+	}
+	
+	public byte toByte()
+	{
+		switch(state)
+		{
+		case EMPTY:
+			return 0;
+		case FILLED:
+			return 2;
+		case ACTIVE:
+			return 1;
+		default:
+			return -1;
+		}
 	}
 
 	public BlockState getState()
@@ -55,5 +80,15 @@ public class Block implements Cloneable
 	public void setState(BlockState state)
 	{
 		this.state = state;
+	}
+	
+	public Color getColor()
+	{
+		return color;
+	}
+
+	public void setColor(Color color)
+	{
+		this.color = color;
 	}
 }
