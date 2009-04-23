@@ -167,7 +167,7 @@ public class TetrisPanel extends JDesktopPane
 		for(int i = 0;i < blocks.length;i++)
 		{
 			for(int j = 19;j > 5;j--)
-				blocks[i][j].state = BlockState.FILLED;
+				blocks[i][j] = new Block(BlockState.FILLED);
 		}
 		
 	}

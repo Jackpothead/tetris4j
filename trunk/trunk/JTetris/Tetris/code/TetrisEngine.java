@@ -313,7 +313,7 @@ public class TetrisEngine
 		{
 			for(int r = 0;r < tetris.blocks[i].length;r++)
 			{
-				if(tetris.blocks[i][r].state == BlockState.ACTIVE)
+				if(tetris.blocks[i][r].state.equals(BlockState.ACTIVE))
 					tetris.blocks[i][r].state = BlockState.FILLED;
 			}
 		}
@@ -353,7 +353,7 @@ public class TetrisEngine
 			for(int r = 0;r < 4;r++)
 			{
 				if(activeBlock[r][i] == 1
-					&&buffer[x+i][y+r].state==BlockState.FILLED)
+					&&buffer[x+i][y+r].state.equals(BlockState.FILLED))
 				{
 					return false;
 				}
@@ -365,7 +365,7 @@ public class TetrisEngine
 		{
 			for(int r = 0;r < buffer[i].length;r++)
 			{
-				if(buffer[i][r].state == BlockState.ACTIVE)
+				if(buffer[i][r].state.equals(BlockState.ACTIVE))
 					buffer[i][r].state = BlockState.EMPTY;
 			}
 		}
@@ -434,7 +434,7 @@ public class TetrisEngine
 		{
 			for(int y = 0;y < b.length;y++)
 			{
-				if(b[y][i].state!=BlockState.FILLED)continue ML;
+				if(!b[y][i].state.equals(BlockState.FILLED))continue ML;
 			}
 			
 			alreadycleared++;
@@ -493,7 +493,7 @@ public class TetrisEngine
 		//Don't even try if there's any blocks in the first row.
 		for(int i = 0;i < tetris.blocks.length;i++)
 		{
-			if(tetris.blocks[i][0].state==BlockState.FILLED)
+			if(tetris.blocks[i][0].state.equals(BlockState.FILLED))
 				gameover();
 		}
 		
@@ -506,7 +506,5 @@ public class TetrisEngine
 			}
 			activeBlockY++;
 		}while(!copy());
-		
-		System.out.println(activeBlockX + " , " + activeBlockY);
 	}
 }

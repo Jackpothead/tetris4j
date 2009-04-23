@@ -6,10 +6,10 @@ import java.awt.Color;
 public class Block
 {
 	/**State of the block.*/
-	public BlockState state = null;
+	public volatile BlockState state = BlockState.EMPTY;
 	
 	/**Color of the block.*/
-	public Color color = null;
+	public volatile Color color = null;
 	
 	/**Null constructor.*/
 	public Block(){}
