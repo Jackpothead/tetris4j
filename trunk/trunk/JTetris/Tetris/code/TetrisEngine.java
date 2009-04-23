@@ -352,14 +352,13 @@ public class TetrisEngine
 		{
 			for(int r = 0;r < 4;r++)
 			{
-					if(activeBlock[r][i] == 1
-						&&buffer[x+i][y+r].state==BlockState.FILLED)
-					{
-						return false;
-					}
+				if(activeBlock[r][i] == 1
+					&&buffer[x+i][y+r].state==BlockState.FILLED)
+				{
+					return false;
+				}
 			}
 		}
-		
 		
 		//First remove all active blocks.
 		for(int i = 0;i < buffer.length;i++)
@@ -376,12 +375,12 @@ public class TetrisEngine
 		{
 			for(int r = 0;r < 4;r++)
 			{
-				if(t[r][i]==1)
-					buffer[x+i][y+r].state = t[r][i]==1?
-							BlockState.ACTIVE:BlockState.EMPTY;
+				if(activeBlock[i][r] == 1)
+				{
+					buffer[x+r][y+i].state = BlockState.ACTIVE;
+				}
 			}
 		}
-		
 		
 		//Nothing threw an exception; now copy the buffer.
 		tetris.blocks = buffer;
@@ -463,7 +462,7 @@ public class TetrisEngine
 		{
 			//No new lines were cleared.
 			pImportant("Cleared: " + alreadycleared + " line(s).");
-			if(alreadycleared==4)tetris.sound.sfx(Sounds.TETRIS);
+			if(alreadycleared>=4)tetris.sound.sfx(Sounds.TETRIS);
 			else tetris.sound.sfx(Sounds.CLEAR);
 			
 			tetris.lines += alreadycleared;
@@ -507,5 +506,7 @@ public class TetrisEngine
 			}
 			activeBlockY++;
 		}while(!copy());
+		
+		System.out.println(activeBlockX + " , " + activeBlockY);
 	}
 }

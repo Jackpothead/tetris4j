@@ -79,8 +79,8 @@ public class TetrisPanel extends JDesktopPane
 		
 		//(not so) awesome color choices.
 		blockemptycolor = new Color(184,245,184,204);
-		blockfullcolor = new Color(202,51,51);
-		blockactivecolor = blockfullcolor;//for now
+		blockfullcolor = new Color(202,51,51,241);
+		blockactivecolor = blockfullcolor;//for now.
 		
 		//Initialize a DBlock array and set all its contents
 		// to DBlock.EMPTY.
@@ -163,6 +163,12 @@ public class TetrisPanel extends JDesktopPane
 		
 		//Initialize the TetrisEngine object.
 		gameengine = new TetrisEngine(this);
+		
+		for(int i = 0;i < blocks.length;i++)
+		{
+			for(int j = 19;j > 5;j--)
+				blocks[i][j].state = BlockState.FILLED;
+		}
 		
 	}
 	
