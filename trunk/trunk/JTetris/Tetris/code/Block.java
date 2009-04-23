@@ -3,13 +3,13 @@ package code;
 import java.awt.Color;
 
 /**More concrete representation of a block.*/
-public class Block
+public class Block implements Cloneable
 {
 	/**State of the block.*/
-	public volatile BlockState state = BlockState.EMPTY;
+	private BlockState state = BlockState.EMPTY;
 	
 	/**Color of the block.*/
-	public volatile Color color = null;
+	private Color color = null;
 	
 	/**Null constructor.*/
 	public Block(){}
@@ -38,5 +38,22 @@ public class Block
 		if(!(o instanceof Block))return false;
 		Block b = (Block)o;
 		return b.state==state;
+	}
+	
+	public Block clone()
+	{
+		Block ret = new Block(state);
+		ret.color = color;
+		return ret;
+	}
+
+	public BlockState getState()
+	{
+		return state;
+	}
+
+	public void setState(BlockState state)
+	{
+		this.state = state;
 	}
 }

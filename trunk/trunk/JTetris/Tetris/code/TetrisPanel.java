@@ -197,7 +197,7 @@ public class TetrisPanel extends JDesktopPane
 		for(int c2 = 0;c2 < blocks[c1].length;c2++)
 		{
 			//Reset the color for each block:
-			switch(blocks[c1][c2].state)
+			switch(blocks[c1][c2].getState())
 			{
 			case FILLED:
 				g.setColor(blockfullcolor);
