@@ -98,7 +98,7 @@ public class TetrisPanel extends JDesktopPane
 		new Thread(){
 			public void run()
 			{
-				while(state == GameState.PLAYING)
+				while(true)
 				{
 					try{Thread.sleep(20);}catch(Throwable t){}
 					repaint();
@@ -118,6 +118,8 @@ public class TetrisPanel extends JDesktopPane
     					TetrisPanel.this.gameengine.keyright();
     				if(ke.getKeyCode() == KeyEvent.VK_DOWN)
     					TetrisPanel.this.gameengine.keydown();
+    				if(ke.getKeyCode() == KeyEvent.VK_SPACE)
+    					TetrisPanel.this.gameengine.keyslam();
     				if(ke.getKeyCode() == KeyEvent.VK_UP
     					||ke.getKeyCode() == KeyEvent.VK_Z)
     					TetrisPanel.this.gameengine.keyrotate();

@@ -3,6 +3,8 @@ package code;
 import java.awt.Color;
 import java.util.*;
 
+import javax.swing.JOptionPane;
+
 import code.SoundManager.Sounds;
 
 import static code.ProjectConstants.*;
@@ -291,6 +293,26 @@ public class TetrisEngine
 		}
 	}
 	
+	/**Called when slam key (SPACE) is pressed.*/
+	public synchronized void keyslam()
+	{
+		laststep = System.currentTimeMillis();
+		
+		//This will game over pretty damn fast!
+		if(activeBlock == null)newblock();
+		
+		while(true)
+		{
+			activeBlockY++;
+		
+			if(!copy())
+			{
+				donecurrent();
+				return;
+			}
+		}
+	}
+	
 	//I'm bored so here's an ASCII rendering of TETRIS..
 	///////////////////////////////////////////////////////////////////
 	//                                                               //
@@ -333,9 +355,30 @@ public class TetrisEngine
 	/**Called when Game Over (Blocks stacked so high that copy() fails)*/
 	public synchronized void gameover()
 	{
+		//pause the game first.
+		tetris.state = GameState.GAMEOVER;
+		
 		pImportant("Game Over");
+		
+		//die sound.
 		tetris.sound.sfx(Sounds.DIE);
-		tetris.state = GameState.STARTSCREEN;
+		
+		//wait for input.
+		JOptionPane.showInternalMessageDialog(tetris,
+				"Game Over! Press OK to play again!");
+		
+		//reset.
+		tetris.score=0;
+		tetris.lines=0;
+		for(int i = 0;i < tetris.blocks.length;i++)
+		{
+			for(int j = 0;j < tetris.blocks[0].length;j++)
+			{
+				tetris.blocks[i][j] = new Block(BlockState.EMPTY);
+			}
+		}
+		activeBlock = null;
+		newblock();
 	}
 
 	/**Copies the position of the active block into<br>
@@ -414,7 +457,12 @@ public class TetrisEngine
 		{//step() gives you a random block if none is available.
 			tetris.score++;
 			newblock();
-			copy();
+			
+			//Gameover bug fix
+			if(tetris.state != GameState.GAMEOVER)
+				copy();
+			else tetris.state = GameState.PLAYING;
+			
 			return;
 		}
 		
@@ -611,4 +659,5 @@ public class TetrisEngine
 		
 		return ret;
 	}
+
 }

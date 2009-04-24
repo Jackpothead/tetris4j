@@ -4,6 +4,7 @@ import static code.ProjectConstants.*;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.sound.midi.*;
 import javax.swing.*;
@@ -20,6 +21,21 @@ public class TetrisMain
 			UIManager.setLookAndFeel(
 					UIManager.getSystemLookAndFeelClassName());
 		}catch(Throwable t){}
+		
+		//Better exception catching.
+		Thread.setDefaultUncaughtExceptionHandler(
+				new Thread.UncaughtExceptionHandler(){
+
+					public void uncaughtException(Thread t, Throwable e)
+					{
+						JOptionPane.showMessageDialog(null, 
+	"Sarah got stuck in a tree while " +
+	"Wen li was being pissed off by " +//Don't ask.
+	"Jason and the principal threw an exception.\n"+
+						"Fatal exception in thread: " + t.getName()
+						+ "\nReason: " + e.getMessage());
+					}
+				});
 		
 		
 		JFrame window = new JFrame();
