@@ -365,14 +365,14 @@ public class TetrisEngine
 		
 		//wait for input.
 		JOptionPane.showInternalMessageDialog(tetris,
-				"Game Over! Press OK to play again!");
+				"Game Over: Play again?");
 		
 		//reset.
 		tetris.score=0;
 		tetris.lines=0;
 		for(int i = 0;i < tetris.blocks.length;i++)
 		{
-			for(int j = 0;j < tetris.blocks[0].length;j++)
+			for(int j = 0;j < tetris.blocks[i].length;j++)
 			{
 				tetris.blocks[i][j] = new Block(BlockState.EMPTY);
 			}
@@ -458,11 +458,6 @@ public class TetrisEngine
 		{//step() gives you a random block if none is available.
 			tetris.score++;
 			newblock();
-			
-//			//Gameover bug fix
-//			if(tetris.state != GameState.GAMEOVER)
-//				copy();
-//			else tetris.state = GameState.PLAYING;
 			
 			return;
 		}
@@ -578,7 +573,10 @@ public class TetrisEngine
 		for(int i = 0;i < tetris.blocks.length;i++)
 		{
 			if(tetris.blocks[i][0].getState().equals(BlockState.FILLED))
+			{
 				gameover();
+				return;
+			}
 		}
 		
 		
@@ -598,7 +596,7 @@ public class TetrisEngine
 			if(activeBlockY > 0)
 			{
 				gameover();
-				break;
+				return;
 			}
 			activeBlockY++;
 		}while(!copy());
