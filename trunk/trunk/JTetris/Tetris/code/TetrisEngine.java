@@ -378,6 +378,7 @@ public class TetrisEngine
 			}
 		}
 		activeBlock = null;
+		tetris.state = GameState.PLAYING;
 		newblock();
 	}
 
@@ -458,10 +459,10 @@ public class TetrisEngine
 			tetris.score++;
 			newblock();
 			
-			//Gameover bug fix
-			if(tetris.state != GameState.GAMEOVER)
-				copy();
-			else tetris.state = GameState.PLAYING;
+//			//Gameover bug fix
+//			if(tetris.state != GameState.GAMEOVER)
+//				copy();
+//			else tetris.state = GameState.PLAYING;
 			
 			return;
 		}
