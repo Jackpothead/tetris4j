@@ -186,9 +186,10 @@ public class TetrisPanel extends JDesktopPane
     					cornery+c2*squaredim, squaredim, squaredim);
     			
     			//Draw square borders.
-    			g.setColor(Color.DARK_GRAY);
-    			g.drawRect(cornerx+c1*squaredim,
-    				cornery+c2*squaredim, squaredim, squaredim);
+                g.setColor(new Color(32,104,183));
+                g.drawRect(cornerx+c1*squaredim,
+                        cornery+c2*squaredim, squaredim, squaredim);
+    			
     		}
 		}
 	}

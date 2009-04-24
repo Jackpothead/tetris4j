@@ -6,7 +6,14 @@ import java.awt.Color;
 public class Block implements Cloneable
 {
 	public static final Color[] colors = {
-		new Color(202,51,51,241)
+		new Color(202,51,51),
+		new Color(140,50,6),
+		new Color(132,6,129),
+		new Color(7,13,122),
+		new Color(12,95,7),
+		new Color(62,84,16),
+		new Color(15,121,103),
+		new Color(92,97,96)
 	};
 	
 	/**Color of an empty block.*/
