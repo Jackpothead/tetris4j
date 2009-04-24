@@ -25,6 +25,18 @@ public class ProjectConstants
 		System.out.printf("\n\t%s\n\n",o);
 	}
 	
+	/**Yes this adds leading zeroes.*/
+	public static String addLeadingZeroes(int n, int zeroes)
+	{
+		if(zeroes > 10)throw new IllegalArgumentException();
+		String ret = Integer.toString(n);
+		while(ret.length() < zeroes)
+		{
+			ret = "0" + ret;
+		}
+		return ret;
+	}
+	
 	
 	/**Returns a resource as an InputStream. First it
 	 * <br>tries to create a FileInputStream from the parent

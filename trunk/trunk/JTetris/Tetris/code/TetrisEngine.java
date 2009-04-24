@@ -218,7 +218,7 @@ public class TetrisEngine
 					
 					try{
 						//Safer than sleeping for more.
-						Thread.sleep(20);
+						Thread.sleep(10);
 					}catch(Exception e){}
 					
 					if(timeelapsedsincelaststep > tetris.steptime)
@@ -267,6 +267,8 @@ public class TetrisEngine
 	public synchronized void keyrotate()
 	{
 		if(DEBUG)System.out.println("ROTATED.");
+		
+		if(activeBlock==null)return;//necessary NPE checking.
 		
 		Block[][] lastblock = copy2D(activeBlock);
 		int lastrot = activeBlockRot;
@@ -410,6 +412,7 @@ public class TetrisEngine
 	{
 		if(activeBlock == null)
 		{//step() gives you a random block if none is available.
+			tetris.score++;
 			newblock();
 			copy();
 			return;
@@ -472,6 +475,22 @@ public class TetrisEngine
 		}
 		else if(alreadycleared>0)
 		{
+			switch(alreadycleared)
+			{
+			case 1:
+				tetris.score += 45;
+				break;
+			case 2:
+				tetris.score += 105;
+				break;
+			case 3:
+				tetris.score += 350;
+				break;
+			case 4:
+				tetris.score += 1250;
+				break;
+			}
+			
 			//No new lines were cleared.
 			pImportant("Cleared: " + alreadycleared + " line(s).");
 			if(alreadycleared>=4)tetris.sound.sfx(Sounds.TETRIS);

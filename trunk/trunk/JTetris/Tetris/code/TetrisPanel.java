@@ -44,7 +44,7 @@ public class TetrisPanel extends JDesktopPane
 	public int lines = 0;
 	
 	/**Maximum time allowed per step in milliseconds.*/
-	public int steptime = 550;
+	public int steptime = 350;
 	
 	/**Game mode (UNUSED)*/
 	public String mode = "CLASSIC";
@@ -162,13 +162,17 @@ public class TetrisPanel extends JDesktopPane
 		g.drawImage(bg, 0, 0, this);
 		
 		//The coordinates of the top left corner of the game board.
-		int cornerx = (getWidth() - bounds.width) / 2;
+		int cornerx = (getWidth() - bounds.width) / 2 + 50;
 		int cornery = (getHeight() - bounds.height) / 2;
 		
 		//Create a border;
 		g.setColor(Color.BLACK);
 		g.drawRect(cornerx-1,cornery-1,
 				bounds.width+2,bounds.height+2);
+		
+		g.setColor(Color.BLACK);
+		g.setFont(new Font(Font.MONOSPACED,Font.BOLD,36));
+		g.drawString(addLeadingZeroes(score,6), 145, 100);
 		
 		//Loop and draw all the blocks.
 		for(int c1 = 0;c1 < blocks.length;c1++)
