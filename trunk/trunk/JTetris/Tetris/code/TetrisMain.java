@@ -37,6 +37,9 @@ public class TetrisMain
 					}
 				});
 		
+		//Bugfix.
+		SwingUtilities.invokeLater(new Runnable(){
+		public void run(){
 		
 		JFrame window = new JFrame();
 		
@@ -79,5 +82,7 @@ public class TetrisMain
 		tframe.gameengine.startengine();
 		window.setVisible(true);
 		SwingUtilities.updateComponentTreeUI(window);
+		
+		}});
 	}
 }
