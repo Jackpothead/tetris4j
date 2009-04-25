@@ -12,7 +12,7 @@ import static code.ProjectConstants.*;
 /**<p>TetrisPanel is the panel that contains the (main)
  * <br>panels AKA. core. This also holds most of the objects
  * <br>needed to render the game on a JDesktopPane.*/
-public class TetrisPanel extends JDesktopPane
+public class TetrisPanel extends JPanel
 {
 	
 	//---------------BEGIN PUBLIC VARIABLES---------------//

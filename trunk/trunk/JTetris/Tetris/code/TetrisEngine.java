@@ -21,15 +21,18 @@ public class TetrisEngine
 	
 	//---------------VARIABLES--------------//
 	
-	/**Bunch of hardcoded blocks and their rotations.*/
+	/**Bunch of hardcoded blocks and their rotations.
+	 * Code them high up in the array so that when you
+	 * get a new one it appears in the highest spot 
+	 * possible.*/
 	public static final byte[][][][] blockdef =
 	{
     	{
     		//0 = I block.
         	{
-        		{0,0,0,0},
-        		{0,0,0,0},
         		{1,1,1,1},
+        		{0,0,0,0},
+        		{0,0,0,0},
         		{0,0,0,0}
         	},
         	{
@@ -42,121 +45,121 @@ public class TetrisEngine
         {
         	//1 = O block
     		{
+    			{0,1,1,0},
+    			{0,1,1,0},
     			{0,0,0,0},
-    			{0,1,1,0},
-    			{0,1,1,0},
     			{0,0,0,0}
     		}
         },
         {
         	//2 = L block
         	{
-        		{0,0,0,0},
+        		{0,1,0,0},
+        		{0,1,0,0},
+    			{0,1,1,0},
+    			{0,0,0,0}
+        	},
+        	{
+        		{0,0,1,0},
+        		{1,1,1,0},
+    			{0,0,0,0},
+    			{0,0,0,0}
+        	},
+        	{
+        		{1,1,0,0},
         		{0,1,0,0},
     			{0,1,0,0},
-    			{0,1,1,0}
+    			{0,0,0,0}
         	},
         	{
-        		{0,0,0,0},
-        		{0,0,0,0},
-    			{0,0,1,0},
-    			{1,1,1,0}
-        	},
-        	{
-        		{0,0,0,0},
-        		{1,1,0,0},
-    			{0,1,0,0},
-    			{0,1,0,0}
-        	},
-        	{
-        		{0,0,0,0},
         		{1,1,1,0},
-    			{1,0,0,0},
+        		{1,0,0,0},
+    			{0,0,0,0},
     			{0,0,0,0}
         	}
         },
         {
         	//3 = J block
         	{
-        		{0,0,0,0},
         		{0,0,1,0},
-    			{0,0,1,0},
-    			{0,1,1,0}
+        		{0,0,1,0},
+    			{0,1,1,0},
+    			{0,0,0,0}
         	},
         	{
-        		{0,0,0,0},
-        		{0,0,0,0},
-    			{1,1,1,0},
-    			{0,0,1,0}
+        		{1,1,1,0},
+        		{0,0,1,0},
+    			{0,0,0,0},
+    			{0,0,0,0}
         	},
         	{
-        		{0,0,0,0},
         		{0,1,1,0},
+        		{0,1,0,0},
     			{0,1,0,0},
-    			{0,1,0,0}
+    			{0,0,0,0}
         	},
         	{
-        		{0,0,0,0},
-        		{0,0,0,0},
-    			{1,0,0,0},
-    			{1,1,1,0}
+        		{1,0,0,0},
+        		{1,1,1,0},
+    			{0,0,0,0},
+    			{0,0,0,0}
         	}
         },
         {
         	//4 = T block
         	{
-        		{0,0,0,0},
         		{0,1,0,0},
         		{1,1,1,0},
+        		{0,0,0,0},
         		{0,0,0,0}
         	},
         	{
-        		{0,0,0,0},
         		{0,1,0,0},
         		{0,1,1,0},
-        		{0,1,0,0}
+        		{0,1,0,0},
+        		{0,0,0,0}
         	},
         	{
-        		{0,0,0,0},
-        		{0,0,0,0},
         		{1,1,1,0},
-        		{0,1,0,0}
+        		{0,1,0,0},
+        		{0,0,0,0},
+        		{0,0,0,0}
         	},
         	{
-        		{0,0,0,0},
         		{0,1,0,0},
         		{1,1,0,0},
-        		{0,1,0,0}
+        		{0,1,0,0},
+        		{0,0,0,0}
         	}
         },
         {
         	//5 = S block
         	{
-        		{0,0,0,0},
         		{0,1,1,0},
         		{1,1,0,0},
+        		{0,0,0,0},
         		{0,0,0,0}
         	},
         	{
-        		{0,0,0,0},
         		{0,1,0,0},
         		{0,1,1,0},
-        		{0,0,1,0}
+        		{0,0,1,0},
+        		{0,0,0,0}
         	}
         },
         {
         	//6 = Z block
         	{
-        		{0,0,0,0},
         		{0,1,1,0},
         		{0,0,1,1},
+        		{0,0,0,0},
         		{0,0,0,0}
         	},
         	{
-        		{0,0,0,0},
         		{0,0,1,0},
         		{0,1,1,0},
-        		{0,1,0,0}
+        		{0,1,0,0},
+        		{0,0,0,0}
         	}
         }
     };
@@ -355,31 +358,36 @@ public class TetrisEngine
 	/**Called when Game Over (Blocks stacked so high that copy() fails)*/
 	public synchronized void gameover()
 	{
-		//pause the game first.
-		tetris.state = GameState.GAMEOVER;
-		
-		pImportant("Game Over");
-		
-		//die sound.
-		tetris.sound.sfx(Sounds.DIE);
-		
-		//wait for input.
-		JOptionPane.showInternalMessageDialog(tetris,
-				"Game Over: Play again?");
-		
-		//reset.
-		tetris.score=0;
-		tetris.lines=0;
-		for(int i = 0;i < tetris.blocks.length;i++)
-		{
-			for(int j = 0;j < tetris.blocks[i].length;j++)
+		//Return immediately.
+		new Thread(){public void run(){
+			//pause the game first.
+			tetris.state = GameState.GAMEOVER;
+			
+			pImportant("Game Over");
+			
+			//die sound.
+			tetris.sound.sfx(Sounds.DIE);
+			
+			//wait for input.
+			JOptionPane.showMessageDialog(tetris,
+					"Game Over: Play again?");
+			
+			//reset.
+			tetris.score=0;
+			tetris.lines=0;
+			for(int i = 0;i < tetris.blocks.length;i++)
 			{
-				tetris.blocks[i][j] = new Block(BlockState.EMPTY);
+				for(int j = 0;j < tetris.blocks[i].length;j++)
+				{
+					tetris.blocks[i][j] = new Block(BlockState.EMPTY);
+				}
 			}
-		}
-		activeBlock = null;
-		tetris.state = GameState.PLAYING;
-		newblock();
+			activeBlock = null;
+			tetris.state = GameState.PLAYING;
+			newblock();
+			laststep = System.currentTimeMillis();
+		}}.start();
+		
 	}
 
 	/**Copies the position of the active block into<br>
@@ -563,7 +571,7 @@ public class TetrisEngine
 		activeBlock = toBlock2D(blockdef[retx][rety]);
 		
 		activeBlockX = tetris.width/2 -2;
-		activeBlockY = -3;
+		activeBlockY = 0;
 		
 		Color bcolor = Block.colors
 		[rdm.nextInt(Block.colors.length)];
@@ -591,15 +599,9 @@ public class TetrisEngine
 		}
 		
 		
-		//Attempts to generate the block as high up as possible.
-		do{
-			if(activeBlockY > 0)
-			{
-				gameover();
-				return;
-			}
-			activeBlockY++;
-		}while(!copy());
+		if(!copy()){
+			gameover();
+		}
 	}
 	
 	/**Copies an array, but runs in n^2 time.*/
