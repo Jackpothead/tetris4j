@@ -32,7 +32,7 @@ public class TetrisPanel extends JPanel
 	/**DBlock array representation of the gamefield. Blocks are<br>
 	 * counted X first starting from the top left: blocks[5][3]<br>
 	 * would be a block 5 left and 3 down from (0,0).*/
-	public Block[][] blocks;
+	public volatile Block[][] blocks;
 	
 	/**Score (UNUSED)*/
 	public int score = 0;
@@ -45,6 +45,9 @@ public class TetrisPanel extends JPanel
 	
 	/**Maximum time allowed per step in milliseconds.*/
 	public int steptime = 350;
+	
+	/**Time used to fade block that have been cleared.*/
+	public int fadetime = 500;
 	
 	/**Game mode (UNUSED)*/
 	public String mode = "CLASSIC";
@@ -150,6 +153,14 @@ public class TetrisPanel extends JPanel
 		
 		//Initialize the TetrisEngine object.
 		gameengine = new TetrisEngine(this);
+		
+		for(int i = 0;i < blocks.length-1;i++)
+		{
+			blocks[i][19] = new Block(BlockState.FILLED);
+			blocks[i][19].setColor(Color.BLACK);
+			blocks[i][18] = new Block(BlockState.FILLED);
+			blocks[i][18].setColor(Color.RED);
+		}
 		
 	}
 	

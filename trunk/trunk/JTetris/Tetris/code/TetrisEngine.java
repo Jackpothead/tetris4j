@@ -351,7 +351,7 @@ public class TetrisEngine
 			}
 		}
 		
-		checkforclears(0,null);//Moving this here.
+		checkforclears();//Moving this here.
 		
 		activeblock.array = null;
 	}
@@ -496,8 +496,88 @@ public class TetrisEngine
 	}
 	
 	
+	/**Runs the checkforclears() on a seperate thread. Also performs
+	 * <br>the fade out effect.*/
+	private synchronized void checkforclears()
+	{
+		new Thread(){
+			public void run()
+			{
+				//Some copy/pasting here! =)
+				ArrayList<Block> fadeblocks = new ArrayList<Block>();
+				
+				loop:
+				for(int i = tetris.blocks[0].length-1;i>=0;i--)
+				{
+					//check for unfilled blocks.
+					for(int y = 0;y < tetris.blocks.length;y++)
+					{
+						if(!tetris.blocks[y][i].getState()
+								.equals(BlockState.FILLED))
+						continue loop;
+					}
+					
+					//passed; now add blocks.
+					for(int u = 0;u < tetris.blocks.length;u++)
+						fadeblocks.add(tetris.blocks[u][i]);
+				}
+				
+				long before = System.currentTimeMillis();
+				int approxloops = tetris.fadetime/20;
+				
+				//Fade loop: works by object referencing
+				while(System.currentTimeMillis() - before 
+						< tetris.fadetime)
+				{
+					for(Block b : fadeblocks)
+					{
+						Color bcol = b.getColor();
+						int R = bcol.getRed();
+						int G = bcol.getGreen();
+						int B = bcol.getBlue();
+						int AL = bcol.getAlpha();
+						
+						float rfade = 
+							(Block.emptycolor.getRed()-R)/approxloops;
+						float gfade = 
+							(Block.emptycolor.getGreen()-G)/approxloops;
+						float bfade = 
+							(Block.emptycolor.getBlue()-B)/approxloops;
+						float alfade =
+							(Block.emptycolor.getAlpha()-B)/approxloops;
+						
+						if(R<255-rfade)
+							R+=rfade;
+						
+						if(G<255-gfade)
+							G+=gfade;
+						
+						if(B<255-bfade)
+							B+=bfade;
+						
+						if(AL<255-alfade)
+							AL+=alfade;
+						
+						Color newc = new Color(R,G,B);
+						b.setColor(newc);
+					}
+					
+					try{
+						Thread.sleep(20);
+					}catch(Exception e){}
+				}
+				
+				//Now actually remove the blocks.
+				checkforclears(0,null);
+				newblock();
+			}
+		}.start();
+	}
+	
+	
 	/**As expected this function checks whether there are any clears.
-	 * <br>Uses recursion if more than one line can be cleared.*/
+	 * <br>Uses recursion if more than one line can be cleared.
+	 * <br>Don't run this on the EDT!*/
 	private synchronized void
 		checkforclears(int alreadycleared, Block[][] b)
 	{
@@ -576,6 +656,7 @@ public class TetrisEngine
 		
 		int x = blockdef.length;
 		int retx = rdm.nextInt(x);
+		retx=0;
 		
 		int y = blockdef[retx].length;
 		int rety = rdm.nextInt(y);

@@ -21,10 +21,10 @@ public class Block implements Cloneable
 		new Color(184,245,184,204);;
 	
 	/**State of the block.*/
-	private BlockState state = BlockState.EMPTY;
+	private volatile BlockState state = BlockState.EMPTY;
 	
 	/**Color of the block.*/
-	private Color color = emptycolor;
+	private volatile Color color = emptycolor;
 	
 	/**Null constructor.*/
 	public Block(){}
