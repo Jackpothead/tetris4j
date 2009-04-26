@@ -17,8 +17,6 @@ public class TetrisEngine
 {
 	
 	
-	
-	
 	//---------------VARIABLES--------------//
 	
 	/**Bunch of hardcoded blocks and their rotations.
@@ -164,6 +162,16 @@ public class TetrisEngine
         }
     };
 	
+	/**Object representation of a tetromino.*/
+	static class BlockGroup
+	{
+		public BlockGroup(){}
+		public Block[][] array;
+		public int x, y, rot, type;
+		public Color color;
+	}
+	
+	
 	/**Reference to the TetrisPanel containing this object;*/
 	TetrisPanel tetris;
 	
@@ -173,15 +181,7 @@ public class TetrisEngine
 	
 	
 	/**Primitive representation of active block.*/
-	Block[][] activeBlock;
-	
-	
-	/**Variables with infomation about the active block.*/
-	int activeBlockType, activeBlockX,
-	    activeBlockY, activeBlockRot;
-	
-	
-	Color activeBlockColor = null;
+	BlockGroup activeblock;
 	
 	
 	/**Time of previous step.*/
@@ -243,10 +243,10 @@ public class TetrisEngine
 	{
 		if(DEBUG)System.out.println("RIGHT.");
 		
-		activeBlockX ++;
+		activeblock.x++;
 		
 		//Failsafe: Revert XPosition.
-		if(!copy())activeBlockX --;
+		if(!copy())activeblock.x--;
 		
 	}
 	
@@ -255,10 +255,10 @@ public class TetrisEngine
 	{
 		if(DEBUG)System.out.println("LEFT.");
 		
-		activeBlockX --;
+		activeblock.x--;
 		
 		//Failsafe: Revert XPosition.
-		if(!copy())activeBlockX ++;
+		if(!copy())activeblock.x++;
 	}
 	
 	/**Called when the DOWN key is pressed.*/
@@ -273,26 +273,26 @@ public class TetrisEngine
 	{
 		if(DEBUG)System.out.println("ROTATED.");
 		
-		if(activeBlock==null)return;//necessary NPE checking.
+		if(activeblock.array==null)return;//necessary NPE checking.
 		
-		Block[][] lastblock = copy2D(activeBlock);
-		int lastrot = activeBlockRot;
+		Block[][] lastblock = copy2D(activeblock.array);
+		int lastrot = activeblock.rot;
 		
 		//Next rotation in array.
-		if(activeBlockRot == blockdef[activeBlockType].length-1)
+		if(activeblock.rot == blockdef[activeblock.type].length-1)
 		{
-			activeBlockRot = 0;
+			activeblock.rot = 0;
 		}
-		else activeBlockRot++;
+		else activeblock.rot++;
 		
-		activeBlock = toBlock2D(
-				blockdef[activeBlockType][activeBlockRot]);
+		activeblock.array = toBlock2D(
+				blockdef[activeblock.type][activeblock.rot]);
 		tetris.sound.sfx(Sounds.ROTATE);
 		
 		//Failsafe revert.
 		if(!copy()){
-			activeBlock = lastblock;
-			activeBlockRot = lastrot;
+			activeblock.array = lastblock;
+			activeblock.rot = lastrot;
 		}
 	}
 	
@@ -302,11 +302,11 @@ public class TetrisEngine
 		laststep = System.currentTimeMillis();
 		
 		//This will game over pretty damn fast!
-		if(activeBlock == null)newblock();
+		if(activeblock.array == null)newblock();
 		
 		while(true)
 		{
-			activeBlockY++;
+			activeblock.y++;
 		
 			if(!copy())
 			{
@@ -352,7 +352,7 @@ public class TetrisEngine
 		
 		checkforclears(0,null);//Moving this here.
 		
-		activeBlock = null;
+		activeblock.array = null;
 	}
 
 	/**Called when Game Over (Blocks stacked so high that copy() fails)*/
@@ -382,7 +382,7 @@ public class TetrisEngine
 					tetris.blocks[i][j] = new Block(BlockState.EMPTY);
 				}
 			}
-			activeBlock = null;
+			activeblock.array = null;
 			tetris.state = GameState.PLAYING;
 			newblock();
 			laststep = System.currentTimeMillis();
@@ -398,11 +398,11 @@ public class TetrisEngine
 	public synchronized boolean copy()
 	{
 		try{
-		int x = activeBlockX;
-		int y = activeBlockY;
+		int x = activeblock.x;
+		int y = activeblock.y;
 		Block[][] buffer = copy2D(tetris.blocks);
 		
-		if(activeBlock==null)
+		if(activeblock.array==null)
 			return false;//Early NullPointerException failsafe
 		
 		//Check if any blocks already have a block under them.
@@ -411,7 +411,7 @@ public class TetrisEngine
 		{
 			for(int r = 0;r < 4;r++)
 			{
-				if(activeBlock[r][i].getState() == BlockState.ACTIVE
+				if(activeblock.array[r][i].getState() == BlockState.ACTIVE
 					&&buffer[x+i][y+r].getState() == BlockState.FILLED)
 				{
 					return false;
@@ -437,12 +437,12 @@ public class TetrisEngine
 		{
 			for(int r = 0;r < 4;r++)
 			{
-				if(activeBlock[i][r].getState() == BlockState.ACTIVE)
+				if(activeblock.array[i][r].getState() == BlockState.ACTIVE)
 				{
 					buffer[x+r][y+i].setState(BlockState.ACTIVE);
 					
 					//facepalm.
-					buffer[x+r][y+i].setColor(activeBlockColor);
+					buffer[x+r][y+i].setColor(activeblock.color);
 				}
 			}
 		}
@@ -462,7 +462,7 @@ public class TetrisEngine
 	/**Steps into the next phase if possible.*/
 	private synchronized void step()
 	{
-		if(activeBlock == null)
+		if(activeblock.array == null)
 		{//step() gives you a random block if none is available.
 			tetris.score++;
 			newblock();
@@ -475,7 +475,7 @@ public class TetrisEngine
 		laststep = System.currentTimeMillis();
 		
 		//move 1 down.
-		activeBlockY++;
+		activeblock.y++;
 		
 		if(!copy())
 			donecurrent();
@@ -559,23 +559,25 @@ public class TetrisEngine
 	private synchronized void newblock()
 	{
 		//Generate random block.
+		activeblock = new BlockGroup();
+		
 		int x = blockdef.length;
 		int retx = rdm.nextInt(x);
 		
 		int y = blockdef[retx].length;
 		int rety = rdm.nextInt(y);
 		
-		activeBlockType=retx;
-		activeBlockRot=rety;
+		activeblock.type=retx;
+		activeblock.rot=rety;
 		
-		activeBlock = toBlock2D(blockdef[retx][rety]);
+		activeblock.array = toBlock2D(blockdef[retx][rety]);
 		
-		activeBlockX = tetris.width/2 -2;
-		activeBlockY = 0;
+		activeblock.x = tetris.width/2 -2;
+		activeblock.y = 0;
 		
 		Color bcolor = Block.colors
 		[rdm.nextInt(Block.colors.length)];
-		activeBlockColor = bcolor;
+		activeblock.color = bcolor;
 		
 		//Don't even try if there's any blocks in the first row.
 		for(int i = 0;i < tetris.blocks.length;i++)
@@ -589,12 +591,12 @@ public class TetrisEngine
 		
 		
 		//Fill the block with their colors first.
-		for(int i = 0;i < activeBlock.length;i++)
+		for(int i = 0;i < activeblock.array.length;i++)
 		{
-			for(int k = 0;k < activeBlock[i].length;k++)
+			for(int k = 0;k < activeblock.array[i].length;k++)
 			{
-				if(activeBlock[i][k].getState()==BlockState.ACTIVE)
-					activeBlock[i][k].setColor(activeBlockColor);
+				if(activeblock.array[i][k].getState()==BlockState.ACTIVE)
+					activeblock.array[i][k].setColor(activeblock.color);
 			}
 		}
 		
