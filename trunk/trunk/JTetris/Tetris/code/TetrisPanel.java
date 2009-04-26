@@ -91,7 +91,7 @@ public class TetrisPanel extends JPanel
 			.createImage(getResURL("/image/backlayer.jpg"));
 		} catch (Exception e)
 		{
-			e.printStackTrace();
+			throw new RuntimeException("Cannot load image.");
 		}
 		
 		//Animation loop. Updates every 20 milliseconds (50 fps).

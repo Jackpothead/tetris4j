@@ -22,21 +22,24 @@ public class TetrisMain
 			UIManager.setLookAndFeel(
 					UIManager.getSystemLookAndFeelClassName());
 		}catch(Throwable t){}
-//		
-//		//Better exception catching.
-//		Thread.setDefaultUncaughtExceptionHandler(
-//				new Thread.UncaughtExceptionHandler(){
-//
-//					public void uncaughtException(Thread t, Throwable e)
-//					{
-//						JOptionPane.showMessageDialog(null, 
-//	"Sarah got stuck in a tree while " +
-//	"Wen li was being pissed off by " +//Don't ask.
-//	"Jason and the principal threw an exception.\n"+
-//						"Fatal exception in thread: " + t.getName()
-//						+ "\nReason: " + e.getMessage());
-//					}
-//				});
+		
+		//Better exception catching.
+		Thread.setDefaultUncaughtExceptionHandler(
+				new Thread.UncaughtExceptionHandler(){
+
+					public void uncaughtException(Thread t, Throwable e)
+					{
+						JOptionPane.showMessageDialog(null,
+	"Sarah got stuck in a tree while " +
+	"Wen li was being pissed off by " +//Don't ask.
+	"Jason\nand the principal threw an exception.\n\n"+
+						"Fatal exception in thread: " + t.getName()
+						+ "\nException type: " + e.getClass().getName()
+						+ "\nReason given: " + e.getMessage()
+						+ "\n\n"+formatStackTrace(e.getStackTrace()));
+						System.exit(1);
+					}
+				});
 		
 		//Bugfix.
 		SwingUtilities.invokeLater(new Runnable(){

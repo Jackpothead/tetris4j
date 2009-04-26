@@ -1,9 +1,10 @@
 package code;
 
 import java.awt.Color;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 import code.SoundManager.Sounds;
 
@@ -368,9 +369,21 @@ public class TetrisEngine
 			//die sound.
 			tetris.sound.sfx(Sounds.DIE);
 			
-			//wait for input.
-			JOptionPane.showMessageDialog(tetris,
-					"Game Over: Play again?");
+			try
+			{
+				//I have to do this.. bugfix.
+				SwingUtilities.invokeAndWait(new Runnable(){
+					public void run()
+					{
+						//wait for input.
+						JOptionPane.showInternalMessageDialog(tetris,
+						"Game Over: Play again?");
+					}
+				});
+			} catch (Exception e)
+			{
+				throw new RuntimeException("GUI window failed.");
+			}
 			
 			//reset.
 			tetris.score=0;

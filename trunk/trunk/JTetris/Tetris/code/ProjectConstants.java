@@ -85,4 +85,21 @@ public class ProjectConstants
 		throw new RuntimeException("File: " + path + " not found.");
 		
 	}
+	
+	public static String formatStackTrace(StackTraceElement[] e)
+	{
+		StringBuffer ret = new StringBuffer();
+		for(StackTraceElement el: e)
+		{
+			ret.append("[");
+			ret.append(el.getFileName()==null?
+					"Unknown source":el.getFileName());
+			ret.append(":");
+			ret.append(el.getMethodName());
+			ret.append(":");
+			ret.append(el.getLineNumber());
+			ret.append("]\n");
+		}
+		return ret.toString();
+	}
 }

@@ -69,7 +69,7 @@ public class SoundManager
 			sx5 = loadsound("/sound/sounddie.wav");
 		} catch (Exception e)
 		{
-			e.printStackTrace();
+			throw new RuntimeException("Cannot load sound.");
 		} 
 	}
 	
@@ -121,7 +121,8 @@ public class SoundManager
 				midiseq.setSequence(MidiSystem.getSequence(tetheme));
 				midiseq.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);
 				midiseq.start();
-			}catch(Exception e){e.printStackTrace();}
+			}catch(Exception e){
+				throw new RuntimeException("Cannot play MIDI.");}
 					
 		}
 		else throw new IllegalArgumentException();
