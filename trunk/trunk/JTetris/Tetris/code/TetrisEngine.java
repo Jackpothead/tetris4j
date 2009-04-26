@@ -525,12 +525,19 @@ public class TetrisEngine
 				long before = System.currentTimeMillis();
 				int approxloops = tetris.fadetime/20;
 				
+				tetris.state = GameState.PAUSED;
+				
 				//Fade loop: works by object referencing
 				while(System.currentTimeMillis() - before 
 						< tetris.fadetime)
 				{
+					if(fadeblocks.size()==0)break;//Lol yea.
+					
+					//This is a linear fade algorithm.
 					for(Block b : fadeblocks)
 					{
+						//Not the best color algorithm, but works most of
+						//the time.
 						Color bcol = b.getColor();
 						int R = bcol.getRed();
 						int G = bcol.getGreen();
@@ -566,6 +573,8 @@ public class TetrisEngine
 						Thread.sleep(20);
 					}catch(Exception e){}
 				}
+				
+				tetris.state = GameState.PLAYING;
 				
 				//Now actually remove the blocks.
 				checkforclears(0,null);
@@ -656,7 +665,6 @@ public class TetrisEngine
 		
 		int x = blockdef.length;
 		int retx = rdm.nextInt(x);
-		retx=0;
 		
 		int y = blockdef[retx].length;
 		int rety = rdm.nextInt(y);

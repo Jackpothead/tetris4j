@@ -47,7 +47,7 @@ public class TetrisPanel extends JPanel
 	public int steptime = 350;
 	
 	/**Time used to fade block that have been cleared.*/
-	public int fadetime = 500;
+	public int fadetime = 300;
 	
 	/**Game mode (UNUSED)*/
 	public String mode = "CLASSIC";
@@ -153,14 +153,6 @@ public class TetrisPanel extends JPanel
 		
 		//Initialize the TetrisEngine object.
 		gameengine = new TetrisEngine(this);
-		
-		for(int i = 0;i < blocks.length-1;i++)
-		{
-			blocks[i][19] = new Block(BlockState.FILLED);
-			blocks[i][19].setColor(Color.BLACK);
-			blocks[i][18] = new Block(BlockState.FILLED);
-			blocks[i][18].setColor(Color.RED);
-		}
 		
 	}
 	
