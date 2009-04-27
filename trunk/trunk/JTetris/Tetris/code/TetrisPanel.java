@@ -127,6 +127,15 @@ public class TetrisPanel extends JPanel
     					||ke.getKeyCode() == KeyEvent.VK_Z)
     					TetrisPanel.this.gameengine.keyrotate();
 				}
+				
+				//Pause button!
+				if(ke.getKeyCode() == KeyEvent.VK_P)
+				{
+					if(state==GameState.PLAYING)
+						state = GameState.PAUSED;
+					else if(state==GameState.PAUSED)
+						state = GameState.PLAYING;
+				}
 			}
 		});
 		
@@ -196,6 +205,17 @@ public class TetrisPanel extends JPanel
                         cornery+c2*squaredim, squaredim, squaredim);
     			
     		}
+		}
+		
+		
+		if(state == GameState.PAUSED)
+		{
+    		g.setColor(Color.RED);
+    		g.setFont(new Font(Font.SERIF,Font.BOLD,16));
+    		String pausestring = "Paused, press P to continue";
+    		g.drawString(pausestring, 
+    				(getWidth() - g.getFontMetrics().stringWidth(pausestring))
+    				/ 2 + 50,300);
 		}
 	}
 }

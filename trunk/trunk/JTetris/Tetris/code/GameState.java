@@ -7,5 +7,5 @@ package code;
  * <br>one right now is GameState.PLAYING.*/
 public enum GameState
 {
-	STARTSCREEN,PLAYING,PAUSED,HISCORE,GAMEOVER;
+	STARTSCREEN,PLAYING,PAUSED,HISCORE,GAMEOVER,BUSY;
 }

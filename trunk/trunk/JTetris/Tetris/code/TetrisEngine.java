@@ -525,7 +525,7 @@ public class TetrisEngine
 				long before = System.currentTimeMillis();
 				int approxloops = tetris.fadetime/20;
 				
-				tetris.state = GameState.PAUSED;
+				tetris.state = GameState.BUSY;
 				
 				//Fade loop: works by object referencing
 				while(System.currentTimeMillis() - before 
