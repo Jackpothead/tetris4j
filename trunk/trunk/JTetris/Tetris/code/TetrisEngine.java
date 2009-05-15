@@ -163,15 +163,6 @@ public class TetrisEngine
         }
     };
 	
-	/**Object representation of a tetromino.*/
-	static class BlockGroup
-	{
-		public BlockGroup(){}
-		public Block[][] array;
-		public int x, y, rot, type;
-		public Color color;
-	}
-	
 	
 	/**Reference to the TetrisPanel containing this object;*/
 	TetrisPanel tetris;
@@ -182,7 +173,11 @@ public class TetrisEngine
 	
 	
 	/**Primitive representation of active block.*/
-	BlockGroup activeblock;
+	Tetromino activeblock;
+	
+	
+	/**Next block.*/
+	Tetromino nextblock = null;
 	
 	
 	/**Time of previous step.*/
@@ -660,8 +655,11 @@ public class TetrisEngine
 	/**Generates a random block , in a random rotation.*/
 	private synchronized void newblock()
 	{
-		//Generate random block.
-		activeblock = new BlockGroup();
+		if(nextblock == null)
+			nextblock = getRandBlock();
+		
+		//Next block becomes this block.
+		activeblock = nextblock;
 		
 		int x = blockdef.length;
 		int retx = rdm.nextInt(x);
@@ -681,6 +679,9 @@ public class TetrisEngine
 		[rdm.nextInt(Block.colors.length)];
 		activeblock.color = bcolor;
 		
+		//Generate random block.
+		nextblock = getRandBlock();
+		
 		//Don't even try if there's any blocks in the first row.
 		for(int i = 0;i < tetris.blocks.length;i++)
 		{
@@ -692,20 +693,39 @@ public class TetrisEngine
 		}
 		
 		
-		//Fill the block with their colors first.
-		for(int i = 0;i < activeblock.array.length;i++)
-		{
-			for(int k = 0;k < activeblock.array[i].length;k++)
-			{
-				if(activeblock.array[i][k].getState()==BlockState.ACTIVE)
-					activeblock.array[i][k].setColor(activeblock.color);
-			}
-		}
-		
-		
 		if(!copy()){
 			gameover();
 		}
+	}
+	
+	private Tetromino getRandBlock()
+	{
+		Tetromino ret = new Tetromino();
+		int x = blockdef.length;
+		int rnd1 = rdm.nextInt(x);
+		
+		int y = blockdef[rnd1].length;
+		int rnd2 = rdm.nextInt(y);
+		
+		ret.type=rnd1;
+		ret.rot=rnd2;
+		
+		ret.array = toBlock2D(blockdef[rnd1][rnd2]);
+		
+		ret.x = tetris.width/2 -2;
+		ret.y = 0;
+		
+		//Fill the block with their colors first.
+		for(int i = 0;i < ret.array.length;i++)
+		{
+			for(int k = 0;k < ret.array[i].length;k++)
+			{
+				if(ret.array[i][k].getState()==BlockState.ACTIVE)
+					ret.array[i][k].setColor(ret.color);
+			}
+		}
+		System.out.println(ret.toString());
+		return ret;
 	}
 	
 	/**Copies an array, but runs in n^2 time.*/
