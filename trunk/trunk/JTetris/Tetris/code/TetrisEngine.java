@@ -472,7 +472,6 @@ public class TetrisEngine
 	{
 		if(activeblock.array == null)
 		{//step() gives you a random block if none is available.
-			tetris.score++;
 			newblock();
 			
 			return;
@@ -668,6 +667,9 @@ public class TetrisEngine
 		if(!copy()){
 			gameover();
 		}
+		
+		//Bonus?
+		tetris.score++;
 	}
 	
 	/**Create and return a random block.*/
@@ -700,7 +702,6 @@ public class TetrisEngine
 					ret.array[i][k].setColor(ret.color);
 			}
 		}
-		System.out.println(ret.toString());
 		return ret;
 	}
 	

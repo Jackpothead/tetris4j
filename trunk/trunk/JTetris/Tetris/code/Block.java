@@ -35,17 +35,6 @@ public class Block implements Cloneable
 	/**String representation of this object.*/
 	public String toString(){
 		return color.toString();
-//		switch(state)
-//		{
-//		case EMPTY:
-//			return "0";
-//		case FILLED:
-//			return "2";
-//		case ACTIVE:
-//			return "1";
-//		default:
-//			return "-1";
-//		}
 	}
 	
 	/**Compares the state for equality.*/

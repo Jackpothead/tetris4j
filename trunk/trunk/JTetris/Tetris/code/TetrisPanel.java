@@ -29,13 +29,17 @@ public class TetrisPanel extends JPanel
 	 * <br>Tetris must be the same height and width.*/
 	public int squaredim=25;
 	
+	/**Dimensions of the squares of the next block as drawn.
+	 * See squaredim.*/
+	public int nextblockdim = 15;
+	
 	/**DBlock array representation of the gamefield. Blocks are<br>
 	 * counted X first starting from the top left: blocks[5][3]<br>
 	 * would be a block 5 left and 3 down from (0,0).*/
 	public volatile Block[][] blocks;
 	
-	/**Score (UNUSED)*/
-	public int score = 0;
+	/**Score*/
+	public int score = -1;
 	
 	/**Level (UNUSED)*/
 	public int level = 0;
@@ -53,7 +57,7 @@ public class TetrisPanel extends JPanel
 	public String mode = "CLASSIC";
 	
 	/**Public reference to the TetrisEngine object.*/
-	public TetrisEngine gameengine;
+	public TetrisEngine engine;
 	
 	/**Current state of the game (PLAYING, PAUSED, etc.)*/
 	public GameState state;
@@ -116,16 +120,16 @@ public class TetrisPanel extends JPanel
 				if(state == GameState.PLAYING)
 				{
     				if(ke.getKeyCode() == KeyEvent.VK_LEFT)
-    					TetrisPanel.this.gameengine.keyleft();
+    					TetrisPanel.this.engine.keyleft();
     				if(ke.getKeyCode() == KeyEvent.VK_RIGHT)
-    					TetrisPanel.this.gameengine.keyright();
+    					TetrisPanel.this.engine.keyright();
     				if(ke.getKeyCode() == KeyEvent.VK_DOWN)
-    					TetrisPanel.this.gameengine.keydown();
+    					TetrisPanel.this.engine.keydown();
     				if(ke.getKeyCode() == KeyEvent.VK_SPACE)
-    					TetrisPanel.this.gameengine.keyslam();
+    					TetrisPanel.this.engine.keyslam();
     				if(ke.getKeyCode() == KeyEvent.VK_UP
     					||ke.getKeyCode() == KeyEvent.VK_Z)
-    					TetrisPanel.this.gameengine.keyrotate();
+    					TetrisPanel.this.engine.keyrotate();
 				}
 				
 				//Pause button!
@@ -161,7 +165,7 @@ public class TetrisPanel extends JPanel
 		setFocusable(true);
 		
 		//Initialize the TetrisEngine object.
-		gameengine = new TetrisEngine(this);
+		engine = new TetrisEngine(this);
 		
 	}
 	
@@ -176,12 +180,12 @@ public class TetrisPanel extends JPanel
 		g.drawImage(bg, 0, 0, this);
 		
 		//The coordinates of the top left corner of the game board.
-		int cornerx = (getWidth() - bounds.width) / 2 + 50;
-		int cornery = (getHeight() - bounds.height) / 2;
+		int mainx = (getWidth() - bounds.width) / 2 + 50;
+		int mainy = (getHeight() - bounds.height) / 2;
 		
 		//Create a border;
 		g.setColor(Color.BLACK);
-		g.drawRect(cornerx-1,cornery-1,
+		g.drawRect(mainx-1,mainy-1,
 				bounds.width+2,bounds.height+2);
 		
 		g.setColor(Color.BLACK);
@@ -193,18 +197,45 @@ public class TetrisPanel extends JPanel
 		{
     		for(int c2 = 0;c2 < blocks[c1].length;c2++)
     		{
+    			// Just in case block's null, it doesn't draw as black.
     			g.setColor(Block.emptycolor);
     			g.setColor(blocks[c1][c2].getColor());
     			
-    			g.fillRect(cornerx+c1*squaredim,
-    					cornery+c2*squaredim, squaredim, squaredim);
+    			g.fillRect(mainx+c1*squaredim,
+    					mainy+c2*squaredim, squaredim, squaredim);
     			
     			//Draw square borders.
                 g.setColor(new Color(32,104,183));
-                g.drawRect(cornerx+c1*squaredim,
-                        cornery+c2*squaredim, squaredim, squaredim);
+                g.drawRect(mainx+c1*squaredim,
+                        mainy+c2*squaredim, squaredim, squaredim);
     			
     		}
+		}
+		
+		int nextx = 100;
+		int nexty = 150;
+		
+		//Less typing.
+		Block[][] nextb = engine.nextblock.array;
+		
+		//Loop and draw next block.
+		for(int c1 = 0;c1 < nextb.length;c1++)
+		{
+			for(int c2 = 0;c2 < nextb[c1].length;c2++)
+			{
+				Color c = nextb[c2][c1].getColor();
+				
+				if(!c.equals(Block.emptycolor))
+				{
+					g.setColor(c);
+				
+					g.fillRect(nextx+c1*nextblockdim,
+    					nexty+c2*nextblockdim, nextblockdim, nextblockdim);
+				}
+				
+				//The way it works, this often looks better
+				//without square borders.
+			}
 		}
 		
 		

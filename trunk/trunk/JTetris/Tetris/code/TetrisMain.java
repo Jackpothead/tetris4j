@@ -84,7 +84,7 @@ public class TetrisMain
 			try{Thread.sleep(5000);}catch(Exception e){}
 		}
 		
-		tframe.gameengine.startengine();
+		tframe.engine.startengine();
 		window.setVisible(true);
 		SwingUtilities.updateComponentTreeUI(window);
 		
