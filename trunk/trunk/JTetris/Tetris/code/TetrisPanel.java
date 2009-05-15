@@ -31,7 +31,7 @@ public class TetrisPanel extends JPanel
 	
 	/**Dimensions of the squares of the next block as drawn.
 	 * See squaredim.*/
-	public int nextblockdim = 15;
+	public int nextblockdim = 18;
 	
 	/**DBlock array representation of the gamefield. Blocks are<br>
 	 * counted X first starting from the top left: blocks[5][3]<br>
@@ -39,12 +39,12 @@ public class TetrisPanel extends JPanel
 	public volatile Block[][] blocks;
 	
 	/**Score*/
-	public int score = -1;
+	public int score = 0;
 	
 	/**Level (UNUSED)*/
 	public int level = 0;
 	
-	/**Lines cleared (UNUSED)*/
+	/**Lines cleared*/
 	public int lines = 0;
 	
 	/**Maximum time allowed per step in milliseconds.*/
@@ -133,7 +133,7 @@ public class TetrisPanel extends JPanel
 				}
 				
 				//Pause button!
-				if(ke.getKeyCode() == KeyEvent.VK_P)
+				if(ke.getKeyCode() == KeyEvent.VK_SHIFT)
 				{
 					if(state==GameState.PLAYING)
 						state = GameState.PAUSED;
@@ -163,6 +163,7 @@ public class TetrisPanel extends JPanel
 		}.start();
 		
 		setFocusable(true);
+		state = GameState.PAUSED;
 		
 		//Initialize the TetrisEngine object.
 		engine = new TetrisEngine(this);
@@ -189,8 +190,10 @@ public class TetrisPanel extends JPanel
 				bounds.width+2,bounds.height+2);
 		
 		g.setColor(Color.BLACK);
-		g.setFont(new Font(Font.MONOSPACED,Font.BOLD,36));
-		g.drawString(addLeadingZeroes(score,6), 145, 100);
+		g.setFont(new Font(Font.MONOSPACED,Font.BOLD,18));
+		
+		g.drawString(addLeadingZeroes(score,6), 156, 213);//Draw score
+		g.drawString(addLeadingZeroes(lines, 3), 156, 250);//Draw lines
 		
 		//Loop and draw all the blocks.
 		for(int c1 = 0;c1 < blocks.length;c1++)
@@ -212,30 +215,40 @@ public class TetrisPanel extends JPanel
     		}
 		}
 		
-		int nextx = 100;
-		int nexty = 150;
+		int nextx = 134;
+		int nexty = 336;
+		
 		
 		//Less typing.
-		Block[][] nextb = engine.nextblock.array;
-		
-		//Loop and draw next block.
-		for(int c1 = 0;c1 < nextb.length;c1++)
+		Block[][] nextb = null;
+		if(engine.nextblock != null)
 		{
-			for(int c2 = 0;c2 < nextb[c1].length;c2++)
-			{
-				Color c = nextb[c2][c1].getColor();
-				
-				if(!c.equals(Block.emptycolor))
-				{
-					g.setColor(c);
-				
-					g.fillRect(nextx+c1*nextblockdim,
-    					nexty+c2*nextblockdim, nextblockdim, nextblockdim);
-				}
-				
-				//The way it works, this often looks better
-				//without square borders.
-			}
+			nextb = engine.nextblock.array;
+    		//Loop and draw next block.
+    		for(int c1 = 0;c1 < nextb.length;c1++)
+    		{
+    			for(int c2 = 0;c2 < nextb[c1].length;c2++)
+    			{
+    				Color c = nextb[c2][c1].getColor();
+    				
+    				if(c != null && !c.equals(Block.emptycolor))
+    				{
+    					g.setColor(new Color(15,29,151));
+    				
+    					g.fillRect(nextx+c1*nextblockdim,
+        					nexty+c2*nextblockdim, nextblockdim, nextblockdim);
+    				}
+    				
+    				
+    				//The way it works, this often looks better
+    				//without square borders.
+    				/*
+    				g.setColor(new Color(32,104,183));
+                    g.drawRect(nextx+c1*nextblockdim,
+                    		nexty+c2*nextblockdim, nextblockdim, nextblockdim);
+                    		*/
+    			}
+    		}
 		}
 		
 		
@@ -243,7 +256,7 @@ public class TetrisPanel extends JPanel
 		{
     		g.setColor(Color.RED);
     		g.setFont(new Font(Font.SERIF,Font.BOLD,16));
-    		String pausestring = "Paused, press P to continue";
+    		String pausestring = "JTetris. Press shift to play.";
     		g.drawString(pausestring, 
     				(getWidth() - g.getFontMetrics().stringWidth(pausestring))
     				/ 2 + 50,300);

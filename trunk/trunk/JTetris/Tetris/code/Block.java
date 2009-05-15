@@ -18,7 +18,7 @@ public class Block implements Cloneable
 	
 	/**Color of an empty block.*/
 	public static final Color emptycolor =
-		new Color(184,245,184,204);;
+		new Color(184,245,184,204);
 	
 	/**State of the block.*/
 	private volatile BlockState state = BlockState.EMPTY;

@@ -206,16 +206,16 @@ public class TetrisEngine
 			public void run()
 			{
 				//this fixes a bug.
-				newblock();
+				//newblock();
 				
 				while(true)
 				{
-					long timeelapsedsincelaststep = 
-						System.currentTimeMillis() - laststep;
-					
 					//Break loop if game isn't even playing.
 					if(!(tetris.state == GameState.PLAYING))
 						continue;
+					
+					long timeelapsedsincelaststep = 
+						System.currentTimeMillis() - laststep;
 					
 					try{
 						//Safer than sleeping for more.
@@ -391,8 +391,7 @@ public class TetrisEngine
 				}
 			}
 			activeblock.array = null;
-			tetris.state = GameState.PLAYING;
-			newblock();
+			tetris.state = GameState.PAUSED;
 			laststep = System.currentTimeMillis();
 		}}.start();
 		
@@ -470,7 +469,7 @@ public class TetrisEngine
 	/**Steps into the next phase if possible.*/
 	private synchronized void step()
 	{
-		if(activeblock.array == null)
+		if(activeblock == null)
 		{//step() gives you a random block if none is available.
 			newblock();
 			
