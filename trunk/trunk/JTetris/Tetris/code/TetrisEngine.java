@@ -655,49 +655,22 @@ public class TetrisEngine
 	/**Generates a random block , in a random rotation.*/
 	private synchronized void newblock()
 	{
+		// Check:
 		if(nextblock == null)
 			nextblock = getRandBlock();
 		
 		//Next block becomes this block.
-		activeblock = nextblock;
-		
-		int x = blockdef.length;
-		int retx = rdm.nextInt(x);
-		
-		int y = blockdef[retx].length;
-		int rety = rdm.nextInt(y);
-		
-		activeblock.type=retx;
-		activeblock.rot=rety;
-		
-		activeblock.array = toBlock2D(blockdef[retx][rety]);
-		
-		activeblock.x = tetris.width/2 -2;
-		activeblock.y = 0;
-		
-		Color bcolor = Block.colors
-		[rdm.nextInt(Block.colors.length)];
-		activeblock.color = bcolor;
+		activeblock = nextblock.clone();
 		
 		//Generate random block.
 		nextblock = getRandBlock();
-		
-		//Don't even try if there's any blocks in the first row.
-		for(int i = 0;i < tetris.blocks.length;i++)
-		{
-			if(tetris.blocks[i][0].getState().equals(BlockState.FILLED))
-			{
-				gameover();
-				return;
-			}
-		}
-		
 		
 		if(!copy()){
 			gameover();
 		}
 	}
 	
+	/**Create and return a random block.*/
 	private Tetromino getRandBlock()
 	{
 		Tetromino ret = new Tetromino();
@@ -714,6 +687,9 @@ public class TetrisEngine
 		
 		ret.x = tetris.width/2 -2;
 		ret.y = 0;
+		
+		Color bcolor = Block.colors[rdm.nextInt(Block.colors.length)];
+		ret.color = bcolor;
 		
 		//Fill the block with their colors first.
 		for(int i = 0;i < ret.array.length;i++)
