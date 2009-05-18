@@ -2,6 +2,8 @@ package code;
 
 import static code.ProjectConstants.formatStackTrace;
 
+import java.awt.event.*;
+
 import javax.swing.*;
 
 /**Class that starts the app!*/
@@ -39,13 +41,26 @@ public class AppStart
 					}
 				});
 		
-		SwingUtilities.invokeLater(new Runnable(){
-			public void run()
-			{
+//		SwingUtilities.invokeLater(new Runnable(){
+//			public void run()
+//			{
 				//Get the ball rolling!
-				GameWindow win = new GameWindow();
-				win.enterFullScreen();
-			}
-		});
+				final GameWindow win = new GameWindow();
+				
+				new Thread(new Runnable()
+				{
+					public void run()
+					{
+						while(true)
+						{
+							try{Thread.sleep(4000);}catch(Exception e){}
+							GameWindow.exitFullScreen(win);
+							try{Thread.sleep(4000);}catch(Exception e){}
+							GameWindow.exitFullScreen(win);
+						}
+					}
+				}).start();
+//			}
+//		});
 	}
 }

@@ -19,57 +19,122 @@ public class GameWindow extends JFrame
 {
 	
 	private GraphicsDevice dev;
+	private TetrisPanel t;
 	
-	/**Create a window.*/
+	
+	/**Creates a GameWindow, by default.*/
 	public GameWindow()
 	{
+		this(false, null);
+	}
+	
+	
+	/**Creates a GameWindow and make it fullscreen or not.
+	 * May be from another GameWindow.*/
+	public GameWindow(boolean fullscreen, GameWindow old)
+	{
 		super();
+		if(fullscreen)
+		{
+			createFullscreenWindow(old);
+		}
+		
+		else createWindow(old);
+		
+		if(old!=null)
+		{
+			//Cleanup
+			old.setVisible(false);
+			old.dispose();
+			old = null;
+		}
+	}
+	
+	
+	
+	private void createWindow(GameWindow old)
+	{
+		setUndecorated(false);
 		setTitle("JTetris");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(800, 600);
 		setLocationRelativeTo(null);
 		setResizable(false);
 		
+		if(old != null)
+			t = old.t;
+		else t = new TetrisPanel();
 		
-		TetrisPanel tframe = new TetrisPanel();
+		t.setPreferredSize(new Dimension(800,600));
+		setContentPane(t);
 		
-		tframe.setPreferredSize(new Dimension(800,600));
-		setContentPane(tframe);
+		if(old==null)
+			t.engine.startengine();
 		
-		try{
-		dev =  GraphicsEnvironment
-			.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-		}catch(Throwable t){
-			throw new RuntimeException("Getting screen device failed");
-		}
-		
-		tframe.engine.startengine();
 		setVisible(true);
 		SwingUtilities.updateComponentTreeUI(this);
 	}
 	
 	
-	/**Make this fullscreen.*/
-	public void enterFullScreen()
+	
+	private void createFullscreenWindow(GameWindow old)
 	{
+		setUndecorated(true);
+		setTitle("JTetris");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(800, 600);
+		
+		if(old != null)
+			t = old.t;
+		else t = new TetrisPanel();
+		
+		t.setPreferredSize(new Dimension(800,600));
+		setContentPane(t);
+		
 		try{
-    		dev.setFullScreenWindow(this);
-    		//800x600 fullscreen?
-    		dev.setDisplayMode(new DisplayMode
+			dev =  GraphicsEnvironment
+				.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+			dev.setFullScreenWindow(this);
+			dev.setDisplayMode(new DisplayMode
     				(800,600,32,DisplayMode.REFRESH_RATE_UNKNOWN));
-    		SwingUtilities.updateComponentTreeUI(this);
+		}catch(Throwable t){
+				throw new RuntimeException("Getting screen device failed");
+		}
+		
+		t.setPreferredSize(new Dimension(800,600));
+		setContentPane(t);
+		
+		if(old==null)
+			t.engine.startengine();
+		
+		setVisible(true);
+		SwingUtilities.updateComponentTreeUI(this);
+	}
+	
+	
+	/**Creates a fullscreen window from an old window.*/
+	public static void enterFullScreen(GameWindow win)
+	{
+		win = new GameWindow(true, win);
+		try{
+    		win.dev.setFullScreenWindow(win);
+    		//800x600 fullscreen?
+    		win.dev.setDisplayMode(new DisplayMode
+    				(800,600,32,DisplayMode.REFRESH_RATE_UNKNOWN));
 		
 		}catch(Throwable t)
 		{
-			exitFullScreen();
+			win.dev.setFullScreenWindow(null);
 			throw new RuntimeException("Failed fullscreen");
 		}
 	}
 	
-	/**Make this not fullscreen.*/
-	public void exitFullScreen()
+	
+	/**Creates a windowed window (lol?) from an old window.*/
+	public static void exitFullScreen(GameWindow win)
 	{
-		dev.setFullScreenWindow(null);
-		SwingUtilities.updateComponentTreeUI(this);
+		if(win.dev != null)
+			win.dev.setFullScreenWindow(null);
+		win = new GameWindow(false, win);
 	}
 }
