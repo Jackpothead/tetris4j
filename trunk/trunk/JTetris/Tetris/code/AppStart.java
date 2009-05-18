@@ -45,18 +45,18 @@ public class AppStart
 //			public void run()
 //			{
 				//Get the ball rolling!
-				final GameWindow win = new GameWindow();
 				
 				new Thread(new Runnable()
 				{
 					public void run()
 					{
+						GameWindow win = new GameWindow();
 						while(true)
 						{
-							try{Thread.sleep(4000);}catch(Exception e){}
-							GameWindow.exitFullScreen(win);
-							try{Thread.sleep(4000);}catch(Exception e){}
-							GameWindow.exitFullScreen(win);
+							try{Thread.sleep(10000);}catch(Exception e){}
+							win = GameWindow.enterFullScreen(win);
+							try{Thread.sleep(10000);}catch(Exception e){}
+							win = GameWindow.exitFullScreen(win);
 						}
 					}
 				}).start();

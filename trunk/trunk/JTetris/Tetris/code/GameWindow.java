@@ -113,7 +113,7 @@ public class GameWindow extends JFrame
 	
 	
 	/**Creates a fullscreen window from an old window.*/
-	public static void enterFullScreen(GameWindow win)
+	public static GameWindow enterFullScreen(GameWindow win)
 	{
 		win = new GameWindow(true, win);
 		try{
@@ -127,14 +127,16 @@ public class GameWindow extends JFrame
 			win.dev.setFullScreenWindow(null);
 			throw new RuntimeException("Failed fullscreen");
 		}
+		return win;
 	}
 	
 	
 	/**Creates a windowed window (lol?) from an old window.*/
-	public static void exitFullScreen(GameWindow win)
+	public static GameWindow exitFullScreen(GameWindow win)
 	{
 		if(win.dev != null)
 			win.dev.setFullScreenWindow(null);
 		win = new GameWindow(false, win);
+		return win;
 	}
 }
