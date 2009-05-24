@@ -6,19 +6,19 @@ import java.awt.Color;
 public class Block implements Cloneable
 {
 	public static final Color[] colors = {
-		new Color(202,51,51),
-		new Color(168,84,21),
-		new Color(115,115,115),
-		new Color(51,128,51),
-		new Color(128,128,51),
-		new Color(191,51,191),
-		new Color(29,156,168),
-		new Color(51,51,202)
+		
+		new Color(0,200,200),//light-blue
+		new Color(200,200,0),//yellow
+		new Color(0,0,200),//dark-blue
+		new Color(200,140,0),//orange
+		new Color(140,0,200),//violet
+		new Color(0,200,0),//green
+		new Color(200,0,0)//red
 	};
 	
 	/**Color of an empty block.*/
 	public static final Color emptycolor =
-		new Color(184,245,184,204);
+		new Color(190,190,255,60);
 	
 	/**State of the block.*/
 	private volatile BlockState state = BlockState.EMPTY;

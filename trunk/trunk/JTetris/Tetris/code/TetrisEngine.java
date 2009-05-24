@@ -689,7 +689,7 @@ public class TetrisEngine
 		ret.x = tetris.width/2 -2;
 		ret.y = 0;
 		
-		Color bcolor = Block.colors[rdm.nextInt(Block.colors.length)];
+		Color bcolor = Block.colors[rnd1];
 		ret.color = bcolor;
 		
 		//Fill the block with their colors first.

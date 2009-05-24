@@ -41,9 +41,9 @@ public class AppStart
 					}
 				});
 		
-//		SwingUtilities.invokeLater(new Runnable(){
-//			public void run()
-//			{
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run()
+			{
 				//Get the ball rolling!
 				
 				new Thread(new Runnable()
@@ -51,16 +51,9 @@ public class AppStart
 					public void run()
 					{
 						GameWindow win = new GameWindow();
-						while(true)
-						{
-							try{Thread.sleep(10000);}catch(Exception e){}
-							win = GameWindow.enterFullScreen(win);
-							try{Thread.sleep(10000);}catch(Exception e){}
-							win = GameWindow.exitFullScreen(win);
-						}
 					}
 				}).start();
-//			}
-//		});
+			}
+		});
 	}
 }
