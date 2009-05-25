@@ -7,18 +7,18 @@ public class Block implements Cloneable
 {
 	public static final Color[] colors = {
 		
-		new Color(0,200,200),//light-blue
-		new Color(200,200,0),//yellow
-		new Color(0,0,200),//dark-blue
-		new Color(200,140,0),//orange
-		new Color(140,0,200),//violet
-		new Color(0,200,0),//green
-		new Color(200,0,0)//red
+		new Color(229,46,56),//red
+		new Color(137,129,0),//tan
+		new Color(31,54,149),//dark-blue
+		new Color(196,93,0),//orange
+		new Color(101,39,142),//purple
+		new Color(13,113,43),//green
+		new Color(97,97,97)//gray
 	};
 	
 	/**Color of an empty block.*/
 	public static final Color emptycolor =
-		new Color(190,190,255,60);
+		new Color(120,120,190,90);
 	
 	/**State of the block.*/
 	private volatile BlockState state = BlockState.EMPTY;

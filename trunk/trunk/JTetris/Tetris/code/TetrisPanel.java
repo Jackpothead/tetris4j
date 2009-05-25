@@ -208,7 +208,7 @@ public class TetrisPanel extends JPanel
     					mainy+c2*squaredim, squaredim, squaredim);
     			
     			//Draw square borders.
-                g.setColor(new Color(72,126,177));
+                g.setColor(new Color(255,255,255,25));
                 g.drawRect(mainx+c1*squaredim,
                         mainy+c2*squaredim, squaredim, squaredim);
     			
