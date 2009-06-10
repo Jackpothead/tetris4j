@@ -512,7 +512,9 @@ public class TetrisEngine
 					
 					//passed; now add blocks.
 					for(int u = 0;u < tetris.blocks.length;u++)
+					{
 						fadeblocks.add(tetris.blocks[u][i]);
+					}
 				}
 				
 				long before = System.currentTimeMillis();
@@ -531,34 +533,25 @@ public class TetrisEngine
 					{
 						//Not the best color algorithm, but works most of
 						//the time.
+						
+						//New fading algorithm. Only changes the ALPHA value
+						//and leaves the rgb.
 						Color bcol = b.getColor();
 						int R = bcol.getRed();
 						int G = bcol.getGreen();
 						int B = bcol.getBlue();
 						int AL = bcol.getAlpha();
 						
-						float rfade = 
-							(Block.emptycolor.getRed()-R)/approxloops;
-						float gfade = 
-							(Block.emptycolor.getGreen()-G)/approxloops;
-						float bfade = 
-							(Block.emptycolor.getBlue()-B)/approxloops;
-						float alfade =
-							(Block.emptycolor.getAlpha()-B)/approxloops;
+						int fade = (AL-Block.emptycolor.getAlpha()) /approxloops;
+						System.out.println(fade);
 						
-						if(R<255-rfade)
-							R+=rfade;
+						if(AL>0)
+							AL-=fade;
 						
-						if(G<255-gfade)
-							G+=gfade;
+						if(AL < 0) //Occasionally crashes without this.
+							AL = 0;
 						
-						if(B<255-bfade)
-							B+=bfade;
-						
-						if(AL<255-alfade)
-							AL+=alfade;
-						
-						Color newc = new Color(R,G,B);
+						Color newc = new Color(R,G,B,AL);
 						b.setColor(newc);
 					}
 					

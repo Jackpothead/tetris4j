@@ -7,13 +7,13 @@ public class Block implements Cloneable
 {
 	public static final Color[] colors = {
 		
-		new Color(229,46,56),//red
-		new Color(137,129,0),//tan
-		new Color(31,54,149),//dark-blue
-		new Color(196,93,0),//orange
-		new Color(101,39,142),//purple
-		new Color(13,113,43),//green
-		new Color(97,97,97)//gray
+		new Color(0,0,0,220),
+		new Color(0,0,0,205),
+		new Color(0,0,0,190),
+		new Color(0,0,0,165),
+		new Color(0,0,0,140),
+		new Color(0,0,0,125),
+		new Color(0,0,0,110)
 	};
 	
 	/**Color of an empty block.*/
