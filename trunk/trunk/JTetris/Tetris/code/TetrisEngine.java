@@ -331,6 +331,27 @@ public class TetrisEngine
 		if(!gamethread.isAlive())gamethread.start();
 	}
 	
+	/**Resets the blocks but keeps everything else.*/
+	public void clear()
+	{
+		for(int i = 0;i < tetris.blocks.length;i++)
+		{
+			for(int j = 0;j < tetris.blocks[i].length;j++)
+			{
+				tetris.blocks[i][j] = new Block(BlockState.EMPTY);
+			}
+		}
+	}
+	
+	/**Fully resets everything.*/
+	public void reset()
+	{
+		tetris.score=0;
+		tetris.lines=0;
+		clear();
+		activeblock.array = null;
+	}
+	
 	
 	/**Done the current block; plays the FALL sound and changes
 	 * <br>all active blocks to filled.*/
@@ -354,6 +375,10 @@ public class TetrisEngine
 	/**Called when Game Over (Blocks stacked so high that copy() fails)*/
 	private void gameover()
 	{
+		//Check first.
+		if(tetris.state == GameState.GAMEOVER)
+			return;
+		
 		//Return immediately.
 		new Thread(){public void run(){
 			//pause the game first.
@@ -364,35 +389,48 @@ public class TetrisEngine
 			//die sound.
 			tetris.sound.sfx(Sounds.DIE);
 			
-			try
-			{
-				//I have to do this.. bugfix.
-				SwingUtilities.invokeAndWait(new Runnable(){
-					public void run()
-					{
-						//wait for input.
-						JOptionPane.showInternalMessageDialog(tetris,
-						"Game Over: Play again?");
-					}
-				});
-			} catch (Exception e)
-			{
-				throw new RuntimeException("GUI window failed.");
-			}
+			String disp = 	"            \n"+
+			"    xxxx    \n"+
+			"   x    x   \n"+
+			"  x      x  \n"+
+			" x xx  xx x \n"+
+			" x        x \n"+
+			" x   x    x \n"+
+			" x        x \n"+
+			" x  xxx   x \n"+
+			" x x   x  x \n"+
+			" x       x  \n"+
+			"  xx   xx   \n"+
+			"    xxx     \n"+
+			"x          x\n"+
+			" xx      xx \n"+
+			"   xx  xx   \n"+
+			"     xx     \n"+
+			"   xx  xx   \n"+
+			" xx      xx \n"+
+			"x          x\n";
+
+			//Must do this before reset.
+            Block[][] gameover = 
+            	strToBlocks(disp, tetris.width, tetris.height).clone();
+            tetris.blocks = gameover;
+            
+            long timebefore = System.currentTimeMillis();
+            
+            //Pause loop. Capped at 3 seconds.
+            while(tetris.state == GameState.GAMEOVER
+            		&& System.currentTimeMillis()-timebefore < 3000)
+            {
+            	try{Thread.sleep(20);}catch(Exception e){}
+            }
 			
 			//reset.
-			tetris.score=0;
-			tetris.lines=0;
-			for(int i = 0;i < tetris.blocks.length;i++)
-			{
-				for(int j = 0;j < tetris.blocks[i].length;j++)
-				{
-					tetris.blocks[i][j] = new Block(BlockState.EMPTY);
-				}
-			}
-			activeblock.array = null;
+			reset();
 			tetris.state = GameState.PAUSED;
-			laststep = System.currentTimeMillis();
+			
+			//Important?
+			clear();
+			
 		}}.start();
 		
 	}
@@ -713,7 +751,7 @@ public class TetrisEngine
 	/**Function to convert byte[][] to Block[][]*/
 	private static Block[][] toBlock2D(byte[][] b)
 	{
-		if(b == null)return null;
+		if(b == null)return null;         
 		
 		Block[][] ret = new Block[b.length][b[0].length];
 		
@@ -750,6 +788,27 @@ public class TetrisEngine
 			}
 		}
 		
+		return ret;
+	}
+	
+	
+	/**Return a Block[][], from a String.*/
+	private static Block[][] strToBlocks(String disp, int a, int b)
+	{
+		Block[][] ret = new Block[a][b];
+		String[] ts = disp.split("\n");
+		for(int i = 0;i < ret[0].length;i++)
+		{
+			for(int y = 0;y < ret.length;y++)
+			{
+				if(ts[i].charAt(y)=='x')
+				{
+					ret[y][i] = new Block(BlockState.FILLED);
+					ret[y][i].setColor(new Color(0,0,0,127));
+				}
+				else ret[y][i] = new Block(BlockState.EMPTY);
+			}
+		}
 		return ret;
 	}
 

@@ -48,7 +48,7 @@ public class TetrisPanel extends JPanel
 	public int lines = 0;
 	
 	/**Maximum time allowed per step in milliseconds.*/
-	public int steptime = 350;
+	public int steptime = 200;
 	
 	/**Time used to fade block that have been cleared.*/
 	public int fadetime = 300;
@@ -135,10 +135,9 @@ public class TetrisPanel extends JPanel
 				//Pause button!
 				if(ke.getKeyCode() == KeyEvent.VK_SHIFT)
 				{
-					if(state==GameState.PLAYING)
-						state = GameState.PAUSED;
-					else if(state==GameState.PAUSED)
+					if(state==GameState.PAUSED)
 						state = GameState.PLAYING;
+					else state = GameState.PAUSED;
 				}
 			}
 		});
@@ -252,11 +251,18 @@ public class TetrisPanel extends JPanel
 		}
 		
 		
-		if(state == GameState.PAUSED)
+		if(state == GameState.PAUSED || state == GameState.GAMEOVER)
 		{
-    		g.setColor(Color.RED);
+    		g.setColor(new Color(160,220,40));
     		g.setFont(new Font(Font.SERIF,Font.BOLD,16));
-    		String pausestring = "JTetris. Press shift to play.";
+    		String pausestring = null;
+    		
+    		if(state == GameState.PAUSED)
+    			pausestring = "(SHIFT to play).";
+    		
+    		if(state == GameState.GAMEOVER)
+    			pausestring = "Game over (SHIFT to restart).";
+    		
     		g.drawString(pausestring, 
     				(getWidth() - g.getFontMetrics().stringWidth(pausestring))
     				/ 2 + 50,300);
