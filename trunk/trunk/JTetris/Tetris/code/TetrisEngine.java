@@ -235,7 +235,7 @@ public class TetrisEngine
 	//---------------FUNCTIONS---------------//
 	
 	/**Called when the RIGHT key is pressed.*/
-	public void keyright()
+	public synchronized void keyright()
 	{
 		if(DEBUG)System.out.println("RIGHT.");
 		
@@ -247,7 +247,7 @@ public class TetrisEngine
 	}
 	
 	/**Called when the LEFT key is pressed.*/
-	public void keyleft()
+	public synchronized void keyleft()
 	{
 		if(DEBUG)System.out.println("LEFT.");
 		
@@ -258,14 +258,14 @@ public class TetrisEngine
 	}
 	
 	/**Called when the DOWN key is pressed.*/
-	public void keydown()
+	public synchronized void keydown()
 	{
 		if(DEBUG)System.out.println("DOWN.");
 		step();
 	}
 	
 	/**Called when rotate key is called (Z or UP)*/
-	public void keyrotate()
+	public synchronized void keyrotate()
 	{
 		if(DEBUG)System.out.println("ROTATED.");
 		
@@ -293,7 +293,7 @@ public class TetrisEngine
 	}
 	
 	/**Called when slam key (SPACE) is pressed.*/
-	public void keyslam()
+	public synchronized void keyslam()
 	{
 		laststep = System.currentTimeMillis();
 		
@@ -334,7 +334,7 @@ public class TetrisEngine
 	
 	/**Done the current block; plays the FALL sound and changes
 	 * <br>all active blocks to filled.*/
-	public void donecurrent()
+	private void donecurrent()
 	{	
 		tetris.sound.sfx(Sounds.FALL);
 		for(int i = 0;i < tetris.blocks.length;i++)
@@ -352,7 +352,7 @@ public class TetrisEngine
 	}
 
 	/**Called when Game Over (Blocks stacked so high that copy() fails)*/
-	public void gameover()
+	private void gameover()
 	{
 		//Return immediately.
 		new Thread(){public void run(){
@@ -402,7 +402,7 @@ public class TetrisEngine
 	 * already exists under it, true otherwise.<br>
 	 * 
 	 * <br>This method isn't very efficient.*/
-	public boolean copy()
+	private boolean copy()
 	{
 		try{
 		int x = activeblock.x;
@@ -467,7 +467,7 @@ public class TetrisEngine
 	}
 
 	/**Steps into the next phase if possible.*/
-	private void step()
+	private synchronized void step()
 	{
 		if(activeblock == null)
 		{//step() gives you a random block if none is available.
