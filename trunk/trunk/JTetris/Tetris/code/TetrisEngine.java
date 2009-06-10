@@ -543,7 +543,6 @@ public class TetrisEngine
 						int AL = bcol.getAlpha();
 						
 						int fade = (AL-Block.emptycolor.getAlpha()) /approxloops;
-						System.out.println(fade);
 						
 						if(AL>0)
 							AL-=fade;
