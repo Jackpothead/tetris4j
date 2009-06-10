@@ -3,3 +3,8 @@
 === javax.sound.midi.MidiUnavailableException. MIDI OUT transmitter not available..===
 
 Fix: Unknown.
+
+
+=== Random game-over ===
+
+Fix: Mostly fixed, I think. May still occur once in a while.
