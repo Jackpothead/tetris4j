@@ -417,9 +417,9 @@ public class TetrisEngine
             
             long timebefore = System.currentTimeMillis();
             
-            //Pause loop. Capped at 3 seconds.
+            //Pause loop. Capped at 5 seconds.
             while(tetris.state == GameState.GAMEOVER
-            		&& System.currentTimeMillis()-timebefore < 3000)
+            		&& System.currentTimeMillis()-timebefore < 5000)
             {
             	try{Thread.sleep(20);}catch(Exception e){}
             }

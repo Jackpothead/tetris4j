@@ -253,7 +253,7 @@ public class TetrisPanel extends JPanel
 		
 		if(state == GameState.PAUSED || state == GameState.GAMEOVER)
 		{
-    		g.setColor(new Color(160,220,40));
+    		g.setColor(new Color(255,255,255,160));
     		g.setFont(new Font(Font.SERIF,Font.BOLD,16));
     		String pausestring = null;
     		
