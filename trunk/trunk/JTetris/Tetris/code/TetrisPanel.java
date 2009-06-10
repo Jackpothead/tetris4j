@@ -48,7 +48,7 @@ public class TetrisPanel extends JPanel
 	public int lines = 0;
 	
 	/**Maximum time allowed per step in milliseconds.*/
-	public int steptime = 200;
+	public int steptime = 350;
 	
 	/**Time used to fade block that have been cleared.*/
 	public int fadetime = 300;
