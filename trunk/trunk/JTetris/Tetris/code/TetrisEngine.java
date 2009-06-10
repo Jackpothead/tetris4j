@@ -439,8 +439,9 @@ public class TetrisEngine
 	 * the abstract block grid. Returns false if a block<br>
 	 * already exists under it, true otherwise.<br>
 	 * 
-	 * <br>This method isn't very efficient.*/
-	private boolean copy()
+	 * <br>This method isn't very efficient. Thus, it must be
+	 * synchronized.*/
+	private synchronized boolean copy()
 	{
 		try{
 		int x = activeblock.x;
