@@ -326,13 +326,13 @@ public class TetrisEngine
 	
 	/**Should be called AFTER swing initialization. This is so
 	 * <br>the first block doesn't appear halfway down the screen.*/
-	public void startengine()
+	public synchronized void startengine()
 	{
 		if(!gamethread.isAlive())gamethread.start();
 	}
 	
 	/**Resets the blocks but keeps everything else.*/
-	public void clear()
+	public synchronized void clear()
 	{
 		for(int i = 0;i < tetris.blocks.length;i++)
 		{
@@ -344,7 +344,7 @@ public class TetrisEngine
 	}
 	
 	/**Fully resets everything.*/
-	public void reset()
+	public synchronized void reset()
 	{
 		tetris.score=0;
 		tetris.lines=0;
@@ -355,7 +355,7 @@ public class TetrisEngine
 	
 	/**Done the current block; plays the FALL sound and changes
 	 * <br>all active blocks to filled.*/
-	private void donecurrent()
+	private synchronized void donecurrent()
 	{	
 		tetris.sound.sfx(Sounds.FALL);
 		for(int i = 0;i < tetris.blocks.length;i++)
@@ -373,7 +373,7 @@ public class TetrisEngine
 	}
 
 	/**Called when Game Over (Blocks stacked so high that copy() fails)*/
-	private void gameover()
+	private synchronized void gameover()
 	{
 		//Check first.
 		if(tetris.state == GameState.GAMEOVER)
@@ -530,7 +530,7 @@ public class TetrisEngine
 	
 	/**Runs the checkforclears() on a seperate thread. Also performs
 	 * <br>the fade out effect.*/
-	private void checkforclears()
+	private synchronized void checkforclears()
 	{
 		new Thread(){
 			public void run()
@@ -611,7 +611,7 @@ public class TetrisEngine
 	/**As expected this function checks whether there are any clears.
 	 * <br>Uses recursion if more than one line can be cleared.
 	 * <br>Don't run this on the EDT!*/
-	private void
+	private synchronized void
 		checkforclears(int alreadycleared, Block[][] b)
 	{
 		if(b==null)
@@ -682,7 +682,7 @@ public class TetrisEngine
 	
 	
 	/**Generates a random block , in a random rotation.*/
-	private void newblock()
+	private synchronized void newblock()
 	{
 		// Check:
 		if(nextblock == null)
@@ -703,7 +703,7 @@ public class TetrisEngine
 	}
 	
 	/**Create and return a random block.*/
-	private Tetromino getRandBlock()
+	private synchronized Tetromino getRandBlock()
 	{
 		Tetromino ret = new Tetromino();
 		int x = blockdef.length;
