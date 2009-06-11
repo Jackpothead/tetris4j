@@ -275,8 +275,8 @@ public class TetrisEngine
 						System.currentTimeMillis() - laststep;
 					
 					try{
-						//Safer than sleeping for more.
-						Thread.sleep(10);
+						//Took too much CPU.
+						Thread.sleep(steptime/2);
 					}catch(Exception e){}
 					
 					if(timeelapsedsincelaststep > steptime)
