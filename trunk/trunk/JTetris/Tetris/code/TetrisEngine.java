@@ -173,11 +173,11 @@ public class TetrisEngine
 	
 	
 	/**Primitive representation of active block.*/
-	Tetromino activeblock;
+	volatile Tetromino activeblock;
 	
 	
 	/**Next block.*/
-	Tetromino nextblock = null;
+	volatile Tetromino nextblock = null;
 	
 	
 	/**Time of previous step.*/
@@ -522,8 +522,6 @@ public class TetrisEngine
 		}
 		
 		checkforclears();//Moving this here.
-		
-		activeblock.array = null;
 	}
 
 	/**Called when Game Over (Blocks stacked so high that copy() fails)*/
@@ -686,9 +684,12 @@ public class TetrisEngine
 	 * <br>the fade out effect.*/
 	private synchronized void checkforclears()
 	{
-		new Thread(){
+		//Threading fix?
+		activeblock = null;
+		
+		Thread th = new Thread(){
 			public void run()
-			{
+			{	
 				//Some copy/pasting here! =)
 				ArrayList<Block> fadeblocks = new ArrayList<Block>();
 				
@@ -758,7 +759,9 @@ public class TetrisEngine
 				checkforclears(0,null);
 				newblock();
 			}
-		}.start();
+		};
+		
+		th.start();
 	}
 	
 	
@@ -839,6 +842,8 @@ public class TetrisEngine
 	private synchronized void newblock()
 	{
 		// Check:
+		if(activeblock != null)
+			return;
 		if(nextblock == null)
 			nextblock = getRandBlock();
 		
@@ -853,7 +858,7 @@ public class TetrisEngine
 		}
 		
 		//Bonus?
-		score++;
+		score+=1;
 	}
 	
 	/**Create and return a random block.*/
