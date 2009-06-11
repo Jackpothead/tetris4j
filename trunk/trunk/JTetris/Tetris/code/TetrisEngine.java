@@ -292,7 +292,7 @@ public class TetrisEngine
 	//---------------FUNCTIONS---------------//
 	
 	
-	public void draw(Graphics g, Image bg)
+	public synchronized void draw(Graphics g, Image bg)
 	{
 		//Background.
 		g.drawImage(bg, 0, 0, tetris);
