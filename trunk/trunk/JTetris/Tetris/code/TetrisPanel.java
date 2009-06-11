@@ -89,13 +89,12 @@ public class TetrisPanel extends JPanel
 		state = GameState.PLAYING;
 		
 		sound = SoundManager.getSoundManager();
-		sound.music(SoundManager.Sounds.TETRIS_THEME);
 		
 		//This is the bg-image.
 		try
 		{
 			bg = Toolkit.getDefaultToolkit()
-			.createImage(getResURL("/image/backlayer.jpg"));
+			.getImage(getResURL("/image/backlayer.jpg"));
 		} catch (Exception e)
 		{
 			throw new RuntimeException("Cannot load image.");
@@ -166,6 +165,7 @@ public class TetrisPanel extends JPanel
 		
 		//Initialize the TetrisEngine object.
 		engine = new TetrisEngine(this);
+		sound.music(SoundManager.Sounds.TETRIS_THEME);
 		
 	}
 	

@@ -57,8 +57,6 @@ public class GameWindow extends JFrame
 		setUndecorated(false);
 		setTitle("JTetris");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(800, 600);
-		setLocationRelativeTo(null);
 		setResizable(false);
 		
 		if(old != null)
@@ -71,8 +69,9 @@ public class GameWindow extends JFrame
 		if(old==null)
 			t.engine.startengine();
 		
+		pack();
+		setLocationRelativeTo(null);
 		setVisible(true);
-		SwingUtilities.updateComponentTreeUI(this);
 	}
 	
 	
