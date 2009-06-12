@@ -264,9 +264,6 @@ public class TetrisEngine
 			{
 				while(true)
 				{
-					//Break loop if game isn't even playing.
-					if(!(state == GameState.PLAYING))
-						continue;
 					
 					long timeelapsedsincelaststep = 
 						System.currentTimeMillis() - laststep;
@@ -275,6 +272,11 @@ public class TetrisEngine
 						//Took too much CPU.
 						Thread.sleep(steptime/2);
 					}catch(Exception e){}
+					
+					//Break loop if game isn't even playing.
+					//Best to put AFTER sleeping.
+					if(!(state == GameState.PLAYING))
+						continue;
 					
 					if(timeelapsedsincelaststep > steptime)
 						step();
@@ -675,7 +677,7 @@ public class TetrisEngine
 		
 		Thread th = new Thread(){
 			public void run()
-			{	
+			{
 				//Some copy/pasting here! =)
 				ArrayList<Block> fadeblocks = new ArrayList<Block>();
 				
