@@ -9,21 +9,9 @@ import javax.swing.JOptionPane;
  * Use <pre>import static tetris.code.ProjectConstants</pre>.*/
 public class ProjectConstants
 {
-	/**True if project is still being debugged,
-	 * false otherwise.*/
-	public static final boolean DEBUG = false;
 	
 	/**Should the application start fullscreened?*/
 	public static final boolean STARTFS = false;
-	
-	
-	/**Prints something to the console, with a tab
-	 * <br>and leading/trailing newlines.*/
-	public static void pImportant(Object o)
-	{
-		if(DEBUG)
-		System.out.printf("\n\t%s\n\n",o);
-	}
 	
 	/**Yes this adds leading zeroes.*/
 	public static String addLeadingZeroes(int n, int zeroes)

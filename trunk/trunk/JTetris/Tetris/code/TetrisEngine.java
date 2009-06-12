@@ -262,9 +262,6 @@ public class TetrisEngine
 		gamethread = new Thread(){
 			public void run()
 			{
-				//this fixes a bug.
-				//newblock();
-				
 				while(true)
 				{
 					//Break loop if game isn't even playing.
@@ -391,8 +388,6 @@ public class TetrisEngine
 	/**Called when the RIGHT key is pressed.*/
 	public synchronized void keyright()
 	{
-		if(DEBUG)System.out.println("RIGHT.");
-		
 		activeblock.x++;
 		
 		//Failsafe: Revert XPosition.
@@ -403,8 +398,6 @@ public class TetrisEngine
 	/**Called when the LEFT key is pressed.*/
 	public synchronized void keyleft()
 	{
-		if(DEBUG)System.out.println("LEFT.");
-		
 		activeblock.x--;
 		
 		//Failsafe: Revert XPosition.
@@ -414,15 +407,12 @@ public class TetrisEngine
 	/**Called when the DOWN key is pressed.*/
 	public synchronized void keydown()
 	{
-		if(DEBUG)System.out.println("DOWN.");
 		step();
 	}
 	
 	/**Called when rotate key is called (Z or UP)*/
 	public synchronized void keyrotate()
 	{
-		if(DEBUG)System.out.println("ROTATED.");
-		
 		if(activeblock.array==null)return;//necessary NPE checking.
 		
 		Block[][] lastblock = copy2D(activeblock.array);
@@ -535,8 +525,6 @@ public class TetrisEngine
 		new Thread(){public void run(){
 			//pause the game first.
 			state = GameState.GAMEOVER;
-			
-			pImportant("Game Over");
 			
 			//die sound.
 			tetris.sound.sfx(Sounds.DIE);
@@ -667,8 +655,6 @@ public class TetrisEngine
 			return;
 		}
 		
-		if(DEBUG)
-			System.out.println("STEP: " + ++stepcount);
 		laststep = System.currentTimeMillis();
 		
 		//move 1 down.
@@ -827,7 +813,6 @@ public class TetrisEngine
 			}
 			
 			//No new lines were cleared.
-			pImportant("Cleared: " + alreadycleared + " line(s).");
 			if(alreadycleared>=4)tetris.sound.sfx(Sounds.TETRIS);
 			else tetris.sound.sfx(Sounds.CLEAR);
 			
