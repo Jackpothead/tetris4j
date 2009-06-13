@@ -66,12 +66,12 @@ public class GameWindow extends JFrame
 		t.setPreferredSize(new Dimension(800,600));
 		setContentPane(t);
 		
-		if(old==null)
-			t.engine.startengine();
-		
 		pack();
 		setLocationRelativeTo(null);
 		setVisible(true);
+		
+		if(old==null)
+			t.engine.startengine();
 	}
 	
 	
@@ -103,11 +103,11 @@ public class GameWindow extends JFrame
 		t.setPreferredSize(new Dimension(800,600));
 		setContentPane(t);
 		
-		if(old==null)
-			t.engine.startengine();
-		
 		setVisible(true);
 		SwingUtilities.updateComponentTreeUI(this);
+		
+		if(old==null)
+			t.engine.startengine();
 	}
 	
 	

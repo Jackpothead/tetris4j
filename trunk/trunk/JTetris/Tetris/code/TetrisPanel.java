@@ -62,10 +62,9 @@ public class TetrisPanel extends JPanel
 		//I should add a KeyManager for this.
 		addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent ke)
-			{
+			{	
 				synchronized(engine)
 				{
-				
     				if(engine.state == GameState.PLAYING)
     				{
         				if(ke.getKeyCode() == KeyEvent.VK_LEFT)
