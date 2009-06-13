@@ -293,10 +293,10 @@ public class TetrisEngine
 	//---------------FUNCTIONS---------------//
 	
 	
-	public synchronized void draw(Graphics g, Image bg)
+	public synchronized void draw(Graphics g, Image back, Image front)
 	{
 		//Background.
-		g.drawImage(bg, 0, 0, tetris);
+		g.drawImage(back, 0, 0, tetris);
 		
 		//The coordinates of the top left corner of the game board.
 		int mainx = (tetris.getWidth() - bounds.width) / 2 + 50;
@@ -356,15 +356,6 @@ public class TetrisEngine
     					g.fillRect(nextx+c1*nextblockdim,
         					nexty+c2*nextblockdim, nextblockdim, nextblockdim);
     				}
-    				
-    				
-    				//The way it works, this often looks better
-    				//without square borders.
-    				/*
-    				g.setColor(new Color(32,104,183));
-                    g.drawRect(nextx+c1*nextblockdim,
-                    		nexty+c2*nextblockdim, nextblockdim, nextblockdim);
-                    		*/
     			}
     		}
 		}
@@ -386,6 +377,8 @@ public class TetrisEngine
     				(tetris.getWidth() - g.getFontMetrics()
     						.stringWidth(pausestring))/ 2 + 50,300);
 		}
+		
+		g.drawImage(front, 0, 0, tetris);
 	}
 	
 	
