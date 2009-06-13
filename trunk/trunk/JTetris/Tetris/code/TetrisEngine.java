@@ -390,7 +390,7 @@ public class TetrisEngine
 	
 	
 	/**Called when the RIGHT key is pressed.*/
-	public void keyright()
+	public synchronized void keyright()
 	{
 		activeblock.x++;
 		
@@ -400,7 +400,7 @@ public class TetrisEngine
 	}
 	
 	/**Called when the LEFT key is pressed.*/
-	public void keyleft()
+	public synchronized void keyleft()
 	{
 		activeblock.x--;
 		
@@ -409,13 +409,13 @@ public class TetrisEngine
 	}
 	
 	/**Called when the DOWN key is pressed.*/
-	public void keydown()
+	public synchronized void keydown()
 	{
 		step();
 	}
 	
 	/**Called when rotate key is called (Z or UP)*/
-	public void keyrotate()
+	public synchronized void keyrotate()
 	{
 		if(activeblock.array==null)return;//necessary NPE checking.
 		
@@ -441,7 +441,7 @@ public class TetrisEngine
 	}
 	
 	/**Called when slam key (SPACE) is pressed.*/
-	public void keyslam()
+	public synchronized void keyslam()
 	{
 		laststep = System.currentTimeMillis();
 		
