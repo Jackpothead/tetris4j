@@ -232,7 +232,7 @@ public class TetrisEngine
 	
 
 	/**Current state of the game (PLAYING, PAUSED, etc.)*/
-	public GameState state;
+	public volatile GameState state;
 	
 	
 	/**Public constructor. Remember to call startengine()
