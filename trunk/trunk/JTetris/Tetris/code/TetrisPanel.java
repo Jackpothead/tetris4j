@@ -63,27 +63,31 @@ public class TetrisPanel extends JPanel
 		addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent ke)
 			{
-				if(engine.state == GameState.PLAYING)
+				synchronized(engine)
 				{
-    				if(ke.getKeyCode() == KeyEvent.VK_LEFT)
-    					TetrisPanel.this.engine.keyleft();
-    				if(ke.getKeyCode() == KeyEvent.VK_RIGHT)
-    					TetrisPanel.this.engine.keyright();
-    				if(ke.getKeyCode() == KeyEvent.VK_DOWN)
-    					TetrisPanel.this.engine.keydown();
-    				if(ke.getKeyCode() == KeyEvent.VK_SPACE)
-    					TetrisPanel.this.engine.keyslam();
-    				if(ke.getKeyCode() == KeyEvent.VK_UP
-    					||ke.getKeyCode() == KeyEvent.VK_Z)
-    					TetrisPanel.this.engine.keyrotate();
-				}
 				
-				//Pause button!
-				if(ke.getKeyCode() == KeyEvent.VK_SHIFT)
-				{
-					if(engine.state==GameState.PAUSED)
-						engine.state = GameState.PLAYING;
-					else engine.state = GameState.PAUSED;
+    				if(engine.state == GameState.PLAYING)
+    				{
+        				if(ke.getKeyCode() == KeyEvent.VK_LEFT)
+        					TetrisPanel.this.engine.keyleft();
+        				if(ke.getKeyCode() == KeyEvent.VK_RIGHT)
+        					TetrisPanel.this.engine.keyright();
+        				if(ke.getKeyCode() == KeyEvent.VK_DOWN)
+        					TetrisPanel.this.engine.keydown();
+        				if(ke.getKeyCode() == KeyEvent.VK_SPACE)
+        					TetrisPanel.this.engine.keyslam();
+        				if(ke.getKeyCode() == KeyEvent.VK_UP
+        					||ke.getKeyCode() == KeyEvent.VK_Z)
+        					TetrisPanel.this.engine.keyrotate();
+    				}
+    				
+    				//Pause button!
+    				if(ke.getKeyCode() == KeyEvent.VK_SHIFT)
+    				{
+    					if(engine.state==GameState.PAUSED)
+    						engine.state = GameState.PLAYING;
+    					else engine.state = GameState.PAUSED;
+    				}
 				}
 			}
 		});
