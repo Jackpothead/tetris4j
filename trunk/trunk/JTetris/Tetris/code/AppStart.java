@@ -43,9 +43,6 @@ public class AppStart
 					}
 				});
 		
-		if(true)
-			throw new RuntimeException();
-		
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run()
 			{
