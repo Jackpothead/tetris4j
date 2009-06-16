@@ -1,7 +1,6 @@
 package code;
 
 import java.awt.*;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 import javax.swing.*;
@@ -250,7 +249,7 @@ public class TetrisEngine
 		{
 			for(int t2 = 0;t2 < blocks[t1].length;t2++)
 			{
-				blocks[t1][t2] = new Block(BlockState.EMPTY);
+				blocks[t1][t2] = new Block(Block.EMPTY);
 			}
 		}
 		
@@ -293,10 +292,9 @@ public class TetrisEngine
 	//---------------FUNCTIONS---------------//
 	
 	
-	public synchronized void draw(Graphics g, Image back, Image front)
+	/**Draws the stuff, minus backgrounds, etc.*/
+	public synchronized void draw(Graphics g)
 	{
-		//Background.
-		g.drawImage(back, 0, 0, tetris);
 		
 		//The coordinates of the top left corner of the game board.
 		int mainx = (tetris.getWidth() - bounds.width) / 2 + 50;
@@ -377,8 +375,6 @@ public class TetrisEngine
     				(tetris.getWidth() - g.getFontMetrics()
     						.stringWidth(pausestring))/ 2 + 50,300);
 		}
-		
-		g.drawImage(front, 0, 0, tetris);
 	}
 	
 	
@@ -479,7 +475,7 @@ public class TetrisEngine
 		{
 			for(int j = 0;j < blocks[i].length;j++)
 			{
-				blocks[i][j] = new Block(BlockState.EMPTY);
+				blocks[i][j] = new Block(Block.EMPTY);
 			}
 		}
 	}
@@ -503,8 +499,8 @@ public class TetrisEngine
 		{
 			for(int r = 0;r < blocks[i].length;r++)
 			{
-				if(blocks[i][r].getState() == BlockState.ACTIVE)
-					blocks[i][r].setState(BlockState.FILLED);
+				if(blocks[i][r].getState() == Block.ACTIVE)
+					blocks[i][r].setState(Block.FILLED);
 			}
 		}
 		
@@ -526,7 +522,8 @@ public class TetrisEngine
 			//die sound.
 			tetris.sound.sfx(Sounds.DIE);
 			
-			String disp = 	"            \n"+
+			String disp = 	
+			"            \n"+
 			"    xxxx    \n"+
 			"   x    x   \n"+
 			"  x      x  \n"+
@@ -594,8 +591,8 @@ public class TetrisEngine
 		{
 			for(int r = 0;r < 4;r++)
 			{
-				if(activeblock.array[r][i].getState() == BlockState.ACTIVE
-					&&buffer[x+i][y+r].getState() == BlockState.FILLED)
+				if(activeblock.array[r][i].getState() == Block.ACTIVE
+					&&buffer[x+i][y+r].getState() == Block.FILLED)
 				{
 					return false;
 				}
@@ -607,9 +604,9 @@ public class TetrisEngine
 		{
 			for(int r = 0;r < buffer[i].length;r++)
 			{
-				if(buffer[i][r].getState() == BlockState.ACTIVE)
+				if(buffer[i][r].getState() == Block.ACTIVE)
 				{
-					buffer[i][r].setState(BlockState.EMPTY);
+					buffer[i][r].setState(Block.EMPTY);
 					buffer[i][r].setColor(Block.emptycolor);
 				}
 			}
@@ -620,9 +617,9 @@ public class TetrisEngine
 		{
 			for(int r = 0;r < 4;r++)
 			{
-				if(activeblock.array[i][r].getState() == BlockState.ACTIVE)
+				if(activeblock.array[i][r].getState() == Block.ACTIVE)
 				{
-					buffer[x+r][y+i].setState(BlockState.ACTIVE);
+					buffer[x+r][y+i].setState(Block.ACTIVE);
 					
 					//facepalm.
 					buffer[x+r][y+i].setColor(activeblock.color);
@@ -682,8 +679,7 @@ public class TetrisEngine
 					//check for unfilled blocks.
 					for(int y = 0;y < blocks.length;y++)
 					{
-						if(!blocks[y][i].getState()
-								.equals(BlockState.FILLED))
+						if(!(blocks[y][i].getState() == Block.FILLED))
 						continue loop;
 					}
 					
@@ -766,7 +762,7 @@ public class TetrisEngine
 		{
 			for(int y = 0;y < b.length;y++)
 			{
-				if(!b[y][i].getState().equals(BlockState.FILLED))
+				if(!(b[y][i].getState() == Block.FILLED))
 					continue ML;
 			}
 			
@@ -869,7 +865,7 @@ public class TetrisEngine
 		{
 			for(int k = 0;k < ret.array[i].length;k++)
 			{
-				if(ret.array[i][k].getState()==BlockState.ACTIVE)
+				if(ret.array[i][k].getState()==Block.ACTIVE)
 					ret.array[i][k].setColor(ret.color);
 			}
 		}
@@ -904,10 +900,10 @@ public class TetrisEngine
 				switch(b[i][j])
 				{
 				case 1:
-					ret[i][j] = new Block(BlockState.ACTIVE);
+					ret[i][j] = new Block(Block.ACTIVE);
 					break;
 				default:
-					ret[i][j] = new Block(BlockState.EMPTY);
+					ret[i][j] = new Block(Block.EMPTY);
 				}
 			}
 		}
@@ -945,10 +941,10 @@ public class TetrisEngine
 			{
 				if(ts[i].charAt(y)=='x')
 				{
-					ret[y][i] = new Block(BlockState.FILLED);
+					ret[y][i] = new Block(Block.FILLED);
 					ret[y][i].setColor(new Color(0,0,0,127));
 				}
-				else ret[y][i] = new Block(BlockState.EMPTY);
+				else ret[y][i] = new Block(Block.EMPTY);
 			}
 		}
 		return ret;

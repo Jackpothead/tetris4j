@@ -10,10 +10,12 @@ import javax.swing.*;
 public class AppStart
 {
 	/**Errors go to console if true, otherwise go to GUI logger.*/
-	public static final boolean REPORT_TO_CONSOLE = true;
+	public static final boolean REPORT_TO_CONSOLE = false;
 	
 	public static void main(String... args)
 	{
+		System.setErr(System.out);
+		
 		try{
 			UIManager.setLookAndFeel(
 					UIManager.getSystemLookAndFeelClassName());
@@ -30,9 +32,6 @@ public class AppStart
 							e.printStackTrace();
 						else
 						JOptionPane.showMessageDialog(null,
-	"Sarah got stuck in a tree while " +
-	"Wen li was being pissed off by " +//Don't ask.
-	"Jason\nand the principal threw an exception.\n\n"+
 						"Fatal exception in thread: " + t.getName()
 						+ "\nException type: " + e.getClass().getName()
 						+ "\nReason given: " + e.getMessage()

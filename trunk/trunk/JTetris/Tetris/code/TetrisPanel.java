@@ -140,7 +140,10 @@ public class TetrisPanel extends JPanel
 		//not a JPanel.
 		super.paintComponent(g);
 		
-		engine.draw(g, bg, fg);
+		//Draw: background, then main, then foreground.
+		g.drawImage(bg, 0, 0, this);
+		engine.draw(g);
+		g.drawImage(fg, 0, 0, this);
 	
 	}
 }

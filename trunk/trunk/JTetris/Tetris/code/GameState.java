@@ -1,10 +1,7 @@
 package code;
 
 
-/**Representation of the current game state. More
- * <br>game states may be added later, and some of
- * <br>these aren't even in use. The only relevent
- * <br>one right now is GameState.PLAYING.*/
+/**Enum representation of the current game's state*/
 public enum GameState
 {
 	STARTSCREEN,PLAYING,PAUSED,HISCORE,GAMEOVER,BUSY;

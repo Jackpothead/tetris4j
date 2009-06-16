@@ -74,6 +74,8 @@ public class ProjectConstants
 		
 	}
 	
+	
+	/**In case of errors, call this.*/
 	public static String formatStackTrace(StackTraceElement[] e)
 	{
 		StringBuffer ret = new StringBuffer();
