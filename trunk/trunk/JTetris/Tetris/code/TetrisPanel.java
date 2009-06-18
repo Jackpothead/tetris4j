@@ -63,13 +63,13 @@ public class TetrisPanel extends JPanel
 			throw new RuntimeException("Cannot load image.");
 		}
 		
-		//Animation loop. Updates every 20 milliseconds (50 fps).
+		//Animation loop. Updates every 40 milliseconds (25 fps).
 		new Thread(){
 			public void run()
 			{
 				while(true)
 				{
-					try{Thread.sleep(20);}catch(Throwable t){}
+					try{Thread.sleep(40);}catch(Throwable t){}
 					repaint();
 				}
 			}
@@ -113,18 +113,6 @@ public class TetrisPanel extends JPanel
 			{
 				TetrisPanel.this.requestFocusInWindow();
 			}});
-		
-		//Whatever it takes to get mouse focus in a JFrame -.-
-		new Thread(){
-			
-    		public void run(){
-    			while(!TetrisPanel.this.isFocusOwner())
-    			{
-    				TetrisPanel.this.requestFocusInWindow();
-    			}
-    		}
-    			
-		}.start();
 		
 		setFocusable(true);
 		engine.state = GameState.PAUSED;
