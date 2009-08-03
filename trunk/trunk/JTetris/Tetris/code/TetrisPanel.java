@@ -31,14 +31,17 @@ public class TetrisPanel extends JPanel
 	/**Foreground image.*/
 	public Image fg = null;
 	
+	/**Is it being controlled by a human or ai?*/
+	public boolean isHumanControlled = false;
+	
+	/**AI object controlling the game.*/
+	public TetrisAI controller = null;
+	
 	/**<p>Public TetrisPanel constructor.*/
 	public TetrisPanel()
 	{
 		//Initialize the TetrisEngine object.
 		engine = new TetrisEngine(this);
-		
-		//MAY CHANGE: Set the game to PLAYING asap.
-		engine.state = GameState.PLAYING;
 		
 		sound = SoundManager.getSoundManager();
 		
@@ -81,7 +84,8 @@ public class TetrisPanel extends JPanel
 			{	
 				synchronized(engine)
 				{
-    				if(engine.state == GameState.PLAYING)
+    				if(engine.state == GameState.PLAYING
+    						&& isHumanControlled)
     				{
         				if(ke.getKeyCode() == KeyEvent.VK_LEFT)
         					TetrisPanel.this.engine.keyleft();
@@ -99,6 +103,8 @@ public class TetrisPanel extends JPanel
     				//Pause button!
     				if(ke.getKeyCode() == KeyEvent.VK_SHIFT)
     				{
+    					if(controller != null && !controller.isrunning)
+    						controller.send_ready();
     					if(engine.state==GameState.PAUSED)
     						engine.state = GameState.PLAYING;
     					else engine.state = GameState.PAUSED;
@@ -119,6 +125,8 @@ public class TetrisPanel extends JPanel
 		
 		sound.music(SoundManager.Sounds.TETRIS_THEME);
 		
+		if(!isHumanControlled)
+			controller = new TetrisAI(this);
 	}
 	
 	/**<p>Paints this component, called with repaint().*/
