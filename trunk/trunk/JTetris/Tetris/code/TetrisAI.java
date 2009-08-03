@@ -1,5 +1,7 @@
 package code;
 
+import static code.ProjectConstants.sleep_;
+
 /**This is the default tetris playing AI. It holds a reference to
  * the tetris engines so it can send key events when necessary
  * and it knows the current block*/
@@ -18,10 +20,12 @@ public class TetrisAI
 	public TetrisAI(TetrisPanel panel){
 		this.panel = panel;
 		engine = panel.engine;
-		thread = new AIThread();
 	}
 	
 	public void send_ready(){
+		if(isrunning)
+			return;
+		thread = new AIThread();
 		thread.start();
 		isrunning = true;
 	}
@@ -29,7 +33,7 @@ public class TetrisAI
 	class AIThread extends Thread{
 		public void run(){
 			
-			while(engine!=null && engine.state != GameState.GAMEOVER){
+			while(engine.state != GameState.GAMEOVER){
 				//If it's merely paused, do nothing; if it's actually game over
 				//then break loop entirely.
     			if(engine.state == GameState.PLAYING){
@@ -38,38 +42,46 @@ public class TetrisAI
     				BlockPosition temp = computeBestFit(engine);
     				int elx = temp.bx;
     				int erot = temp.rot;
-    				int blx = engine.activeblock.x;
-    				int brot = engine.activeblock.rot;
     				
     				//Move it!
-    				movehere(blx, brot, elx, erot);
+    				movehere(elx, erot);
     			}
     			//safety
-    			try{Thread.sleep(100);}catch(Exception e){}
+    			sleep_(waittime);
 			}
 			
-			System.out.println("Game Over!");
 			isrunning = false;
 		}
 		
 		/**Keypresses to move block to calculated position.*/
-		private void movehere(int curx, int currot, int finx, int finrot){
-			while(currot != finrot){
+		private void movehere(int finx, int finrot){
+			int st_blocksdropped = engine.blocksdropped;
+			
+			while(engine.activeblock.rot != finrot){
 				//Rotate first so we don't get stuck in the edges.
-				currot++;
 				engine.keyrotate();
+				
+				//Now wait.
+				sleep_(waittime);
 			}
 			
-			while(curx != finx){
+			while(engine.activeblock.x != finx){
 				//Now nudge the block.
-				if(curx < finx){
+				if(engine.activeblock.x < finx){
 					engine.keyright();
-					curx++;
 				}
-				else if(curx > finx){
+				else if(engine.activeblock.x > finx){
 					engine.keyleft();
-					curx--;
 				}
+				
+				sleep_(waittime);
+			}
+			
+			while(engine.blocksdropped == st_blocksdropped
+					&& engine.state != GameState.GAMEOVER){
+				//Now move it down until it drops a new block.
+				engine.keydown();
+				sleep_(waittime);
 			}
 		}
 	}
@@ -78,7 +90,7 @@ public class TetrisAI
 	 * state the blocks are in.*/
 	static BlockPosition computeBestFit(TetrisEngine currentstate){
 		BlockPosition ret = new BlockPosition();
-		ret.bx = 0;
+		ret.bx = 4;
 		ret.rot = 0;
 		return ret;
 	}

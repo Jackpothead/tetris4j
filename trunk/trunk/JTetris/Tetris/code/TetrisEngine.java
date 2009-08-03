@@ -220,6 +220,9 @@ public class TetrisEngine
 	/**Lines cleared*/
 	public int lines = 0;
 	
+	/**How many blocks were dropped so far?*/
+	public int blocksdropped = 0;
+	
 	/**Maximum time allowed per step in milliseconds.*/
 	public int steptime = 350;
 	
@@ -267,10 +270,8 @@ public class TetrisEngine
 					long timeelapsedsincelaststep = 
 						System.currentTimeMillis() - laststep;
 					
-					try{
-						//Took too much CPU.
-						Thread.sleep(steptime/2);
-					}catch(Exception e){}
+					//Took too much CPU.
+					sleep_(steptime/2);
 					
 					//Break loop if game isn't even playing.
 					//Best to put AFTER sleeping.
@@ -381,6 +382,9 @@ public class TetrisEngine
 	/**Called when the RIGHT key is pressed.*/
 	public void keyright()
 	{
+		if(state!=GameState.PLAYING)
+			return;
+		
 		activeblock.x++;
 		
 		//Failsafe: Revert XPosition.
@@ -391,6 +395,9 @@ public class TetrisEngine
 	/**Called when the LEFT key is pressed.*/
 	public void keyleft()
 	{
+		if(state!=GameState.PLAYING)
+			return;
+		
 		activeblock.x--;
 		
 		//Failsafe: Revert XPosition.
@@ -400,12 +407,18 @@ public class TetrisEngine
 	/**Called when the DOWN key is pressed.*/
 	public void keydown()
 	{
+		if(state!=GameState.PLAYING)
+			return;
+		
 		step();
 	}
 	
 	/**Called when rotate key is called (Z or UP)*/
 	public void keyrotate()
 	{
+		if(state!=GameState.PLAYING)
+			return;
+		
 		if(activeblock.array==null)return;//necessary NPE checking.
 		
 		Block[][] lastblock = copy2D(activeblock.array);
@@ -432,6 +445,9 @@ public class TetrisEngine
 	/**Called when slam key (SPACE) is pressed.*/
 	public void keyslam()
 	{
+		if(state!=GameState.PLAYING)
+			return;
+		
 		laststep = System.currentTimeMillis();
 		
 		//This will game over pretty damn fast!
@@ -555,7 +571,7 @@ public class TetrisEngine
             while(state == GameState.GAMEOVER
             		&& System.currentTimeMillis()-timebefore < 5000)
             {
-            	try{Thread.sleep(20);}catch(Exception e){}
+            	sleep_(20);
             }
 			
 			//reset.
@@ -727,9 +743,7 @@ public class TetrisEngine
 						b.setColor(newc);
 					}
 					
-					try{
-						Thread.sleep(20);
-					}catch(Exception e){}
+					sleep_(20);
 				}
 				
 				state = GameState.PLAYING;
@@ -837,6 +851,9 @@ public class TetrisEngine
 		
 		//Bonus?
 		score+=1;
+		
+		//Successfully dropped 1 block, here.
+		blocksdropped+=1;
 	}
 	
 	/**Create and return a random block.*/

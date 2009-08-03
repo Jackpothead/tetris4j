@@ -32,7 +32,7 @@ public class TetrisPanel extends JPanel
 	public Image fg = null;
 	
 	/**Is it being controlled by a human or ai?*/
-	public boolean isHumanControlled = false;
+	public boolean isHumanControlled = true;
 	
 	/**AI object controlling the game.*/
 	public TetrisAI controller = null;
@@ -72,7 +72,7 @@ public class TetrisPanel extends JPanel
 			{
 				while(true)
 				{
-					try{Thread.sleep(40);}catch(Throwable t){}
+					sleep_(40);
 					repaint();
 				}
 			}
@@ -84,8 +84,7 @@ public class TetrisPanel extends JPanel
 			{	
 				synchronized(engine)
 				{
-    				if(engine.state == GameState.PLAYING
-    						&& isHumanControlled)
+    				if(isHumanControlled)
     				{
         				if(ke.getKeyCode() == KeyEvent.VK_LEFT)
         					TetrisPanel.this.engine.keyleft();
