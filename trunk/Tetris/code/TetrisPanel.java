@@ -4,7 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -77,40 +77,24 @@ public class TetrisPanel extends JPanel
 				}
 			}
 		}.start();
+
+		//Add all these key functions.
+		KeyPressManager kpm = new KeyPressManager();
+		kpm.putKey(KeyEvent.VK_LEFT, new Runnable(){public void run(){TetrisPanel.this.engine.keyleft();}});
+		kpm.putKey(KeyEvent.VK_RIGHT, new Runnable(){public void run(){TetrisPanel.this.engine.keyright();}});
+		kpm.putKey(KeyEvent.VK_DOWN, new Runnable(){public void run(){TetrisPanel.this.engine.keydown();}});
+		kpm.putKey(KeyEvent.VK_SPACE, new Runnable(){public void run(){TetrisPanel.this.engine.keyslam();}});
+		kpm.putKey(KeyEvent.VK_UP, new Runnable(){public void run(){TetrisPanel.this.engine.keyrotate();}});
+		kpm.putKey(KeyEvent.VK_Z, new Runnable(){public void run(){TetrisPanel.this.engine.keyrotate();}});
+		kpm.putKey(KeyEvent.VK_SHIFT, new Runnable(){public void run(){
+			if(controller != null && !controller.isrunning)
+				controller.send_ready();
+			if(engine.state==GameState.PAUSED)
+				engine.state = GameState.PLAYING;
+			else engine.state = GameState.PAUSED;
+		}});
 		
-		//I should add a KeyManager for this.
-		addKeyListener(new KeyAdapter(){
-			public void keyPressed(KeyEvent ke)
-			{	
-				synchronized(engine)
-				{
-    				if(isHumanControlled)
-    				{
-        				if(ke.getKeyCode() == KeyEvent.VK_LEFT)
-        					TetrisPanel.this.engine.keyleft();
-        				if(ke.getKeyCode() == KeyEvent.VK_RIGHT)
-        					TetrisPanel.this.engine.keyright();
-        				if(ke.getKeyCode() == KeyEvent.VK_DOWN)
-        					TetrisPanel.this.engine.keydown();
-        				if(ke.getKeyCode() == KeyEvent.VK_SPACE)
-        					TetrisPanel.this.engine.keyslam();
-        				if(ke.getKeyCode() == KeyEvent.VK_UP
-        					||ke.getKeyCode() == KeyEvent.VK_Z)
-        					TetrisPanel.this.engine.keyrotate();
-    				}
-    				
-    				//Pause button!
-    				if(ke.getKeyCode() == KeyEvent.VK_SHIFT)
-    				{
-    					if(controller != null && !controller.isrunning)
-    						controller.send_ready();
-    					if(engine.state==GameState.PAUSED)
-    						engine.state = GameState.PLAYING;
-    					else engine.state = GameState.PAUSED;
-    				}
-				}
-			}
-		});
+		addKeyListener(kpm);
 		
 		//Focus when clicked.
 		addMouseListener(new MouseAdapter(){
@@ -141,4 +125,53 @@ public class TetrisPanel extends JPanel
 		g.drawImage(fg, 0, 0, this);
 	
 	}
+
+	/*
+	This is a class that manages key presses. It's so that each press is sent
+	once, and if you hold a key, it doesn't count as multiple presses.
+	*/
+	class KeyPressManager extends KeyAdapter{
+
+		KeyPressManager(){}
+
+		void putKey(int i, Runnable r){
+			keymap.put(i, r);
+			keystatemap.put(i, 0);
+		}
+
+		// This hashmap maps from an Int (from KeyEvent.getKeyCode()) to a
+		// function, represented by a Runnable.
+		Map<Integer,Runnable> keymap = new HashMap<Integer,Runnable>();
+
+		// This one stores the states of all the keys.
+		// 0 means it's not pressed, and 1 means it's pressed.
+		Map<Integer,Integer> keystatemap = new HashMap<Integer,Integer>();
+
+		// Called when keypress is detected.
+		public void keyPressed(KeyEvent ke){
+
+			Runnable func = keymap.get(ke.getKeyCode());
+			if(func != null){
+
+				// Here we want to invoke the function, but only if the key is not
+				// already pressed.
+				if(keystatemap.get(ke.getKeyCode()) == 0){
+					//invoke function.
+					func.run();
+					keystatemap.put(ke.getKeyCode(), 1);
+				}
+			}
+			else return;
+		}
+
+
+		// Called when key is released. Here we'll want to modify the map.
+		public void keyReleased(KeyEvent ke){
+			//check if we really care about this key.
+			if(keymap.get(ke.getKeyCode()) != null)
+				keystatemap.put(ke.getKeyCode(), 0);
+		}
+	}
+
+
 }
