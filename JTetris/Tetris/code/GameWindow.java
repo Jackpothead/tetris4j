@@ -9,6 +9,8 @@ import java.util.Arrays;
 import javax.sound.midi.*;
 import javax.swing.*;
 
+import sun.awt.AWTAccessor;
+
 import code.SoundManager.Sounds;
 
 
@@ -55,6 +57,8 @@ public class GameWindow extends JFrame
 		setUndecorated(false);
 		setTitle("JTetris");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(800, 600);
+		setLocationRelativeTo(null);
 		setResizable(false);
 		
 		if(old != null)
@@ -64,12 +68,11 @@ public class GameWindow extends JFrame
 		t.setPreferredSize(new Dimension(800,600));
 		setContentPane(t);
 		
-		pack();
-		setLocationRelativeTo(null);
-		setVisible(true);
-		
 		if(old==null)
 			t.engine.startengine();
+		
+		setVisible(true);
+		SwingUtilities.updateComponentTreeUI(this);
 	}
 	
 	
@@ -101,11 +104,11 @@ public class GameWindow extends JFrame
 		t.setPreferredSize(new Dimension(800,600));
 		setContentPane(t);
 		
-		setVisible(true);
-		SwingUtilities.updateComponentTreeUI(this);
-		
 		if(old==null)
 			t.engine.startengine();
+		
+		setVisible(true);
+		SwingUtilities.updateComponentTreeUI(this);
 	}
 	
 	

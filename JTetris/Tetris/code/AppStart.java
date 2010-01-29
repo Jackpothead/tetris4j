@@ -14,8 +14,6 @@ public class AppStart
 	
 	public static void main(String... args)
 	{
-		System.setErr(System.out);
-		
 		try{
 			UIManager.setLookAndFeel(
 					UIManager.getSystemLookAndFeelClassName());
@@ -31,14 +29,14 @@ public class AppStart
 						if(REPORT_TO_CONSOLE)
 							e.printStackTrace();
 						else
-    						JOptionPane.showMessageDialog(null,
-    						"Java version: " + System.getProperty("java.version")
-    						+ "\nOperating System: " + System.getProperty("os.name")
-    						+ "\nFatal exception in thread: " + t.getName()
-    						+ "\nException: " + e.getClass().getName()
-    						+ "\nReason given: " + e.getMessage()
-    						+ "\n\n"+formatStackTrace(e.getStackTrace()));
-						
+						JOptionPane.showMessageDialog(null,
+	"Sarah got stuck in a tree while " +
+	"Wen li was being pissed off by " +//Don't ask.
+	"Jason\nand the principal threw an exception.\n\n"+
+						"Fatal exception in thread: " + t.getName()
+						+ "\nException type: " + e.getClass().getName()
+						+ "\nReason given: " + e.getMessage()
+						+ "\n\n"+formatStackTrace(e.getStackTrace()));
 						System.exit(1);
 					}
 				});
