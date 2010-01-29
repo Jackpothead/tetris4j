@@ -11,33 +11,33 @@ import javax.swing.*;
 
 import static code.ProjectConstants.*;
 
-/**<p>TetrisPanel is the panel that contains the (main)
- * <br>panels AKA. core. This also holds most of the objects
- * <br>needed to render the game on a JDesktopPane.*/
+/*TetrisPanel is the panel that contains the (main)
+ * panels AKA. core. This also holds most of the objects
+ * needed to render the game on a JDesktopPane.*/
 public class TetrisPanel extends JPanel
 {
 	
 	//---------------BEGIN PUBLIC VARIABLES---------------//
 	
-	/**Public reference to the TetrisEngine object.*/
+	/*Public reference to the TetrisEngine object.*/
 	public TetrisEngine engine;
 	
-	/**Reference to the static SoundManager object.*/
+	/*Reference to the static SoundManager object.*/
 	public SoundManager sound;
 	
-	/**Background image used for the game.*/
+	/*Background image used for the game.*/
 	public Image bg = null;
 	
-	/**Foreground image.*/
+	/*Foreground image.*/
 	public Image fg = null;
 	
-	/**Is it being controlled by a human or ai?*/
+	/*Is it being controlled by a human or ai?*/
 	public boolean isHumanControlled = true;
 	
-	/**AI object controlling the game.*/
+	/*AI object controlling the game.*/
 	public TetrisAI controller = null;
 	
-	/**<p>Public TetrisPanel constructor.*/
+	/*Public TetrisPanel constructor.*/
 	public TetrisPanel()
 	{
 		//Initialize the TetrisEngine object.
@@ -128,7 +128,7 @@ public class TetrisPanel extends JPanel
 			controller = new TetrisAI(this);
 	}
 	
-	/**<p>Paints this component, called with repaint().*/
+	/*Paints this component, called with repaint().*/
 	public void paintComponent(Graphics g)
 	{
 		//Necessary mostly because this is a JDesktopPane and

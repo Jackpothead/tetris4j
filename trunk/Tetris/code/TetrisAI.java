@@ -1,8 +1,9 @@
 package code;
 
 import static code.ProjectConstants.sleep_;
+import static code.ProjectConstants.GameState;
 
-/**This is the default tetris playing AI. It holds a reference to
+/*This is the default tetris playing AI. It holds a reference to
  * the tetris engines so it can send key events when necessary
  * and it knows the current block*/
 public class TetrisAI
@@ -11,10 +12,10 @@ public class TetrisAI
 	private TetrisEngine engine;
 	AIThread thread;
 	
-	/**Is the AI running?*/
+	/*Is the AI running?*/
 	public volatile boolean isrunning = false;
 	
-	/**Time (ms) AI has to wait per keypress.*/
+	/*Time (ms) AI has to wait per keypress.*/
 	public static final int waittime = 100;
 	
 	public TetrisAI(TetrisPanel panel){
@@ -53,7 +54,7 @@ public class TetrisAI
 			isrunning = false;
 		}
 		
-		/**Keypresses to move block to calculated position.*/
+		/*Keypresses to move block to calculated position.*/
 		private void movehere(int finx, int finrot){
 			int st_blocksdropped = engine.blocksdropped;
 			
@@ -86,7 +87,7 @@ public class TetrisAI
 		}
 	}
 	
-	/**This can calculate the best possible fit for it, given the current
+	/*This can calculate the best possible fit for it, given the current
 	 * state the blocks are in.*/
 	static BlockPosition computeBestFit(TetrisEngine currentstate){
 		BlockPosition ret = new BlockPosition();

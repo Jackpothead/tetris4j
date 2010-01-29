@@ -8,13 +8,13 @@ import javax.swing.JOptionPane;
 
 import static code.ProjectConstants.*;
 
-/**This class loads, plays, and manages sound effects and
- * <br>music for Tetris4j. The sound URL's are hardcoded
- * <br>into this class and is loaded statically at runtime.*/
+/*This class loads, plays, and manages sound effects and
+ * music for Tetris4j. The sound URL's are hardcoded
+ * into this class and is loaded statically at runtime.*/
 public class SoundManager
 {
 	
-	/**This represents the list of sounds available.*/
+	/*This represents the list of sounds available.*/
 	public static enum Sounds{
 		// sound/tetris.midi
 		TETRIS_THEME, 
@@ -47,10 +47,10 @@ public class SoundManager
 	private static SoundManager soundmanager = null;
 									//Reference of the SoundManager.
 	
-	/**Since this class locks certain system resources, it's
-	 * <br>best to only have one instance of this class. If an
-	 * <br>instance of SoundManager already exists, this replaces
-	 * <br>that with a new instance.*/
+	/*Since this class locks certain system resources, it's
+	 * best to only have one instance of this class. If an
+	 * instance of SoundManager already exists, this replaces
+	 * that with a new instance.*/
 	public static SoundManager getSoundManager()
 	{
 		soundmanager = new SoundManager();
@@ -73,9 +73,9 @@ public class SoundManager
 		} 
 	}
 	
-	/**Plays a sound. Sounds should be short because once this
-	 * <br>is called again, the previous sound teminates and
-	 * <br>the new sound starts.*/
+	/*Plays a sound. Sounds should be short because once this
+	 * is called again, the previous sound teminates and
+	 * the new sound starts.*/
 	public synchronized void sfx(Sounds s)
 	{
 		switch(s)
@@ -100,8 +100,8 @@ public class SoundManager
 		}
 	}
 	
-	/**Plays a music track. Currently the only track
-	 * <br>is the default MIDI track (theme song).*/
+	/*Plays a music track. Currently the only track
+	 * is the default MIDI track (theme song).*/
 	public synchronized void music(Sounds s)
 	{
 		if(s==null)
