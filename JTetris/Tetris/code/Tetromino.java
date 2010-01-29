@@ -14,11 +14,11 @@ public class Tetromino implements Cloneable
 	
 	
 	/**Position, rotation, type, etc*/
-	public volatile int x, y, rot, type;
+	public int x, y, rot, type;
 	
 	
 	/**Color.*/
-	public volatile Color color;
+	public Color color;
 	
 	
 	/**Copy.*/

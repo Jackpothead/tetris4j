@@ -16,16 +16,12 @@ public class Block implements Cloneable
 		new Color(0,0,0,110)
 	};
 	
-	
-	public static final int EMPTY=0, FILLED=1, ACTIVE=2;
-	
-	
 	/**Color of an empty block.*/
 	public static final Color emptycolor =
 		new Color(120,120,190,90);
 	
 	/**State of the block.*/
-	private volatile int state = EMPTY;
+	private volatile BlockState state = BlockState.EMPTY;
 	
 	/**Color of the block.*/
 	private volatile Color color = emptycolor;
@@ -34,7 +30,7 @@ public class Block implements Cloneable
 	public Block(){}
 	
 	/**Initializing constructor.*/
-	public Block(int s){state=s;}
+	public Block(BlockState s){state=s;}
 	
 	/**String representation of this object.*/
 	public String toString(){
@@ -62,20 +58,22 @@ public class Block implements Cloneable
 		switch(state)
 		{
 		case EMPTY:
+			return 0;
 		case FILLED:
+			return 2;
 		case ACTIVE:
-			return (byte)state;
+			return 1;
 		default:
 			return -1;
 		}
 	}
 
-	public int getState()
+	public BlockState getState()
 	{
 		return state;
 	}
 
-	public void setState(int state)
+	public void setState(BlockState state)
 	{
 		this.state = state;
 	}
