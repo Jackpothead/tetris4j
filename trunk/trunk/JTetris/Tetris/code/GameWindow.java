@@ -9,8 +9,6 @@ import java.util.Arrays;
 import javax.sound.midi.*;
 import javax.swing.*;
 
-import sun.awt.AWTAccessor;
-
 import code.SoundManager.Sounds;
 
 
