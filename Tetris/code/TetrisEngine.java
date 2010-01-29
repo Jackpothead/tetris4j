@@ -9,9 +9,9 @@ import code.SoundManager.Sounds;
 
 import static code.ProjectConstants.*;
 
-/**This class calculates most of the block positions,<br>
- * rotations, etc, although the TetrisPanel object<br>
- * still keeps track of the concrete block coordinates.<br><br>
+/*This class calculates most of the block positions,
+ * rotations, etc, although the TetrisPanel object
+ * still keeps track of the concrete block coordinates.
  * This class will change variables in the TetrisPanel class.*/
 public class TetrisEngine
 {
@@ -19,7 +19,7 @@ public class TetrisEngine
 	
 	//---------------VARIABLES--------------//
 	
-	/**Bunch of hardcoded blocks and their rotations.
+	/*Bunch of hardcoded blocks and their rotations.
 	 * Code them high up in the array so that when you
 	 * get a new one it appears in the highest spot 
 	 * possible.*/
@@ -163,82 +163,82 @@ public class TetrisEngine
 	}};
 	
 	
-	/**Reference to the TetrisPanel containing this object;*/
+	/*Reference to the TetrisPanel containing this object;*/
 	TetrisPanel tetris;
 	
 	
-	/**Random object used to generate new blocks.*/
+	/*Random object used to generate new blocks.*/
 	Random rdm;
 	
 	
-	/**Primitive representation of active block.*/
+	/*Primitive representation of active block.*/
 	volatile Tetromino activeblock;
 	
 	
-	/**Next block.*/
+	/*Next block.*/
 	volatile Tetromino nextblock = null;
 	
 	
-	/**Time of previous step.*/
+	/*Time of previous step.*/
 	long laststep = System.currentTimeMillis();
 	
 	
-	/**Not really needed, just a counter for steps.*/
+	/*Not really needed, just a counter for steps.*/
 	int stepcount = 0;
 	
 	
-	/**Thread to run for the game.*/
+	/*Thread to run for the game.*/
 	Thread gamethread;
 	
 	
-	/**Size of Tetris window, in pixels.*/
+	/*Size of Tetris window, in pixels.*/
 	public Dimension bounds;
 	
-	/**Width and height of the grid, counted in number
-	 * <br>of blocks.*/
+	/*Width and height of the grid, counted in number
+	 * of blocks.*/
 	public int width=12, height=20;
 	
-	/**Dimensions (Width and height) of each square. Squares in
-	 * <br>Tetris must be the same height and width.*/
+	/*Dimensions (Width and height) of each square. Squares in
+	 * Tetris must be the same height and width.*/
 	public int squaredim=25;
 	
-	/**Dimensions of the squares of the next block as drawn.
+	/*Dimensions of the squares of the next block as drawn.
 	 * See squaredim.*/
 	public int nextblockdim = 18;
 	
-	/**DBlock array representation of the gamefield. Blocks are<br>
-	 * counted X first starting from the top left: blocks[5][3]<br>
+	/*DBlock array representation of the gamefield. Blocks are
+	 * counted X first starting from the top left: blocks[5][3]
 	 * would be a block 5 left and 3 down from (0,0).*/
 	public volatile Block[][] blocks;
 	
-	/**Score*/
+	/*Score*/
 	public int score = 0;
 	
-	/**Level (UNUSED)*/
+	/*Level (UNUSED)*/
 	public int level = 0;
 	
-	/**Lines cleared*/
+	/*Lines cleared*/
 	public int lines = 0;
 	
-	/**How many blocks were dropped so far?*/
+	/*How many blocks were dropped so far?*/
 	public int blocksdropped = 0;
 	
-	/**Maximum time allowed per step in milliseconds.*/
+	/*Maximum time allowed per step in milliseconds.*/
 	public int steptime = 350;
 	
-	/**Time used to fade block that have been cleared.*/
+	/*Time used to fade block that have been cleared.*/
 	public int fadetime = 300;
 	
-	/**Game mode (UNUSED)*/
+	/*Game mode (UNUSED)*/
 	public String mode = "CLASSIC";
 	
 
-	/**Current state of the game (PLAYING, PAUSED, etc.)*/
+	/*Current state of the game (PLAYING, PAUSED, etc.)*/
 	public volatile GameState state;
 	
 	
-	/**Public constructor. Remember to call startengine()
-	 * <br>or else this won't do anything!
+	/*Public constructor. Remember to call startengine()
+	 * or else this won't do anything!
 	 * @param p TetrisPanel.*/
 	public TetrisEngine(TetrisPanel p)
 	{
@@ -293,7 +293,7 @@ public class TetrisEngine
 	//---------------FUNCTIONS---------------//
 	
 	
-	/**Draws the stuff, minus backgrounds, etc.*/
+	/*Draws the stuff, minus backgrounds, etc.*/
 	public synchronized void draw(Graphics g)
 	{
 		
@@ -379,7 +379,7 @@ public class TetrisEngine
 	}
 	
 	
-	/**Called when the RIGHT key is pressed.*/
+	/*Called when the RIGHT key is pressed.*/
 	public void keyright()
 	{
 		if(state!=GameState.PLAYING)
@@ -392,7 +392,7 @@ public class TetrisEngine
 		
 	}
 	
-	/**Called when the LEFT key is pressed.*/
+	/*Called when the LEFT key is pressed.*/
 	public void keyleft()
 	{
 		if(state!=GameState.PLAYING)
@@ -404,7 +404,7 @@ public class TetrisEngine
 		if(!copy())activeblock.x++;
 	}
 	
-	/**Called when the DOWN key is pressed.*/
+	/*Called when the DOWN key is pressed.*/
 	public void keydown()
 	{
 		if(state!=GameState.PLAYING)
@@ -413,7 +413,7 @@ public class TetrisEngine
 		step();
 	}
 	
-	/**Called when rotate key is called (Z or UP)*/
+	/*Called when rotate key is called (Z or UP)*/
 	public void keyrotate()
 	{
 		if(state!=GameState.PLAYING)
@@ -442,7 +442,7 @@ public class TetrisEngine
 		}
 	}
 	
-	/**Called when slam key (SPACE) is pressed.*/
+	/*Called when slam key (SPACE) is pressed.*/
 	public void keyslam()
 	{
 		if(state!=GameState.PLAYING)
@@ -477,14 +477,14 @@ public class TetrisEngine
 	///////////////////////////////////////////////////////////////////
 	
 	
-	/**Should be called AFTER swing initialization. This is so
-	 * <br>the first block doesn't appear halfway down the screen.*/
+	/*Should be called AFTER swing initialization. This is so
+	 * the first block doesn't appear halfway down the screen.*/
 	public synchronized void startengine()
 	{
 		if(!gamethread.isAlive())gamethread.start();
 	}
 	
-	/**Resets the blocks but keeps everything else.*/
+	/*Resets the blocks but keeps everything else.*/
 	public synchronized void clear()
 	{
 		for(int i = 0;i < blocks.length;i++)
@@ -496,7 +496,7 @@ public class TetrisEngine
 		}
 	}
 	
-	/**Fully resets everything.*/
+	/*Fully resets everything.*/
 	public synchronized void reset()
 	{
 		score=0;
@@ -506,8 +506,8 @@ public class TetrisEngine
 	}
 	
 	
-	/**Done the current block; plays the FALL sound and changes
-	 * <br>all active blocks to filled.*/
+	/*Done the current block; plays the FALL sound and changes
+	 * all active blocks to filled.*/
 	private synchronized void donecurrent()
 	{	
 		tetris.sound.sfx(Sounds.FALL);
@@ -523,7 +523,7 @@ public class TetrisEngine
 		checkforclears();//Moving this here.
 	}
 
-	/**Called when Game Over (Blocks stacked so high that copy() fails)*/
+	/*Called when Game Over (Blocks stacked so high that copy() fails)*/
 	private synchronized void gameover()
 	{
 		//Check first.
@@ -585,11 +585,11 @@ public class TetrisEngine
 		
 	}
 
-	/**Copies the position of the active block into<br>
-	 * the abstract block grid. Returns false if a block<br>
-	 * already exists under it, true otherwise.<br>
+	/*Copies the position of the active block into
+	 * the abstract block grid. Returns false if a block
+	 * already exists under it, true otherwise.
 	 * 
-	 * <br>This method isn't very efficient. Thus, it must be
+	 * This method isn't very efficient. Thus, it must be
 	 * synchronized.*/
 	private synchronized boolean copy()
 	{
@@ -655,7 +655,7 @@ public class TetrisEngine
 		return true;
 	}
 
-	/**Steps into the next phase if possible.*/
+	/*Steps into the next phase if possible.*/
 	private synchronized void step()
 	{
 		if(activeblock == null)
@@ -676,8 +676,8 @@ public class TetrisEngine
 	}
 	
 	
-	/**Runs the checkforclears() on a seperate thread. Also performs
-	 * <br>the fade out effect.*/
+	/*Runs the checkforclears() on a seperate thread. Also performs
+	 * the fade out effect.*/
 	private synchronized void checkforclears()
 	{
 		//Threading fix?
@@ -758,9 +758,9 @@ public class TetrisEngine
 	}
 	
 	
-	/**As expected this function checks whether there are any clears.
-	 * <br>Uses recursion if more than one line can be cleared.
-	 * <br>Don't run this on the EDT!*/
+	/*As expected this function checks whether there are any clears.
+	 * Uses recursion if more than one line can be cleared.
+	 * Don't run this on the EDT!*/
 	private synchronized void
 		checkforclears(int alreadycleared, Block[][] b)
 	{
@@ -830,7 +830,7 @@ public class TetrisEngine
 	}
 	
 	
-	/**Generates a random block , in a random rotation.*/
+	/*Generates a random block , in a random rotation.*/
 	private synchronized void newblock()
 	{
 		// Check:
@@ -856,7 +856,7 @@ public class TetrisEngine
 		blocksdropped+=1;
 	}
 	
-	/**Create and return a random block.*/
+	/*Create and return a random block.*/
 	private synchronized Tetromino getRandBlock()
 	{
 		Tetromino ret = new Tetromino();
@@ -889,7 +889,7 @@ public class TetrisEngine
 		return ret;
 	}
 	
-	/**Copies an array, but runs in n^2 time.*/
+	/*Copies an array, but runs in n^2 time.*/
 	private static Block[][] copy2D(Block[][] in)
 	{
 		Block[][] ret = new Block[in.length][in[0].length];
@@ -903,7 +903,7 @@ public class TetrisEngine
 		return ret;
 	}
 	
-	/**Function to convert byte[][] to Block[][]*/
+	/*Function to convert byte[][] to Block[][]*/
 	private static Block[][] toBlock2D(byte[][] b)
 	{
 		if(b == null)return null;         
@@ -928,7 +928,7 @@ public class TetrisEngine
 	}
 	
 	
-	/**Function to convert Block[][] to byte[][]*/
+	/*Function to convert Block[][] to byte[][]*/
 	private static byte[][] toByte2D(Block[][] b)
 	{
 		if(b == null)return null;
@@ -947,7 +947,7 @@ public class TetrisEngine
 	}
 	
 	
-	/**Return a Block[][], from a String.*/
+	/*Return a Block[][], from a String.*/
 	private static Block[][] strToBlocks(String disp, int a, int b)
 	{
 		Block[][] ret = new Block[a][b];

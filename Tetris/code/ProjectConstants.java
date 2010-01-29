@@ -5,15 +5,15 @@ import java.net.URL;
 
 import javax.swing.JOptionPane;
 
-/**This class contains a group of project constants.<br>
- * Use <pre>import static tetris.code.ProjectConstants</pre>.*/
+/*This class contains a group of project constants.
+ * Use import static tetris.code.ProjectConstants.*/
 public class ProjectConstants
 {
 	
-	/**Should the application start fullscreened?*/
+	/*Should the application start fullscreened?*/
 	public static final boolean STARTFS = false;
 	
-	/**Yes this adds leading zeroes.*/
+	/*Yes this adds leading zeroes.*/
 	public static String addLeadingZeroes(int n, int zeroes)
 	{
 		if(zeroes > 10)throw new IllegalArgumentException();
@@ -25,7 +25,7 @@ public class ProjectConstants
 		return ret;
 	}
 	
-	/**Sleeps the current thread.*/
+	/*Sleeps the current thread.*/
 	public static void sleep_(int n){
 		try{
 			Thread.sleep(n);
@@ -36,10 +36,10 @@ public class ProjectConstants
 	}
 	
 	
-	/**Returns a resource as an InputStream. First it
-	 * <br>tries to create a FileInputStream from the parent
-	 * <br>directory (if contents are unzipped) and then tries
-	 * <br>to use getResourceAsStream if that fails.*/
+	/*Returns a resource as an InputStream. First it
+	 * tries to create a FileInputStream from the parent
+	 * directory (if contents are unzipped) and then tries
+	 * to use getResourceAsStream if that fails.*/
 	public static InputStream getResStream(String path)
 	throws IOException
 	{
@@ -60,10 +60,10 @@ public class ProjectConstants
 		
 	}
 	
-	/**Returns a resource as a URL object, for certain file
-	 * <br>parsing. Should accomodate Eclipse and other clients/IDEs
-	 * <br>as well. Currently it loads resources from Eclipse, the
-	 * <br>jar file, and from Tortoise.*/
+	/*Returns a resource as a URL object, for certain file
+	 * parsing. Should accomodate Eclipse and other clients/IDEs
+	 * as well. Currently it loads resources from Eclipse, the
+	 * jar file, and from Tortoise.*/
 	@SuppressWarnings("deprecation")
 	public static URL getResURL(String path)
 	throws IOException
@@ -85,7 +85,7 @@ public class ProjectConstants
 	}
 	
 	
-	/**In case of errors, call this.*/
+	/*In case of errors, call this.*/
 	public static String formatStackTrace(StackTraceElement[] e)
 	{
 		StringBuffer ret = new StringBuffer();
@@ -101,5 +101,18 @@ public class ProjectConstants
 			ret.append("]\n");
 		}
 		return ret.toString();
+	}
+
+
+	/*Enum representation of the current game's state*/
+	//Moving this here lol.
+	public enum GameState
+	{
+		STARTSCREEN,
+		PLAYING,
+		PAUSED,
+		HISCORE,
+		GAMEOVER,
+		BUSY;
 	}
 }

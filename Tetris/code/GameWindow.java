@@ -12,7 +12,7 @@ import javax.swing.*;
 import code.SoundManager.Sounds;
 
 
-/**The game window.*/
+/*The game window.*/
 public class GameWindow extends JFrame
 {
 	
@@ -20,14 +20,14 @@ public class GameWindow extends JFrame
 	private TetrisPanel t;
 	
 	
-	/**Creates a GameWindow, by default.*/
+	/*Creates a GameWindow, by default.*/
 	public GameWindow()
 	{
 		this(false, null);
 	}
 	
 	
-	/**Creates a GameWindow and make it fullscreen or not.
+	/*Creates a GameWindow and make it fullscreen or not.
 	 * May be from another GameWindow.*/
 	public GameWindow(boolean fullscreen, GameWindow old)
 	{
@@ -109,7 +109,7 @@ public class GameWindow extends JFrame
 	}
 	
 	
-	/**Creates a fullscreen window from an old window.*/
+	/*Creates a fullscreen window from an old window.*/
 	public static GameWindow enterFullScreen(GameWindow win)
 	{
 		win = new GameWindow(true, win);
@@ -128,7 +128,7 @@ public class GameWindow extends JFrame
 	}
 	
 	
-	/**Creates a windowed window (lol?) from an old window.*/
+	/*Creates a windowed window (lol?) from an old window.*/
 	public static GameWindow exitFullScreen(GameWindow win)
 	{
 		if(win.dev != null)

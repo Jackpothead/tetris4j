@@ -6,10 +6,10 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-/**Class that starts the app!*/
+/*Class that starts the app!*/
 public class AppStart
 {
-	/**Errors go to console if true, otherwise go to GUI logger.*/
+	/*Errors go to console if true, otherwise go to GUI logger.*/
 	public static final boolean REPORT_TO_CONSOLE = true;
 	
 	public static void main(String... args)

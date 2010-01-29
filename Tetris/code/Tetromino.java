@@ -2,26 +2,26 @@ package code;
 
 import java.awt.Color;
 
-/**Object representation of a tetromino.*/
+/*Object representation of a tetromino.*/
 public class Tetromino implements Cloneable
 {
-	/**Constructor.*/
+	/*Constructor.*/
 	public Tetromino(){}
 	
 	
-	/**Contents (Block array)*/
+	/*Contents (Block array)*/
 	public Block[][] array;
 	
 	
-	/**Position, rotation, type, etc*/
+	/*Position, rotation, type, etc*/
 	public volatile int x, y, rot, type;
 	
 	
-	/**Color.*/
+	/*Color.*/
 	public volatile Color color;
 	
 	
-	/**Copy.*/
+	/*Copy.*/
 	public Tetromino clone()
 	{
 		Tetromino ret = new Tetromino();
@@ -35,7 +35,7 @@ public class Tetromino implements Cloneable
 	}
 	
 	
-	/**String representation.*/
+	/*String representation.*/
 	public String toString()
 	{
 		switch(type)
