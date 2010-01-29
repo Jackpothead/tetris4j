@@ -25,16 +25,6 @@ public class ProjectConstants
 		return ret;
 	}
 	
-	/**Sleeps the current thread.*/
-	public static void sleep_(int n){
-		try{
-			Thread.sleep(n);
-		}
-		catch(Throwable t){
-			throw new RuntimeException("Sleep failed?!");
-		}
-	}
-	
 	
 	/**Returns a resource as an InputStream. First it
 	 * <br>tries to create a FileInputStream from the parent

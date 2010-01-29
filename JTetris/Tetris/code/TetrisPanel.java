@@ -31,17 +31,14 @@ public class TetrisPanel extends JPanel
 	/**Foreground image.*/
 	public Image fg = null;
 	
-	/**Is it being controlled by a human or ai?*/
-	public boolean isHumanControlled = true;
-	
-	/**AI object controlling the game.*/
-	public TetrisAI controller = null;
-	
 	/**<p>Public TetrisPanel constructor.*/
 	public TetrisPanel()
 	{
 		//Initialize the TetrisEngine object.
 		engine = new TetrisEngine(this);
+		
+		//MAY CHANGE: Set the game to PLAYING asap.
+		engine.state = GameState.PLAYING;
 		
 		sound = SoundManager.getSoundManager();
 		
@@ -66,13 +63,13 @@ public class TetrisPanel extends JPanel
 			throw new RuntimeException("Cannot load image.");
 		}
 		
-		//Animation loop. Updates every 40 milliseconds (25 fps).
+		//Animation loop. Updates every 20 milliseconds (50 fps).
 		new Thread(){
 			public void run()
 			{
 				while(true)
 				{
-					sleep_(40);
+					try{Thread.sleep(20);}catch(Throwable t){}
 					repaint();
 				}
 			}
@@ -84,7 +81,7 @@ public class TetrisPanel extends JPanel
 			{	
 				synchronized(engine)
 				{
-    				if(isHumanControlled)
+    				if(engine.state == GameState.PLAYING)
     				{
         				if(ke.getKeyCode() == KeyEvent.VK_LEFT)
         					TetrisPanel.this.engine.keyleft();
@@ -102,8 +99,6 @@ public class TetrisPanel extends JPanel
     				//Pause button!
     				if(ke.getKeyCode() == KeyEvent.VK_SHIFT)
     				{
-    					if(controller != null && !controller.isrunning)
-    						controller.send_ready();
     					if(engine.state==GameState.PAUSED)
     						engine.state = GameState.PLAYING;
     					else engine.state = GameState.PAUSED;
@@ -119,13 +114,23 @@ public class TetrisPanel extends JPanel
 				TetrisPanel.this.requestFocusInWindow();
 			}});
 		
+		//Whatever it takes to get mouse focus in a JFrame -.-
+		new Thread(){
+			
+    		public void run(){
+    			while(!TetrisPanel.this.isFocusOwner())
+    			{
+    				TetrisPanel.this.requestFocusInWindow();
+    			}
+    		}
+    			
+		}.start();
+		
 		setFocusable(true);
 		engine.state = GameState.PAUSED;
 		
 		sound.music(SoundManager.Sounds.TETRIS_THEME);
 		
-		if(!isHumanControlled)
-			controller = new TetrisAI(this);
 	}
 	
 	/**<p>Paints this component, called with repaint().*/
