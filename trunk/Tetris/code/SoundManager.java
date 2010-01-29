@@ -35,17 +35,19 @@ public class SoundManager
 		DIE;
 	}
 	
+	// do we even play music at all?
+	public static final boolean PLAY_MUSIC = false;
 	
 	private Sequencer midiseq; //Midi sequencer, plays the music.
 	
 	private InputStream tetheme; //Tetris theme (midi-inputstream).
 	
-				//The collection of
-				//sound effects used.
+		//The collection of
+		//sound effects used.
 	private AudioClip sx1, sx2, sx3, sx4, sx5; 
 	
 	private static SoundManager soundmanager = null;
-									//Reference of the SoundManager.
+		//Reference of the SoundManager.
 	
 	/*Since this class locks certain system resources, it's
 	 * best to only have one instance of this class. If an
@@ -78,6 +80,8 @@ public class SoundManager
 	 * the new sound starts.*/
 	public synchronized void sfx(Sounds s)
 	{
+		if(!PLAY_MUSIC) return;
+		
 		switch(s)
 		{
 		case FALL:
@@ -104,6 +108,8 @@ public class SoundManager
 	 * is the default MIDI track (theme song).*/
 	public synchronized void music(Sounds s)
 	{
+		if(!PLAY_MUSIC) return;
+
 		if(s==null)
 		{
 			midiseq.close();

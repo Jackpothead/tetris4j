@@ -129,47 +129,89 @@ public class TetrisPanel extends JPanel
 	/*
 	This is a class that manages key presses. It's so that each press is sent
 	once, and if you hold a key, it doesn't count as multiple presses.
-	*/
-	class KeyPressManager extends KeyAdapter{
 
-		KeyPressManager(){}
+	Note that some keys should never be counted more than once.
+	*/
+	static class KeyPressManager extends KeyAdapter{
+
+		static final int delay = 40;
+
+		class KeyHandlingThread extends Thread{
+			volatile boolean flag = true;
+			public void run(){
+				// The key handling loop.
+				// Each iteration, call the functions whose keys are currently
+				// being held down.
+
+				while(flag){
+					sleep_(delay);
+
+					//if(keys[0]) keymap.get(KeyEvent.VK_LEFT).run();
+					//if(keys[1]) keymap.get(KeyEvent.VK_RIGHT).run();
+					if(keys[2]) keymap.get(KeyEvent.VK_DOWN).run();
+				}
+			}
+		}
+
+		KeyHandlingThread keythread;
+
+		// After some testing: I think that it's best to only have the down button
+		// have special handling.
+		// Lol now I think it's a bit of a waste to have an entire thread running
+		// for one button that's barely used.
+
+		// Only keys that require special handling:
+		// keys[0]: left
+		// keys[1]: right
+		// keys[2]: down
+		volatile boolean[] keys = {false,false,false};
+
+		KeyPressManager(){
+			keythread = new KeyHandlingThread();
+			keythread.start();
+		}
 
 		void putKey(int i, Runnable r){
 			keymap.put(i, r);
-			keystatemap.put(i, 0);
 		}
 
 		// This hashmap maps from an Int (from KeyEvent.getKeyCode()) to a
 		// function, represented by a Runnable.
 		Map<Integer,Runnable> keymap = new HashMap<Integer,Runnable>();
 
-		// This one stores the states of all the keys.
-		// 0 means it's not pressed, and 1 means it's pressed.
-		Map<Integer,Integer> keystatemap = new HashMap<Integer,Integer>();
-
 		// Called when keypress is detected.
 		public void keyPressed(KeyEvent ke){
+			int ck = ke.getKeyCode();
+			if(keymap.containsKey(ck)){
+				/*
+				if(ck==KeyEvent.VK_LEFT)
+					keys[0]=true;
+				else if(ck==KeyEvent.VK_RIGHT)
+					keys[1]=true;
+				*/
 
-			Runnable func = keymap.get(ke.getKeyCode());
-			if(func != null){
-
-				// Here we want to invoke the function, but only if the key is not
-				// already pressed.
-				if(keystatemap.get(ke.getKeyCode()) == 0){
-					//invoke function.
-					func.run();
-					keystatemap.put(ke.getKeyCode(), 1);
-				}
+				if(ck==KeyEvent.VK_DOWN)
+					keys[2]=true;
+				
+				else keymap.get(ck).run();
 			}
-			else return;
 		}
 
 
 		// Called when key is released. Here we'll want to modify the map.
 		public void keyReleased(KeyEvent ke){
-			//check if we really care about this key.
-			if(keymap.get(ke.getKeyCode()) != null)
-				keystatemap.put(ke.getKeyCode(), 0);
+			int ck = ke.getKeyCode();
+
+			/*
+			if(ck==KeyEvent.VK_LEFT)
+				keys[0]=false;
+			else if(ck==KeyEvent.VK_RIGHT)
+				keys[1]=false;
+			*/
+
+
+			if(ck==KeyEvent.VK_DOWN)
+				keys[2]=false;
 		}
 	}
 
