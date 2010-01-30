@@ -27,19 +27,19 @@ public class TetrisEngine
 	{{
 		// 0 = I block.
 		{
-    		{ 1, 1, 1, 1 },
-    		{ 0, 0, 0, 0 },
-    		{ 0, 0, 0, 0 },
-    		{ 0, 0, 0, 0 } },
-    		
-    		{
-    		{ 0, 1, 0, 0 },
-    		{ 0, 1, 0, 0 },
-    		{ 0, 1, 0, 0 },
-    		{ 0, 1, 0, 0 } } },
-    		
-    		
-    	// 1 = O block
+			{ 1, 1, 1, 1 },
+			{ 0, 0, 0, 0 },
+			{ 0, 0, 0, 0 },
+			{ 0, 0, 0, 0 } },
+			
+			{
+			{ 0, 1, 0, 0 },
+			{ 0, 1, 0, 0 },
+			{ 0, 1, 0, 0 },
+			{ 0, 1, 0, 0 } } },
+			
+			
+		// 1 = O block
 		{
 			{
 			{ 0, 1, 1, 0 },
@@ -561,18 +561,18 @@ public class TetrisEngine
 			"x          x\n";
 
 			//Must do this before reset.
-            Block[][] gameover = 
-            	strToBlocks(disp, width, height).clone();
-            blocks = gameover;
-            
-            long timebefore = System.currentTimeMillis();
-            
-            //Pause loop. Capped at 5 seconds.
-            while(state == GameState.GAMEOVER
-            		&& System.currentTimeMillis()-timebefore < 5000)
-            {
-            	sleep_(20);
-            }
+			Block[][] gameover = 
+				strToBlocks(disp, width, height).clone();
+			blocks = gameover;
+			
+			long timebefore = System.currentTimeMillis();
+			
+			//Pause loop. Capped at 5 seconds.
+			while(state == GameState.GAMEOVER
+					&& System.currentTimeMillis()-timebefore < 5000)
+			{
+				sleep_(20);
+			}
 			
 			//reset.
 			reset();
@@ -890,13 +890,11 @@ public class TetrisEngine
 	}
 	
 	/*Copies an array, but runs in n^2 time.*/
-	private static Block[][] copy2D(Block[][] in)
+	static Block[][] copy2D(Block[][] in)
 	{
 		Block[][] ret = new Block[in.length][in[0].length];
-		for(int i = 0;i < in.length;i++)
-		{
-			for(int j = 0;j < in[0].length;j++)
-			{
+		for(int i = 0;i < in.length;i++) {
+			for(int j = 0;j < in[0].length;j++) {
 				ret[i][j] = in[i][j].clone();
 			}
 		}
@@ -904,16 +902,12 @@ public class TetrisEngine
 	}
 	
 	/*Function to convert byte[][] to Block[][]*/
-	private static Block[][] toBlock2D(byte[][] b)
+	static Block[][] toBlock2D(byte[][] b)
 	{
-		if(b == null)return null;         
-		
+		if(b == null)return null;
 		Block[][] ret = new Block[b.length][b[0].length];
-		
-		for(int i = 0;i < b.length;i++)
-		{
-			for(int j = 0;j < b[0].length;j++)
-			{
+		for(int i = 0;i < b.length;i++) {
+			for(int j = 0;j < b[0].length;j++) {
 				switch(b[i][j])
 				{
 				case 1:
@@ -929,16 +923,12 @@ public class TetrisEngine
 	
 	
 	/*Function to convert Block[][] to byte[][]*/
-	private static byte[][] toByte2D(Block[][] b)
+	static byte[][] toByte2D(Block[][] b)
 	{
 		if(b == null)return null;
-		
 		byte[][] ret = new byte[b.length][b[0].length];
-		
-		for(int i = 0;i < b.length;i++)
-		{
-			for(int j = 0;j < b[0].length;j++)
-			{
+		for(int i = 0;i < b.length;i++) {
+			for(int j = 0;j < b[0].length;j++) {
 				ret[i][j] = b[i][j].toByte();
 			}
 		}
@@ -948,16 +938,13 @@ public class TetrisEngine
 	
 	
 	/*Return a Block[][], from a String.*/
-	private static Block[][] strToBlocks(String disp, int a, int b)
+	static Block[][] strToBlocks(String disp, int a, int b)
 	{
 		Block[][] ret = new Block[a][b];
 		String[] ts = disp.split("\n");
-		for(int i = 0;i < ret[0].length;i++)
-		{
-			for(int y = 0;y < ret.length;y++)
-			{
-				if(ts[i].charAt(y)=='x')
-				{
+		for(int i = 0;i < ret[0].length;i++) {
+			for(int y = 0;y < ret.length;y++) {
+				if(ts[i].charAt(y)=='x') {
 					ret[y][i] = new Block(Block.FILLED);
 					ret[y][i].setColor(new Color(0,0,0,127));
 				}
