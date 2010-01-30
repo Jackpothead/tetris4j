@@ -6,7 +6,7 @@ You will need Apache Ant to run this file.
 
 <project name="tetris4j" default="debug-compile">
 
-	<target name="compile">
+	<target name="compile" depends="clean">
 		<!-- compile the code -->
 		<javac srcdir="./code" destdir="./build" />
 
@@ -21,7 +21,7 @@ You will need Apache Ant to run this file.
 	</target>
 
 	<!-- same as above, but keep debug information. -->
-	<target name="debug-compile">
+	<target name="debug-compile" depends="clean">
 		<!-- compile the code -->
 		<javac srcdir="./code" destdir="./build" debug="true" debuglevel="lines,vars,source" />
 
