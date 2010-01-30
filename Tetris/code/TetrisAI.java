@@ -17,7 +17,7 @@ public class TetrisAI
 	public volatile boolean isrunning = false;
 	
 	/*Time (ms) AI has to wait per keypress.*/
-	public static final int waittime = 1;
+	public static final int waittime = 0;
 	
 	public TetrisAI(TetrisPanel panel){
 		this.panel = panel;
@@ -109,7 +109,7 @@ public class TetrisAI
 			int freeL = free / 10;
 			int freeR = free % 10;
 			int minX = 0 - freeL;
-			int maxX = 8 + freeR;
+			int maxX = (ge.width-4) + freeR;
 			// now loop through each position for a rotation.
 			for(int j=minX; j<=maxX; j++){
 				BlockPosition put = new BlockPosition();
@@ -197,6 +197,16 @@ public class TetrisAI
 							// Already filled, doesn't fit.
 							if(board_p)
 								fit_state = 0;
+
+							// Still the possibility that another block
+							// might still be over it.
+							if(fit_state==1){
+								for(int h1=h+j-1; h1>=0; h1--)
+									if(mockgrid[i+p.bx][h1]==1){
+										fit_state = 0;
+										break;
+									}
+							}
 						}
 					}
 				}

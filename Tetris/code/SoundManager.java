@@ -36,7 +36,7 @@ public class SoundManager
 	}
 	
 	// do we even play music at all?
-	public static final boolean PLAY_MUSIC = true;
+	public static final boolean PLAY_MUSIC = false;
 	
 	private Sequencer midiseq; //Midi sequencer, plays the music.
 	

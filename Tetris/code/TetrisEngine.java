@@ -196,11 +196,11 @@ public class TetrisEngine
 	
 	/*Width and height of the grid, counted in number
 	 * of blocks.*/
-	public int width=12, height=20;
+	public int width=30, height=50;
 	
 	/*Dimensions (Width and height) of each square. Squares in
 	 * Tetris must be the same height and width.*/
-	public int squaredim=25;
+	public int squaredim=10;
 	
 	/*Dimensions of the squares of the next block as drawn.
 	 * See squaredim.*/
@@ -227,7 +227,7 @@ public class TetrisEngine
 	public int steptime = 350;
 	
 	/*Time used to fade block that have been cleared.*/
-	public int fadetime = 300;
+	public int fadetime = 0;
 	
 	/*Game mode (UNUSED)*/
 	public String mode = "CLASSIC";
