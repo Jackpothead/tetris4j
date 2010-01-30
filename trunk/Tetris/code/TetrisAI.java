@@ -17,7 +17,7 @@ public class TetrisAI
 	public volatile boolean isrunning = false;
 	
 	/*Time (ms) AI has to wait per keypress.*/
-	public static final int waittime = 20;
+	public static final int waittime = 1;
 	
 	public TetrisAI(TetrisPanel panel){
 		this.panel = panel;
@@ -203,7 +203,7 @@ public class TetrisAI
 
 			//We don't want game over so here:
 			if(fit_state==-1)
-				return Double.MIN_VALUE;
+				return -99999999;
 			
 			//1 = found!
 			if(fit_state==1)
