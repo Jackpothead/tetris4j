@@ -23,7 +23,7 @@ public class GameWindow extends JFrame
 	/*Creates a GameWindow, by default.*/
 	public GameWindow()
 	{
-		this(false, null);
+		this(STARTFS, null);
 	}
 	
 	

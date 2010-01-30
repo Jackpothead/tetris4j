@@ -277,10 +277,10 @@ public class TetrisEngine
 					//Best to put AFTER sleeping.
 					synchronized(TetrisEngine.this)
 					{
-    					if(!(state == GameState.PLAYING))
-    						continue;
-    					if(timeelapsedsincelaststep > steptime)
-    						step();
+						if(!(state == GameState.PLAYING))
+							continue;
+						if(timeelapsedsincelaststep > steptime)
+							step();
 					}
 				}
 			}
@@ -315,21 +315,21 @@ public class TetrisEngine
 		//Loop and draw all the blocks.
 		for(int c1 = 0;c1 < blocks.length;c1++)
 		{
-    		for(int c2 = 0;c2 < blocks[c1].length;c2++)
-    		{
-    			// Just in case block's null, it doesn't draw as black.
-    			g.setColor(Block.emptycolor);
-    			g.setColor(blocks[c1][c2].getColor());
-    			
-    			g.fillRect(mainx+c1*squaredim,
-    					mainy+c2*squaredim, squaredim, squaredim);
-    			
-    			//Draw square borders.
-                g.setColor(new Color(255,255,255,25));
-                g.drawRect(mainx+c1*squaredim,
-                        mainy+c2*squaredim, squaredim, squaredim);
-    			
-    		}
+			for(int c2 = 0;c2 < blocks[c1].length;c2++)
+			{
+				// Just in case block's null, it doesn't draw as black.
+				g.setColor(Block.emptycolor);
+				g.setColor(blocks[c1][c2].getColor());
+				
+				g.fillRect(mainx+c1*squaredim,
+						mainy+c2*squaredim, squaredim, squaredim);
+				
+				//Draw square borders.
+				g.setColor(new Color(255,255,255,25));
+				g.drawRect(mainx+c1*squaredim,
+						mainy+c2*squaredim, squaredim, squaredim);
+				
+			}
 		}
 		
 		int nextx = 134;
@@ -341,40 +341,40 @@ public class TetrisEngine
 		if(nextblock != null)
 		{
 			nextb = nextblock.array;
-    		//Loop and draw next block.
-    		for(int c1 = 0;c1 < nextb.length;c1++)
-    		{
-    			for(int c2 = 0;c2 < nextb[c1].length;c2++)
-    			{
-    				Color c = nextb[c2][c1].getColor();
-    				
-    				if(c != null && !c.equals(Block.emptycolor))
-    				{
-    					g.setColor(new Color(0,0,0,128));
-    				
-    					g.fillRect(nextx+c1*nextblockdim,
-        					nexty+c2*nextblockdim, nextblockdim, nextblockdim);
-    				}
-    			}
-    		}
+			//Loop and draw next block.
+			for(int c1 = 0;c1 < nextb.length;c1++)
+			{
+				for(int c2 = 0;c2 < nextb[c1].length;c2++)
+				{
+					Color c = nextb[c2][c1].getColor();
+					
+					if(c != null && !c.equals(Block.emptycolor))
+					{
+						g.setColor(new Color(0,0,0,128));
+					
+						g.fillRect(nextx+c1*nextblockdim,
+							nexty+c2*nextblockdim, nextblockdim, nextblockdim);
+					}
+				}
+			}
 		}
 		
 		
 		if(state == GameState.PAUSED || state == GameState.GAMEOVER)
 		{
-    		g.setColor(new Color(255,255,255,160));
-    		g.setFont(new Font(Font.SERIF,Font.BOLD,16));
-    		String pausestring = null;
-    		
-    		if(state == GameState.PAUSED)
-    			pausestring = "(SHIFT to play).";
-    		
-    		if(state == GameState.GAMEOVER)
-    			pausestring = "Game over (SHIFT to restart).";
-    		
-    		g.drawString(pausestring, 
-    				(tetris.getWidth() - g.getFontMetrics()
-    						.stringWidth(pausestring))/ 2 + 50,300);
+			g.setColor(new Color(255,255,255,160));
+			g.setFont(new Font(Font.SERIF,Font.BOLD,16));
+			String pausestring = null;
+			
+			if(state == GameState.PAUSED)
+				pausestring = "(SHIFT to play).";
+			
+			if(state == GameState.GAMEOVER)
+				pausestring = "Game over (SHIFT to restart).";
+			
+			g.drawString(pausestring, 
+					(tetris.getWidth() - g.getFontMetrics()
+							.stringWidth(pausestring))/ 2 + 50,300);
 		}
 	}
 	
@@ -382,7 +382,7 @@ public class TetrisEngine
 	/*Called when the RIGHT key is pressed.*/
 	public void keyright()
 	{
-		if(state!=GameState.PLAYING)
+		if(activeblock==null || state!=GameState.PLAYING)
 			return;
 		
 		activeblock.x++;
@@ -395,7 +395,7 @@ public class TetrisEngine
 	/*Called when the LEFT key is pressed.*/
 	public void keyleft()
 	{
-		if(state!=GameState.PLAYING)
+		if(activeblock==null || state!=GameState.PLAYING)
 			return;
 		
 		activeblock.x--;
@@ -407,7 +407,7 @@ public class TetrisEngine
 	/*Called when the DOWN key is pressed.*/
 	public void keydown()
 	{
-		if(state!=GameState.PLAYING)
+		if(activeblock==null || state!=GameState.PLAYING)
 			return;
 		
 		step();
@@ -416,10 +416,9 @@ public class TetrisEngine
 	/*Called when rotate key is called (Z or UP)*/
 	public void keyrotate()
 	{
-		if(state!=GameState.PLAYING)
+		if(activeblock==null || state!=GameState.PLAYING)
 			return;
 		
-		if(activeblock.array==null)return;//necessary NPE checking.
 		
 		Block[][] lastblock = copy2D(activeblock.array);
 		int lastrot = activeblock.rot;
@@ -445,7 +444,7 @@ public class TetrisEngine
 	/*Called when slam key (SPACE) is pressed.*/
 	public void keyslam()
 	{
-		if(state!=GameState.PLAYING)
+		if(activeblock==null || state!=GameState.PLAYING)
 			return;
 		
 		laststep = System.currentTimeMillis();
@@ -569,9 +568,13 @@ public class TetrisEngine
 			
 			//Pause loop. Capped at 5 seconds.
 			while(state == GameState.GAMEOVER
-					&& System.currentTimeMillis()-timebefore < 5000)
+					&& System.currentTimeMillis()-timebefore < 10000)
 			{
 				sleep_(20);
+			}
+
+			if(!tetris.isHumanControlled){
+				System.out.println(lines);
 			}
 			
 			//reset.
@@ -580,6 +583,11 @@ public class TetrisEngine
 			
 			//Important?
 			clear();
+
+			if(!tetris.isHumanControlled){
+				state = GameState.PLAYING;
+				tetris.controller.send_ready();
+			}
 			
 		}}.start();
 		
@@ -594,12 +602,13 @@ public class TetrisEngine
 	private synchronized boolean copy()
 	{
 		try{
+
+		if(activeblock==null || activeblock.array==null)
+			return false;//Early NullPointerException failsafe
+		
 		int x = activeblock.x;
 		int y = activeblock.y;
 		Block[][] buffer = copy2D(blocks);
-		
-		if(activeblock.array==null)
-			return false;//Early NullPointerException failsafe
 		
 		//Check if any blocks already have a block under them.
 		//If yes, immediately return.
