@@ -32,7 +32,7 @@ public class TetrisPanel extends JPanel
 	public Image fg = null;
 	
 	/*Is it being controlled by a human or ai?*/
-	public boolean isHumanControlled = true;
+	public boolean isHumanControlled = false;
 	
 	/*AI object controlling the game.*/
 	public TetrisAI controller = null;
@@ -132,7 +132,7 @@ public class TetrisPanel extends JPanel
 
 	Note that some keys should never be counted more than once.
 	*/
-	static class KeyPressManager extends KeyAdapter{
+	class KeyPressManager extends KeyAdapter{
 
 		static final int delay = 40;
 
@@ -168,7 +168,9 @@ public class TetrisPanel extends JPanel
 
 		KeyPressManager(){
 			keythread = new KeyHandlingThread();
-			keythread.start();
+
+			if(TetrisPanel.this.isHumanControlled)
+				keythread.start();
 		}
 
 		void putKey(int i, Runnable r){
@@ -181,6 +183,10 @@ public class TetrisPanel extends JPanel
 
 		// Called when keypress is detected.
 		public void keyPressed(KeyEvent ke){
+
+			// Make special adjustments for handling of the shift key.
+			if(!TetrisPanel.this.isHumanControlled && ke.getKeyCode() != KeyEvent.VK_SHIFT) return;
+
 			int ck = ke.getKeyCode();
 			if(keymap.containsKey(ck)){
 				/*
@@ -200,6 +206,9 @@ public class TetrisPanel extends JPanel
 
 		// Called when key is released. Here we'll want to modify the map.
 		public void keyReleased(KeyEvent ke){
+			
+			if(!TetrisPanel.this.isHumanControlled) return;
+
 			int ck = ke.getKeyCode();
 
 			/*

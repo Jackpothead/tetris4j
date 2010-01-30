@@ -93,7 +93,7 @@ public class GameWindow extends JFrame
 				.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 			dev.setFullScreenWindow(this);
 			dev.setDisplayMode(new DisplayMode
-    				(800,600,32,DisplayMode.REFRESH_RATE_UNKNOWN));
+					(800,600,32,DisplayMode.REFRESH_RATE_UNKNOWN));
 		}catch(Throwable t){
 				throw new RuntimeException("Getting screen device failed");
 		}
@@ -114,10 +114,10 @@ public class GameWindow extends JFrame
 	{
 		win = new GameWindow(true, win);
 		try{
-    		win.dev.setFullScreenWindow(win);
-    		//800x600 fullscreen?
-    		win.dev.setDisplayMode(new DisplayMode
-    				(800,600,32,DisplayMode.REFRESH_RATE_UNKNOWN));
+			win.dev.setFullScreenWindow(win);
+			//800x600 fullscreen?
+			win.dev.setDisplayMode(new DisplayMode
+					(800,600,32,DisplayMode.REFRESH_RATE_UNKNOWN));
 		
 		}catch(Throwable t)
 		{
