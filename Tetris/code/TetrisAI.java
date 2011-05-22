@@ -17,7 +17,7 @@ public class TetrisAI
 	public volatile boolean isrunning = false;
 	
 	/*Time (ms) AI has to wait per keypress.*/
-	public static final int waittime = 0;
+	public static final int waittime = 15;
 	
 	public TetrisAI(TetrisPanel panel){
 		this.panel = panel;
@@ -118,14 +118,35 @@ public class TetrisAI
 				posfits.add(put);
 			}
 		}
+		
+		// Do everything again for the next block
+		byte[][][] allrotations2 = TetrisEngine.blockdef[ge.nextblock.type];
+		int nrots2 = allrotations2.length;
+		List<BlockPosition> posfits2 = new ArrayList<BlockPosition>();
+		for(int i=0; i<nrots2; i++){
+			byte[][] trotation = allrotations2[i];
+			int free = freeSpaces(trotation);
+			int freeL = free / 10;
+			int freeR = free % 10;
+			int minX = 0 - freeL;
+			int maxX = (ge.width-4) + freeR;
+			for(int j=minX; j<=maxX; j++){
+				BlockPosition put = new BlockPosition();
+				put.bx = j;
+				put.rot = i;
+				posfits2.add(put);
+			}
+		}
 
 		// now we begin the evaluation.
 		// for each element in the list we have, calculate a score, and pick
 		// the best.
-		double[] scores = new double[posfits.size()];
+		double[] scores = new double[posfits.size() * posfits2.size()];
 
-		for(int i=0; i<scores.length; i++){
-			scores[i] = evalPosition(ge, posfits.get(i));
+		for(int i=0; i<posfits.size(); i++){
+			for(int j=0; j<posfits2.size(); j++){
+				scores[i*posfits2.size()+j] = evalPosition(ge, posfits.get(i), posfits2.get(j));
+			}
 		}
 
 		//retrieve max.
@@ -133,7 +154,7 @@ public class TetrisAI
 		BlockPosition max_b = null;
 		for(int i=0; i<scores.length; i++){
 			if(scores[i] >= max){
-				max_b = posfits.get(i);
+				max_b = posfits.get(i/posfits2.size());
 				max = scores[i];
 			}
 		}
@@ -142,9 +163,8 @@ public class TetrisAI
 		return max_b;
 	}
 
-	static double evalPosition(TetrisEngine ge, BlockPosition p){
-
-		byte[][] bl = ge.blockdef[ge.activeblock.type][p.rot];
+	// Evaluate position not with one, but with two blocks.
+	static double evalPosition(TetrisEngine ge, BlockPosition p, BlockPosition q){
 
 		// First thing: Simulate the drop. Do this on a mock grid.
 		// copying it here may seem like a waste but clearing it
@@ -158,81 +178,124 @@ public class TetrisAI
 				if(s==2) s=0;
 				mockgrid[i][j] = s;
 			}
+		
+		int cleared = 0;
+		for(int block=1; block<=2; block++){
+			
+			byte[][] bl;
+			BlockPosition r;
+			
+			if(block==1) r=p;
+			else r=q;
+			
+			if(block==1) bl = ge.blockdef[ge.activeblock.type][r.rot];
+			else bl = ge.blockdef[ge.nextblock.type][r.rot];
 
-
-		// Now we find the fitting height by starting from the bottom and
-		// working upwards. If we're fitting a line-block on an empty
-		// grid then the height would be height-1, and it can't be any
-		// lower than that, so that's where we'll start.
-
-		int h;
-		for(h = ge.height-1;; h--){
-
-			// indicator. 1: fits. 0: doesn't fit. -1: game over.
-			int fit_state = 1;
-
-			for(int i=0; i<4; i++)
-				for(int j=0; j<4; j++){
-					//check for bounds.
-
-
-					boolean block_p = bl[j][i] == 1;
-
-					//we have to simulate lazy evaluation in order to avoid
-					//out of bounds errors.
-
-					if(block_p){
-						//still have to check for overflow. X-overflow can't
-						//happen at this stage but Y-overflow can.
-
-						if(h+j >= ge.height)
-							fit_state = 0;
-
-						else if(h+j < 0)
-							fit_state = -1;
-
-						else{
-							boolean board_p = mockgrid[i+p.bx][h+j] == 1;
-
-							// Already filled, doesn't fit.
-							if(board_p)
+			// Now we find the fitting height by starting from the bottom and
+			// working upwards. If we're fitting a line-block on an empty
+			// grid then the height would be height-1, and it can't be any
+			// lower than that, so that's where we'll start.
+	
+			int h;
+			for(h = ge.height-1;; h--){
+	
+				// indicator. 1: fits. 0: doesn't fit. -1: game over.
+				int fit_state = 1;
+	
+				for(int i=0; i<4; i++)
+					for(int j=0; j<4; j++){
+						//check for bounds.
+	
+	
+						boolean block_p = bl[j][i] >= 1;
+	
+						//we have to simulate lazy evaluation in order to avoid
+						//out of bounds errors.
+	
+						if(block_p){
+							//still have to check for overflow. X-overflow can't
+							//happen at this stage but Y-overflow can.
+	
+							if(h+j >= ge.height)
 								fit_state = 0;
-
-							// Still the possibility that another block
-							// might still be over it.
-							if(fit_state==1){
-								for(int h1=h+j-1; h1>=0; h1--)
-									if(mockgrid[i+p.bx][h1]==1){
-										fit_state = 0;
-										break;
-									}
+	
+							else if(h+j < 0)
+								fit_state = -1;
+	
+							else{
+								boolean board_p = mockgrid[i+r.bx][h+j] >= 1;
+	
+								// Already filled, doesn't fit.
+								if(board_p)
+									fit_state = 0;
+	
+								// Still the possibility that another block
+								// might still be over it.
+								if(fit_state==1){
+									for(int h1=h+j-1; h1>=0; h1--)
+										if(mockgrid[i+r.bx][h1]>=1){
+											fit_state = 0;
+											break;
+										}
+								}
 							}
 						}
 					}
-				}
-
-			//We don't want game over so here:
-			if(fit_state==-1)
-				return -99999999;
+	
+				//We don't want game over so here:
+				if(fit_state==-1)
+					return -99999999;
+				
+				//1 = found!
+				if(fit_state==1)
+					break;
+	
+			}
+	
+			// copy over block position
+			for(int i=0; i<4; i++)
+				for(int j=0; j<4; j++)
+					if(bl[j][i]==1)
+						mockgrid[r.bx+i][h+j] = 2;
 			
-			//1 = found!
-			if(fit_state==1)
-				break;
-
+			
+			// check for clears
+			boolean foundline;
+			do{
+				foundline = false;
+				ML:
+				for(int i = mockgrid[0].length-1;i>=0;i--)
+				{
+					for(int y = 0;y < mockgrid.length;y++)
+					{
+						if(!(mockgrid[y][i] > 0))
+							continue ML;
+					}
+					
+					// line i is full, clear it and copy
+					cleared++;
+					foundline = true;
+					for(int a = i;a>0;a--)
+					{
+						for(int y = 0;y < mockgrid.length;y++)
+						{
+							mockgrid[y][a] = mockgrid[y][a-1];
+						}
+					}
+					break ML;
+				}
+			}while(foundline);
 		}
-
-		for(int i=0; i<4; i++)
-			for(int j=0; j<4; j++)
-				if(bl[j][i]==1)
-					mockgrid[p.bx+i][h+j] = 2;
 
 
 		// Constants for score evaluation.
-		final double _TOUCHING_EDGES = 1.2;
-		final double _TOUCHING_WALLS = 0.5;
-		final double _TOUCHING_FLOOR = 3.0;
-		final double _HEIGHT = -0.2;
-		final double _HOLES = -4.0;
+		final double _TOUCHING_EDGES = 3.0;
+		final double _TOUCHING_WALLS = 2.5;
+		final double _TOUCHING_FLOOR = 5.0;
+		final double _HEIGHT = -0.03;
+		final double _HOLES = -7.5;
+		final double _BLOCKADE = -3.5;
+		final double _CLEAR = 8.0;
 
 
 		// Now we evaluate the resulting position.
@@ -249,14 +312,14 @@ public class TetrisAI
 			for(int j=0; j<ge.width-1; j++){
 				if(j==0 && mockgrid[j][i]==2) score += _TOUCHING_WALLS;
 				if(j+1==ge.width-1 && mockgrid[j+1][i]==2) score += _TOUCHING_WALLS;
-				if(mockgrid[j][i] + mockgrid[j+1][i] == 3) score += _TOUCHING_EDGES;
+				if(mockgrid[j][i] + mockgrid[j+1][i] >= 3) score += _TOUCHING_EDGES;
 			}
 
 		//vertical pairs
 		for(int i=0; i<ge.width; i++)
 			for(int j=0; j<ge.height-1; j++){
 				if(j+1==ge.height-1 && mockgrid[i][j+1]==2) score += _TOUCHING_FLOOR;
-				if(mockgrid[i][j] + mockgrid[i][j+1] == 3) score += _TOUCHING_EDGES;
+				if(mockgrid[i][j] + mockgrid[i][j+1] >= 3) score += _TOUCHING_EDGES;
 			}
 
 		// Penalize height.
@@ -266,14 +329,42 @@ public class TetrisAI
 				if(mockgrid[i][j]>0) score += curheight * _HEIGHT;
 			}
 
-		//Penalize holes.
+		//Penalize holes. Also penalize blocks above holes.
 		for(int i=0; i<ge.width; i++) {
+			
+			// Part 1: Count how many holes (space beneath blocks)
 			boolean f = false;
+			int holes = 0;
 			for(int j=0; j<ge.height; j++){
 				if(mockgrid[i][j]>0) f = true;
-				if(f && mockgrid[i][j]==0) score += _HOLES;
+				if(f && mockgrid[i][j]==0) holes++;
 			}
+			
+			// Part 2: Count how many blockades (block above space)
+			f = false;
+			int blockades = 0;
+			for(int j=ge.height-1; j>=0; j--){
+				if(mockgrid[i][j]==0) f=true;
+				if(f&&mockgrid[i][j]>0) blockades++;
+			}
+			
+			score += _HOLES*holes;
+			score += _BLOCKADE*blockades;
 		}
+		
+		if(cleared==1) score += _CLEAR;
+		if(cleared==2) score += 3*_CLEAR;
+		if(cleared==3) score += 6*_CLEAR;
+		if(cleared==4) score += 10*_CLEAR;
+		
+		/*for (int i1 = 0; i1 < mockgrid.length; i1++) {
+			for (int i2 = 0; i2 < mockgrid[0].length; i2++) {
+				System.out.print(mockgrid[i1][i2] + " ");
+			}
+			System.out.println();
+		}
+		System.out.println(score);*/
+		//System.exit(0);
 
 		return score;
 	}
