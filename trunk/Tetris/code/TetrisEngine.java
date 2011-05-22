@@ -196,11 +196,11 @@ public class TetrisEngine
 	
 	/*Width and height of the grid, counted in number
 	 * of blocks.*/
-	public int width=30, height=50;
+	public int width=12, height=(int) (1.8*width);
 	
 	/*Dimensions (Width and height) of each square. Squares in
 	 * Tetris must be the same height and width.*/
-	public int squaredim=10;
+	public int squaredim= 300/width;
 	
 	/*Dimensions of the squares of the next block as drawn.
 	 * See squaredim.*/
