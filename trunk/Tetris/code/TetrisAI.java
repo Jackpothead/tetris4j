@@ -12,62 +12,96 @@ public class TetrisAI
 	private TetrisPanel panel;
 	private TetrisEngine engine;
 	AIThread thread;
-	
-	/*Is the AI running?*/
-	public volatile boolean isrunning = false;
+	volatile boolean flag = false;
 	
 	/*Time (ms) AI has to wait per keypress.*/
-	public static final int waittime = 15;
+	public static final int waittime = 20;
+	
+	// (for maximum speed without crashing, set waittime = 1, do_drop on)
+	/*Do we use hard drops?*/
+	public static final boolean do_drop = false;
+	
+	
+	// Constants (sort of) for score evaluation.
+	double _TOUCHING_EDGES = 3.97;
+	double _TOUCHING_WALLS = 6.52;
+	double _TOUCHING_FLOOR = 0.65;
+	double _HEIGHT = -3.78;
+	double _HOLES = -2.31;
+	double _BLOCKADE = -0.59;
+	double _CLEAR = 1.6;
+	
 	
 	public TetrisAI(TetrisPanel panel){
 		this.panel = panel;
 		engine = panel.engine;
+		thread = new AIThread();
 	}
 	
 	public void send_ready(){
-		if(isrunning)
-			return;
-		thread = new AIThread();
-		thread.start();
-		isrunning = true;
+		if(!flag){
+			thread.start();
+			flag = true;
+			engine.lastnewblock = System.currentTimeMillis();
+		}
 	}
 	
 	class AIThread extends Thread{
 		public void run(){
 			
-			while(engine.state != GameState.GAMEOVER){
-				//If it's merely paused, do nothing; if it's actually game over
-				//then break loop entirely.
-				if(engine.state == GameState.PLAYING){
-					if(engine.activeblock == null) continue;
-					
-					BlockPosition temp = computeBestFit(engine);
-					int elx = temp.bx;
-					int erot = temp.rot;
-					
-					//Move it!
-					movehere(elx, erot);
+			while(flag){
+				
+				try{
+					//If it's merely paused, do nothing; if it's actually game over
+					//then break loop entirely.
+					if(engine.state == GameState.PLAYING){
+						if(engine.activeblock == null) continue;
+						
+						BlockPosition temp = computeBestFit(engine);
+						if(engine.state == GameState.PLAYING){
+							
+							int elx = temp.bx;
+							int erot = temp.rot;
+							
+							//Move it!
+							movehere(elx, erot);
+						}
+					}
+					//safety
+					sleep_(waittime);
+				}catch(Exception e){
+					//System.out.print("Aborting and retrying...\n");
+					//return;
 				}
-				//safety
-				sleep_(waittime);
 			}
 			
-			isrunning = false;
 		}
 		
 		/*Keypresses to move block to calculated position.*/
 		private void movehere(int finx, int finrot){
 			int st_blocksdropped = engine.blocksdropped;
 			
-			while(engine.activeblock.rot != finrot){
+			// we're going to make another failsafe here: if at any time we rotate it
+			// or move it and it doesn't move then it's stuck and we give up.
+			
+			int init_state = engine.activeblock.rot;
+			int prev_state = init_state;
+			while(flag && engine.activeblock.rot != finrot){
 				//Rotate first so we don't get stuck in the edges.
 				engine.keyrotate();
 				
 				//Now wait.
 				sleep_(waittime);
+				
+				if(prev_state == engine.activeblock.rot || init_state == engine.activeblock.rot){
+					engine.keyslam();
+					sleep_(waittime>3? waittime : 3);
+				}
+				prev_state = engine.activeblock.rot;
 			}
 			
-			while(engine.activeblock.x != finx){
+			prev_state = engine.activeblock.x;
+			while(flag && engine.activeblock.x != finx){
 				//Now nudge the block.
 				if(engine.activeblock.x < finx){
 					engine.keyright();
@@ -77,10 +111,22 @@ public class TetrisAI
 				}
 				
 				sleep_(waittime);
+				
+				if(prev_state == engine.activeblock.x){
+					engine.keyslam();
+					sleep_(waittime>3? waittime : 3);
+				}
+				prev_state = engine.activeblock.x;
 			}
 			
-			while(engine.blocksdropped == st_blocksdropped
-					&& engine.state != GameState.GAMEOVER){
+			if(flag && do_drop){
+				engine.keyslam();
+				// make the minimum 3 to fix a weird threading glitch
+				sleep_(waittime>3? waittime : 3);
+				return;
+			}
+			
+			while(flag && engine.blocksdropped == st_blocksdropped){
 				//Now move it down until it drops a new block.
 				engine.keydown();
 				sleep_(waittime);
@@ -92,7 +138,7 @@ public class TetrisAI
 	
 	/*This can calculate the best possible fit for it, given the current
 	 * state the blocks are in.*/
-	static BlockPosition computeBestFit(TetrisEngine ge){
+	BlockPosition computeBestFit(TetrisEngine ge){
 
 		byte[][][] allrotations = TetrisEngine.blockdef[ge.activeblock.type];
 		int nrots = allrotations.length;
@@ -164,7 +210,7 @@ public class TetrisAI
 	}
 
 	// Evaluate position not with one, but with two blocks.
-	static double evalPosition(TetrisEngine ge, BlockPosition p, BlockPosition q){
+	double evalPosition(TetrisEngine ge, BlockPosition p, BlockPosition q){
 
 		// First thing: Simulate the drop. Do this on a mock grid.
 		// copying it here may seem like a waste but clearing it
@@ -287,17 +333,6 @@ public class TetrisAI
 			}while(foundline);
 		}
 
-
-		// Constants for score evaluation.
-		final double _TOUCHING_EDGES = 3.0;
-		final double _TOUCHING_WALLS = 2.5;
-		final double _TOUCHING_FLOOR = 5.0;
-		final double _HEIGHT = -0.03;
-		final double _HOLES = -7.5;
-		final double _BLOCKADE = -3.5;
-		final double _CLEAR = 8.0;
-
-
 		// Now we evaluate the resulting position.
 
 		// Part of the evaluation algorithm is to count the number of touching sides.
@@ -352,10 +387,7 @@ public class TetrisAI
 			score += _BLOCKADE*blockades;
 		}
 		
-		if(cleared==1) score += _CLEAR;
-		if(cleared==2) score += 3*_CLEAR;
-		if(cleared==3) score += 6*_CLEAR;
-		if(cleared==4) score += 10*_CLEAR;
+		score += cleared * _CLEAR;
 		
 		/*for (int i1 = 0; i1 < mockgrid.length; i1++) {
 			for (int i2 = 0; i2 < mockgrid[0].length; i2++) {
