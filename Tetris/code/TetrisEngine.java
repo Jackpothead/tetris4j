@@ -196,7 +196,7 @@ public class TetrisEngine
 	
 	/*Width and height of the grid, counted in number
 	 * of blocks.*/
-	public int width=12, height=(int) (1.8*width);
+	public int width=10, height=(int) (1.8*width);
 	
 	/*Dimensions (Width and height) of each square. Squares in
 	 * Tetris must be the same height and width.*/
@@ -235,6 +235,13 @@ public class TetrisEngine
 
 	/*Current state of the game (PLAYING, PAUSED, etc.)*/
 	public volatile GameState state;
+	
+	
+	/* How many lines did the AI get last time? */
+	public int lastlines = 0;
+	
+	long lastnewblock = System.currentTimeMillis();
+	boolean anomaly_flag = false;
 	
 	
 	/*Public constructor. Remember to call startengine()
@@ -369,8 +376,13 @@ public class TetrisEngine
 			if(state == GameState.PAUSED)
 				pausestring = "(SHIFT to play).";
 			
-			if(state == GameState.GAMEOVER)
-				pausestring = "Game over (SHIFT to restart).";
+			if(state == GameState.GAMEOVER){
+				if(tetris.isHumanControlled)
+					pausestring = "Game over (SHIFT to restart).";
+				else
+					pausestring = Integer.toString(lastlines) + 
+						(lastlines==1?" Line":" Lines");
+			}
 			
 			g.drawString(pausestring, 
 					(tetris.getWidth() - g.getFontMetrics()
@@ -416,7 +428,7 @@ public class TetrisEngine
 	/*Called when rotate key is called (Z or UP)*/
 	public void keyrotate()
 	{
-		if(activeblock==null || state!=GameState.PLAYING)
+		if(activeblock==null || activeblock.array == null || state!=GameState.PLAYING)
 			return;
 		
 		
@@ -533,60 +545,31 @@ public class TetrisEngine
 		new Thread(){public void run(){
 			//pause the game first.
 			state = GameState.GAMEOVER;
+			if(!tetris.isHumanControlled)
+				tetris.controller.flag=false;
 			
 			//die sound.
 			tetris.sound.sfx(Sounds.DIE);
-			
-			String disp = 	
-			"            \n"+
-			"    xxxx    \n"+
-			"   x    x   \n"+
-			"  x      x  \n"+
-			" x xx  xx x \n"+
-			" x        x \n"+
-			" x   x    x \n"+
-			" x        x \n"+
-			" x  xxx   x \n"+
-			" x x   x  x \n"+
-			" x       x  \n"+
-			"  xx   xx   \n"+
-			"    xxx     \n"+
-			"x          x\n"+
-			" xx      xx \n"+
-			"   xx  xx   \n"+
-			"     xx     \n"+
-			"   xx  xx   \n"+
-			" xx      xx \n"+
-			"x          x\n";
-
-			//Must do this before reset.
-			Block[][] gameover = 
-				strToBlocks(disp, width, height).clone();
-			blocks = gameover;
-			
-			long timebefore = System.currentTimeMillis();
-			
-			//Pause loop. Capped at 5 seconds.
-			while(state == GameState.GAMEOVER
-					&& System.currentTimeMillis()-timebefore < 10000)
-			{
-				sleep_(20);
-			}
 
 			if(!tetris.isHumanControlled){
-				System.out.println(lines);
+				lastlines = lines;
 			}
 			
-			//reset.
+			int lastscore = score;
+			
+			sleep_(1200);
 			reset();
-			state = GameState.PAUSED;
-			
-			//Important?
-			clear();
+			sleep_(100);
 
 			if(!tetris.isHumanControlled){
+				if(!anomaly_flag)
+					tetris.genetic.sendScore(lastscore);
+				tetris.controller = new TetrisAI(tetris);
+				tetris.genetic.setAIValues(tetris.controller);
 				state = GameState.PLAYING;
 				tetris.controller.send_ready();
+				anomaly_flag = false;
+				lastnewblock = System.currentTimeMillis();
 			}
 			
 		}}.start();
@@ -812,19 +795,20 @@ public class TetrisEngine
 		}
 		else if(alreadycleared>0)
 		{
+			// Use Nintendo's original scoring system.
 			switch(alreadycleared)
 			{
 			case 1:
-				score += 45;
+				score += 40;
 				break;
 			case 2:
-				score += 105;
+				score += 100;
 				break;
 			case 3:
-				score += 350;
+				score += 300;
 				break;
 			case 4:
-				score += 1250;
+				score += 1200;
 				break;
 			}
 			
@@ -863,6 +847,15 @@ public class TetrisEngine
 		
 		//Successfully dropped 1 block, here.
 		blocksdropped+=1;
+		
+		if(!tetris.isHumanControlled && 
+			System.currentTimeMillis()-lastnewblock > (100+50*tetris.controller.waittime)){
+			System.out.println("Anomaly detected, retrying...");
+			anomaly_flag = true;
+			gameover();
+		}
+		
+		lastnewblock = System.currentTimeMillis();
 	}
 	
 	/*Create and return a random block.*/
@@ -901,7 +894,9 @@ public class TetrisEngine
 	/*Copies an array, but runs in n^2 time.*/
 	static Block[][] copy2D(Block[][] in)
 	{
-		Block[][] ret = new Block[in.length][in[0].length];
+		//if(in == null) return null;
+		Block[][] ret;
+		ret = new Block[in.length][in[0].length];
 		for(int i = 0;i < in.length;i++) {
 			for(int j = 0;j < in[0].length;j++) {
 				ret[i][j] = in[i][j].clone();
@@ -942,24 +937,6 @@ public class TetrisEngine
 			}
 		}
 		
-		return ret;
-	}
-	
-	
-	/*Return a Block[][], from a String.*/
-	static Block[][] strToBlocks(String disp, int a, int b)
-	{
-		Block[][] ret = new Block[a][b];
-		String[] ts = disp.split("\n");
-		for(int i = 0;i < ret[0].length;i++) {
-			for(int y = 0;y < ret.length;y++) {
-				if(ts[i].charAt(y)=='x') {
-					ret[y][i] = new Block(Block.FILLED);
-					ret[y][i].setColor(new Color(0,0,0,127));
-				}
-				else ret[y][i] = new Block(Block.EMPTY);
-			}
-		}
 		return ret;
 	}
 

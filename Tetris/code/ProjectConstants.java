@@ -31,7 +31,8 @@ public class ProjectConstants
 			Thread.sleep(n);
 		}
 		catch(Throwable t){
-			throw new RuntimeException("Sleep failed?!");
+			// Might throw a ThreadDeath if we're sleeping while we terminate the thread
+			// but we're just going to ignore it.
 		}
 	}
 	

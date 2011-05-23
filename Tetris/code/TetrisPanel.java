@@ -37,6 +37,9 @@ public class TetrisPanel extends JPanel
 	/*AI object controlling the game.*/
 	public TetrisAI controller = null;
 	
+	/*Genetic algorithm to find AI combinations*/
+	public GeneticAIFinder genetic = null;
+	
 	/*Public TetrisPanel constructor.*/
 	public TetrisPanel()
 	{
@@ -87,11 +90,14 @@ public class TetrisPanel extends JPanel
 		kpm.putKey(KeyEvent.VK_UP, new Runnable(){public void run(){TetrisPanel.this.engine.keyrotate();}});
 		kpm.putKey(KeyEvent.VK_Z, new Runnable(){public void run(){TetrisPanel.this.engine.keyrotate();}});
 		kpm.putKey(KeyEvent.VK_SHIFT, new Runnable(){public void run(){
-			if(controller != null && !controller.isrunning)
+			if(engine.state != GameState.GAMEOVER && controller != null && !controller.thread.isAlive())
 				controller.send_ready();
 			if(engine.state==GameState.PAUSED)
 				engine.state = GameState.PLAYING;
-			else engine.state = GameState.PAUSED;
+			else{
+				engine.state = GameState.PAUSED;
+				//System.out.println(controller.thread.isAlive());
+			}
 		}});
 		
 		addKeyListener(kpm);
@@ -108,8 +114,11 @@ public class TetrisPanel extends JPanel
 		
 		sound.music(SoundManager.Sounds.TETRIS_THEME);
 		
-		if(!isHumanControlled)
+		if(!isHumanControlled){
 			controller = new TetrisAI(this);
+			genetic = new GeneticAIFinder(engine);
+			genetic.setAIValues(controller);
+		}
 	}
 	
 	/*Paints this component, called with repaint().*/
